@@ -1,0 +1,6 @@
+{
+  "name": "Glassmorphism Design Portfolio & Studio Dashboard",
+  "description": "A minimalist glassmorphism graphic and web design portfolio showcase featuring smooth scroll animations, full-screen case study modals, and a password-protected project management dashboard with drag-and-drop asset uploading.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

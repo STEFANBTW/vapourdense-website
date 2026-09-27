@@ -1,0 +1,80 @@
+{
+  "entities": {
+    "Project": {
+      "title": "Project",
+      "description": "Portfolio case study project",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "category": { "type": "string", "enum": ["Graphic Design", "Web Design"] },
+        "client": { "type": "string" },
+        "threeWordDesc": { "type": "string" },
+        "descriptors": { "type": "string" },
+        "isRealLife": { "type": "boolean" },
+        "price": { "type": "string" },
+        "currency": { "type": "string" },
+        "duration": { "type": "string" },
+        "year": { "type": "string" },
+        "featured": { "type": "boolean" },
+        "description": { "type": "string" },
+        "images": { "type": "array", "items": { "type": "string" } },
+        "videos": { "type": "array", "items": { "type": "string" } },
+        "deliverables": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["title", "category", "client", "description", "images"]
+    },
+    "About": {
+      "title": "About Data",
+      "description": "Studio about section configuration",
+      "type": "object",
+      "properties": {
+        "studioName": { "type": "string" },
+        "founderName": { "type": "string" },
+        "bio": { "type": "string" },
+        "badge": { "type": "string" },
+        "founderImage": { "type": "string" },
+        "disciplines": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "num": { "type": "string" },
+              "title": { "type": "string" },
+              "description": { "type": "string" }
+            },
+            "required": ["id", "num", "title", "description"]
+          }
+        },
+        "phone": { "type": "string" },
+        "phones": { "type": "array", "items": { "type": "string" } },
+        "email": { "type": "string" },
+        "emails": { "type": "array", "items": { "type": "string" } },
+        "socials": {
+          "type": "object",
+          "properties": {
+            "instagram": { "type": "string" },
+            "twitter": { "type": "string" },
+            "linkedin": { "type": "string" },
+            "github": { "type": "string" },
+            "dribbble": { "type": "string" }
+          }
+        },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["studioName", "founderName", "bio", "phone", "email"]
+    }
+  },
+  "firestore": {
+    "/projects/{projectId}": {
+      "entity": "Project",
+      "description": "Collection of portfolio case studies"
+    },
+    "/settings/about": {
+      "entity": "About",
+      "description": "Studio about information"
+    }
+  }
+}

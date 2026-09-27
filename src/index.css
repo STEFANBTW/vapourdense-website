@@ -1,0 +1,250 @@
+@import "tailwindcss";
+@import url('https://fonts.cdnfonts.com/css/phenomena');
+
+@font-face {
+  font-family: 'Moon 2.0 Light All Caps';
+  src: local('Moon 2.0 Light All Caps'), local('Moon 2.0 Light'), local('Moon 2.0'), local('Moon-Light'), local('Moon');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Waxe Regular';
+  src: local('Waxe Regular'), local('Waxe-Regular'), local('Waxe');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Phenomena';
+  src: local('Phenomena Bold'), local('Phenomena-Bold');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Phenomena';
+  src: local('Phenomena ExtraLight'), local('Phenomena-ExtraLight'), local('Phenomena Light');
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Phenomena';
+  src: local('Phenomena Regular'), local('Phenomena-Regular');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Uni Sans Light';
+  src: local('Uni Sans Light'), local('UniSans-Light'), local('Uni Sans Thin'), local('Uni Sans');
+  font-weight: 300;
+  font-style: normal;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: #d9d9d9;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+@layer base {
+  body {
+    font-family: 'Uni Sans Light', 'Uni Sans', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    font-weight: 300;
+    color: #1e293b;
+    background-color: #d9d9d9;
+  }
+  
+  h1, h2, h3, .font-display {
+    font-family: 'Syne', system-ui, -apple-system, sans-serif;
+  }
+}
+
+.font-display {
+  font-family: 'Syne', sans-serif;
+}
+
+.font-vapour {
+  font-family: 'Moon 2.0 Light All Caps', 'Moon 2.0', 'Moon', 'Syne', sans-serif;
+  text-transform: uppercase;
+  font-weight: 300;
+  letter-spacing: 0.07em;
+}
+
+.font-moon-light {
+  font-family: 'Moon 2.0 Light All Caps', 'Moon 2.0', 'Moon', sans-serif;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+.font-dense {
+  font-family: 'Waxe Regular', 'Waxe', 'Syne', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.font-virtual-cafe {
+  font-family: 'Phenomena', 'Phenomena Light', 'Plus Jakarta Sans', sans-serif;
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.font-phenomena {
+  font-family: 'Phenomena', 'Plus Jakarta Sans', sans-serif;
+}
+
+.font-phenomena-bold {
+  font-family: 'Phenomena', 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+}
+
+.font-phenomena-extralight {
+  font-family: 'Phenomena', 'Plus Jakarta Sans', sans-serif;
+  font-weight: 200;
+}
+
+.font-phenomena-heading,
+.font-phenomenal-heading {
+  font-family: 'Phenomena', 'Phenomena Light', 'Plus Jakarta Sans', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+}
+
+.font-unisans-thin-caps {
+  font-family: 'Uni Sans Thin', 'Uni Sans Light', 'Uni Sans', sans-serif;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+.font-unisans-thin {
+  font-family: 'Uni Sans Thin', 'Uni Sans Light', 'Uni Sans', 'Plus Jakarta Sans', sans-serif;
+  font-weight: 100;
+  letter-spacing: 0.02em;
+}
+
+.font-unisans-regular {
+  font-family: 'Uni Sans Regular', 'Uni Sans', 'Plus Jakarta Sans', sans-serif;
+  font-weight: 400;
+}
+
+.font-body, .font-body-copy {
+  font-family: 'Uni Sans Light', 'Uni Sans', 'Plus Jakarta Sans', sans-serif;
+  font-weight: 300;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.font-mono-numbers {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Snowy Soft White Frosted Glassmorphism primitives */
+.glass-snow-card {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+}
+
+.glass-snow-card:hover {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.06), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+}
+
+.glass-snow-header {
+  background: #d9d9d9;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02);
+}
+
+.glass-snow-modal {
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+}
+
+.glass-pill-snow {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid #f1f5f9;
+}
+
+/* Snowy Powder Glows */
+.snowy-glow {
+  box-shadow: 0 0 60px 10px rgba(186, 230, 253, 0.45);
+}
+
+/* Hide scrollbar universally for all elements */
+* {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+*::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Moving Purple Gradient for AI-Generated Images */
+@keyframes moving-purple-gradient-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.ai-purple-gradient-border {
+  background: linear-gradient(
+    115deg,
+    #a855f7 0%,
+    #ec4899 25%,
+    #8b5cf6 50%,
+    #d946ef 75%,
+    #a855f7 100%
+  );
+  background-size: 300% 300%;
+  animation: moving-purple-gradient-flow 3.5s ease infinite;
+}
+
+.ai-purple-glow {
+  box-shadow: 0 0 20px -3px rgba(168, 85, 247, 0.45);
+}
+
