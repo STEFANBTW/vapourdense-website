@@ -1285,11 +1285,11 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   type="text"
                   value={currentProject.title || ''}
                   onChange={e => updateProjectLocal({ title: e.target.value })}
-                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl font-light tracking-wide focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
+                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light tracking-wide focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
                   placeholder="Project Name"
                 />
               ) : (
-                <h1 className="font-vapour text-2xl sm:text-3xl lg:text-4xl font-light text-white tracking-wide leading-tight">
+                <h1 className="font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light text-white tracking-wide leading-tight">
                   {currentProject.title}
                 </h1>
               )}
@@ -1484,10 +1484,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                       value={remark.comment || ''}
                       onChange={e => updateProjectLocal({ clientRemark: { ...remark, comment: e.target.value } })}
                       placeholder="Write the client's quote..."
-                      className="w-full bg-white/5 text-white italic font-unisans-regular text-base sm:text-lg lg:text-xs leading-relaxed lg:leading-normal focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl p-3 border border-white/10 resize-y"
+                      className="w-full bg-white/5 text-white italic font-unisans-regular text-base sm:text-lg lg:text-[15px] leading-relaxed lg:leading-normal focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl p-3 border border-white/10 resize-y"
                     />
                   ) : (
-                    <p className="text-base sm:text-lg lg:text-xs text-white/95 italic font-unisans-regular leading-relaxed lg:leading-normal">
+                    <p className="text-base sm:text-lg lg:text-[15px] text-white/95 italic font-unisans-regular leading-relaxed lg:leading-normal">
                       {remark.comment || `“Working with VDVC completely transformed our digital positioning.”`}
                     </p>
                   )}
@@ -1582,11 +1582,11 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   type="text"
                   value={currentProject.client || ''}
                   onChange={e => updateProjectLocal({ client: e.target.value })}
-                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl font-light focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
+                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
                   placeholder="Client Name"
                 />
               ) : (
-                <span className="font-vapour text-2xl sm:text-3xl lg:text-4xl font-light text-white block">
+                <span className="font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light text-white block">
                   {currentProject.client}
                 </span>
               )}
@@ -1603,10 +1603,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   value={currentProject.clientDescription || ''}
                   onChange={e => updateProjectLocal({ clientDescription: e.target.value })}
                   placeholder="Description of the client organization..."
-                  className="w-full bg-white/5 p-3 text-white/90 font-unisans-regular text-base sm:text-lg lg:text-xs font-normal leading-relaxed lg:leading-normal focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10 resize-y"
+                  className="w-full bg-white/5 p-3 text-white/90 font-unisans-regular text-base sm:text-lg lg:text-[15px] font-normal leading-relaxed lg:leading-normal focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10 resize-y"
                 />
               ) : (
-                <p className="font-unisans-regular text-base sm:text-lg lg:text-xs text-white/85 font-normal leading-relaxed lg:leading-normal">
+                <p className="font-unisans-regular text-base sm:text-lg lg:text-[15px] text-white/85 font-normal leading-relaxed lg:leading-normal">
                   {currentProject.clientDescription ||
                     `${currentProject.client} is a premier international partner collaborating on bespoke identity and interactive digital experiences.`}
                 </p>
@@ -1624,10 +1624,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   value={currentProject.shortDescription || currentProject.description || ''}
                   onChange={e => updateProjectLocal({ shortDescription: e.target.value, description: e.target.value })}
                   placeholder="Short description of the project..."
-                  className="w-full bg-white/5 p-3 text-white/90 font-unisans-regular text-base sm:text-lg lg:text-xs font-normal leading-relaxed lg:leading-normal focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10 resize-y"
+                  className="w-full bg-white/5 p-3 text-white/90 font-unisans-regular text-base sm:text-lg lg:text-[15px] font-normal leading-relaxed lg:leading-normal focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10 resize-y"
                 />
               ) : (
-                <p className="font-unisans-regular text-base sm:text-lg lg:text-xs text-white/85 font-normal leading-relaxed lg:leading-normal">
+                <p className="font-unisans-regular text-base sm:text-lg lg:text-[15px] text-white/85 font-normal leading-relaxed lg:leading-normal">
                   {currentProject.shortDescription || currentProject.description}
                 </p>
               )}
@@ -1644,10 +1644,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   value={currentProject.price || ''}
                   onChange={e => updateProjectLocal({ price: e.target.value })}
                   placeholder="e.g. $24,500 USD"
-                  className="w-full bg-white/5 px-3 py-2 text-[#38bdf8] font-vapour text-2xl sm:text-3xl lg:text-2xl font-light focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
+                  className="w-full bg-white/5 px-3 py-2 text-[#38bdf8] font-vapour text-2xl sm:text-3xl lg:text-[15px] font-light focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
                 />
               ) : (
-                <span className="font-vapour text-2xl sm:text-3xl lg:text-2xl font-light text-[#38bdf8] block">
+                <span className="font-vapour text-2xl sm:text-3xl lg:text-[15px] font-light text-[#38bdf8] block">
                   {currentProject.price || 'Undisclosed'}
                 </span>
               )}
@@ -1664,10 +1664,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   value={currentProject.duration || ''}
                   onChange={e => updateProjectLocal({ duration: e.target.value })}
                   placeholder="e.g. 6 Weeks"
-                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-2xl font-light focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
+                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
                 />
               ) : (
-                <span className="font-vapour text-2xl sm:text-3xl lg:text-2xl font-light text-white block">
+                <span className="font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light text-white block">
                   {currentProject.duration || '6 Weeks'}
                 </span>
               )}
@@ -1684,10 +1684,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   value={currentProject.threeWordDesc || currentProject.descriptors || ''}
                   onChange={e => updateProjectLocal({ threeWordDesc: e.target.value, descriptors: e.target.value })}
                   placeholder="e.g. Rational Swiss Architecture"
-                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-xl sm:text-2xl lg:text-base font-light tracking-wide focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
+                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-xl sm:text-2xl lg:text-[28px] font-light tracking-wide focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
                 />
               ) : (
-                <span className="font-vapour text-xl sm:text-2xl lg:text-base font-light text-white tracking-wide block">
+                <span className="font-vapour text-xl sm:text-2xl lg:text-[28px] font-light text-white tracking-wide block">
                   {currentProject.threeWordDesc || currentProject.descriptors || 'Minimal Swiss Direction'}
                 </span>
               )}
@@ -1706,7 +1706,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                         key={cat}
                         type="button"
                         onClick={() => updateProjectLocal({ category: cat })}
-                        className={`px-3.5 py-1.5 text-sm lg:text-xs rounded-xl font-unisans-regular transition-all cursor-pointer border ${
+                        className={`px-3.5 py-1.5 text-sm lg:text-[15px] rounded-xl font-unisans-regular transition-all cursor-pointer border ${
                           currentProject.category === cat
                             ? 'bg-[#003663] text-white border-[#38bdf8]/80 shadow-md shadow-[#003663]/30 ring-2 ring-[#38bdf8]/40'
                             : 'bg-white/5 text-white/70 border-white/15 hover:bg-white/15 hover:text-white'
@@ -1718,11 +1718,11 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   </div>
                 ) : (
                   <div className="flex flex-wrap items-center gap-2.5">
-                    <span className="inline-block px-3.5 py-1.5 lg:px-3 lg:py-1 rounded-xl text-sm sm:text-base lg:text-xs font-unisans-regular font-normal bg-white/5 text-white/90 border border-white/10">
+                    <span className="inline-block px-3.5 py-1.5 lg:px-3 lg:py-1 rounded-xl text-sm sm:text-base lg:text-[15px] font-unisans-regular font-normal bg-white/5 text-white/90 border border-white/10">
                       {currentProject.category}
                     </span>
                     {currentProject.isRealLife && (
-                      <span className="inline-block px-3.5 py-1.5 lg:px-3 lg:py-1 rounded-xl text-sm sm:text-base lg:text-xs font-unisans-regular font-normal bg-white/5 text-white/90 border border-white/10">
+                      <span className="inline-block px-3.5 py-1.5 lg:px-3 lg:py-1 rounded-xl text-sm sm:text-base lg:text-[15px] font-unisans-regular font-normal bg-white/5 text-white/90 border border-white/10">
                         Real-Life Project
                       </span>
                     )}
@@ -1741,7 +1741,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                       : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10'
                   }`}
                 >
-                  <span className="text-sm lg:text-xs font-unisans-regular font-normal text-white">Mark as &apos;Real-Life Project&apos;</span>
+                  <span className="text-sm lg:text-[15px] font-unisans-regular font-normal text-white">Mark as &apos;Real-Life Project&apos;</span>
                   <div className={`w-5 h-5 rounded-lg flex items-center justify-center border transition-all ${
                     currentProject.isRealLife ? 'bg-[#38bdf8] border-[#38bdf8] text-[#003663]' : 'border-white/30 bg-transparent'
                   }`}>
@@ -1761,7 +1761,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   {(currentProject.deliverables || []).map((deliv, dIdx) => (
                     <span
                       key={dIdx}
-                      className="inline-flex items-center gap-2 px-3.5 py-1.5 lg:px-3 lg:py-1 rounded-xl text-sm sm:text-base lg:text-xs font-unisans-regular font-normal bg-white/5 text-white/90 border border-white/10 group"
+                      className="inline-flex items-center gap-2 px-3.5 py-1.5 lg:px-3 lg:py-1 rounded-xl text-sm sm:text-base lg:text-[15px] font-unisans-regular font-normal bg-white/5 text-white/90 border border-white/10 group"
                     >
                       <span>{deliv}</span>
                       {isEditable && (
@@ -1800,7 +1800,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           }
                         }
                       }}
-                      className="flex-1 px-3.5 py-2.5 text-sm lg:text-xs text-white bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#38bdf8]"
+                      className="flex-1 px-3.5 py-2.5 text-sm lg:text-[15px] text-white bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#38bdf8]"
                     />
                     <button
                       type="button"
@@ -1812,7 +1812,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           setNewDeliverableText('');
                         }
                       }}
-                      className="px-4 py-2.5 text-sm lg:text-xs font-bold bg-[#003663] text-white rounded-xl hover:bg-[#002647] transition-all cursor-pointer shadow-md border border-[#38bdf8]/40"
+                      className="px-4 py-2.5 text-sm lg:text-[15px] font-bold bg-[#003663] text-white rounded-xl hover:bg-[#002647] transition-all cursor-pointer shadow-md border border-[#38bdf8]/40"
                     >
                       Add
                     </button>

@@ -715,10 +715,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   onResetDefaults();
                 }
               }}
-              className="p-2 sm:px-3 sm:py-2 text-xs text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+              className="p-2 sm:px-3 sm:py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
               title="Restore 4 initial projects"
             >
               <RotateCcw className="w-3.5 h-3.5 shrink-0" />
+              <span className="hidden sm:inline">Reset</span>
             </button>
           )}
       </div>
@@ -2419,8 +2420,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
            =================================================================== */
         <>
           {/* Single Unified Container for Filter, Drag & Drop, and Projects Table/Cards */}
-          <div className="w-full bg-white rounded-none sm:rounded-3xl border-0 sm:border sm:border-slate-200/90 p-4 sm:p-8 lg:p-10 shadow-none sm:shadow-sm space-y-6">
-            <div className="sticky top-12 sm:top-24 z-20 bg-white/95 backdrop-blur-md pb-4 pt-1 flex flex-row items-center justify-between gap-2 sm:gap-4 border-b border-slate-100">
+          <div className="w-full bg-white rounded-none sm:rounded-3xl border-0 sm:border sm:border-slate-200/90 p-4 sm:p-8 lg:p-10 shadow-none sm:shadow-sm space-y-6 sm:space-y-0 sm:flex sm:flex-col sm:max-h-[calc(100vh-14rem)] sm:overflow-hidden">
+            <div className="sticky top-12 sm:static z-20 bg-white pb-4 pt-1 flex flex-row items-center justify-between gap-2 sm:gap-4 border-b border-slate-100 shrink-0">
               {/* Desktop View: Horizontal Category Tabs */}
               <div className="hidden sm:flex items-center gap-1.5 p-1 bg-slate-100 rounded-2xl border border-slate-200/80">
                 {CATEGORIES.map(category => {
@@ -2554,25 +2555,27 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </div>
             </div>
 
-            {/* Drag & Drop Visual Hint Section */}
-            <div
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              className={`p-5 sm:p-6 border-2 border-dashed rounded-2xl text-center transition-all cursor-pointer ${
-                isDragOver
-                  ? 'border-slate-800 bg-slate-200/80 shadow-inner'
-                  : 'border-slate-300 bg-slate-50/70 hover:bg-white hover:border-slate-400'
-              }`}
-            >
-              <div className="flex items-center justify-center gap-3 text-slate-600 text-xs">
-                <UploadCloud className="w-5 h-5 text-slate-800" />
-                <span>Drag &amp; drop an image here anytime to create a new project in Firestore</span>
+            {/* Scrollable Container on Desktop: Drag & Drop + Projects Table scroll together inside */}
+            <div className="space-y-6 sm:overflow-y-auto sm:flex-1 sm:min-h-0 sm:pt-6 sm:pr-2">
+              {/* Drag & Drop Visual Hint Section (Non-sticky, scrolls away with projects) */}
+              <div
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                className={`p-5 sm:p-6 border-2 border-dashed rounded-2xl text-center transition-all cursor-pointer ${
+                  isDragOver
+                    ? 'border-slate-800 bg-slate-200/80 shadow-inner'
+                    : 'border-slate-300 bg-slate-50/70 hover:bg-white hover:border-slate-400'
+                }`}
+              >
+                <div className="flex items-center justify-center gap-3 text-slate-600 text-xs">
+                  <UploadCloud className="w-5 h-5 text-slate-800" />
+                  <span>Drag &amp; drop an image here anytime to create a new project in Firestore</span>
+                </div>
               </div>
-            </div>
 
-            {/* Projects Table & Mobile Cards Section */}
-            <div className="overflow-x-auto pt-1">
+              {/* Projects Table & Mobile Cards Section */}
+              <div className="overflow-x-auto pt-1">
               {/* Mobile View Cards (block sm:hidden) with subtle border box around each item */}
               <div className="block sm:hidden space-y-3">
                 {filteredProjects.length === 0 ? (
@@ -2776,6 +2779,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   )}
                 </tbody>
               </table>
+            </div>
             </div>
           </div>
         </div>
