@@ -29,8 +29,10 @@ import {
   Phone,
   Mail,
   Sparkles,
+  Briefcase,
   ArrowUp,
   ArrowDown,
+  RotateCcw,
   User,
   Users,
   Upload,
@@ -43,6 +45,7 @@ import {
   Github,
   Dribbble,
   MessageCircle,
+  Menu,
 } from 'lucide-react';
 import { Project, FilterCategory } from '../types/portfolio';
 import {
@@ -53,9 +56,12 @@ import {
   AboutCustomSection,
   TableRowItem,
   SoftwareToolItem,
+  PhoneItem,
+  EmailItem,
   defaultAboutSections,
   defaultSocialLinks,
 } from './AboutSection';
+import { compressImage } from '../utils/imageCompressor';
 
 interface DashboardViewProps {
   projects: Project[];
@@ -110,6 +116,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [submittedBriefs, setSubmittedBriefs] = useState<any[]>([]);
   const [briefFilter, setBriefFilter] = useState<'all' | 'unread' | 'read'>('all');
   const [selectedBriefModal, setSelectedBriefModal] = useState<any | null>(null);
+  const [isBriefFilterDropdownOpen, setIsBriefFilterDropdownOpen] = useState(false);
+  const [isProjectCategoryDropdownOpen, setIsProjectCategoryDropdownOpen] = useState(false);
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const [activeBriefMenuId, setActiveBriefMenuId] = useState<string | null>(null);
 
   // Load Submitted Client Briefs in Real-time from Firestore & localStorage
   useEffect(() => {
@@ -211,52 +221,146 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   const activeSections = editingAbout.sections || defaultAboutSections;
 
-  const phonesList =
-    editingAbout.phones && editingAbout.phones.length > 0
+  const phoneItemsList: PhoneItem[] = useMemo(() => {
+    if (editingAbout.phoneItems && editingAbout.phoneItems.length > 0) {
+      return editingAbout.phoneItems;
+    }
+    const rawPhones = editingAbout.phones && editingAbout.phones.length > 0
       ? editingAbout.phones
-      : [editingAbout.phone || ''];
+      : [editingAbout.phone || '0701 841 6894'];
+    return rawPhones.map((num, i) => ({
+      id: `ph-${i}`,
+      number: num,
+      iconUrl: '',
+    }));
+  }, [editingAbout.phoneItems, editingAbout.phones, editingAbout.phone]);
 
-  const emailsList =
-    editingAbout.emails && editingAbout.emails.length > 0
+  const emailItemsList: EmailItem[] = useMemo(() => {
+    if (editingAbout.emailItems && editingAbout.emailItems.length > 0) {
+      return editingAbout.emailItems;
+    }
+    const rawEmails = editingAbout.emails && editingAbout.emails.length > 0
       ? editingAbout.emails
-      : [editingAbout.email || ''];
+      : [editingAbout.email || 'vapourdense@gmail.com'];
+    return rawEmails.map((em, i) => ({
+      id: `em-${i}`,
+      email: em,
+      iconUrl: '',
+    }));
+  }, [editingAbout.emailItems, editingAbout.emails, editingAbout.email]);
 
-  const handlePhoneChange = (index: number, val: string) => {
-    const updated = [...phonesList];
-    updated[index] = val;
-    setEditingAbout(prev => ({ ...prev, phones: updated, phone: updated[0] || '' }));
+  const handleUpdatePhoneItem = (index: number, field: 'number' | 'iconUrl', value: string) => {
+    const updated = [...phoneItemsList];
+    updated[index] = { ...updated[index], [field]: value };
+    setEditingAbout(prev => ({
+      ...prev,
+      phoneItems: updated,
+      phones: updated.map(p => p.number),
+      phone: updated[0]?.number || '',
+    }));
   };
 
-  const handleAddPhone = () => {
-    if (phonesList.length < 5) {
-      const updated = [...phonesList, ''];
-      setEditingAbout(prev => ({ ...prev, phones: updated, phone: updated[0] || '' }));
+  const handleAddPhoneItem = () => {
+    if (phoneItemsList.length < 5) {
+      const updated: PhoneItem[] = [
+        ...phoneItemsList,
+        { id: `ph-${Date.now()}`, number: '', iconUrl: '' },
+      ];
+      setEditingAbout(prev => ({
+        ...prev,
+        phoneItems: updated,
+        phones: updated.map(p => p.number),
+        phone: updated[0]?.number || '',
+      }));
     }
   };
 
-  const handleRemovePhone = (index: number) => {
-    if (phonesList.length <= 1) return;
-    const updated = phonesList.filter((_, i) => i !== index);
-    setEditingAbout(prev => ({ ...prev, phones: updated, phone: updated[0] || '' }));
+  const handleRemovePhoneItem = (index: number) => {
+    if (phoneItemsList.length <= 1) return;
+    const updated = phoneItemsList.filter((_, i) => i !== index);
+    setEditingAbout(prev => ({
+      ...prev,
+      phoneItems: updated,
+      phones: updated.map(p => p.number),
+      phone: updated[0]?.number || '',
+    }));
   };
 
-  const handleEmailChange = (index: number, val: string) => {
-    const updated = [...emailsList];
-    updated[index] = val;
-    setEditingAbout(prev => ({ ...prev, emails: updated, email: updated[0] || '' }));
-  };
-
-  const handleAddEmail = () => {
-    if (emailsList.length < 5) {
-      const updated = [...emailsList, ''];
-      setEditingAbout(prev => ({ ...prev, emails: updated, email: updated[0] || '' }));
+  const handlePhoneIconUpload = async (index: number, file: File) => {
+    if (!file.type.startsWith('image/')) return;
+    try {
+      const compressed = await compressImage(file, 200, 200, 0.9);
+      handleUpdatePhoneItem(index, 'iconUrl', compressed);
+    } catch {
+      // fallback
     }
   };
 
-  const handleRemoveEmail = (index: number) => {
-    if (emailsList.length <= 1) return;
-    const updated = emailsList.filter((_, i) => i !== index);
-    setEditingAbout(prev => ({ ...prev, emails: updated, email: updated[0] || '' }));
+  const handleUpdateEmailItem = (index: number, field: 'email' | 'iconUrl', value: string) => {
+    const updated = [...emailItemsList];
+    updated[index] = { ...updated[index], [field]: value };
+    setEditingAbout(prev => ({
+      ...prev,
+      emailItems: updated,
+      emails: updated.map(e => e.email),
+      email: updated[0]?.email || '',
+    }));
+  };
+
+  const handleAddEmailItem = () => {
+    if (emailItemsList.length < 5) {
+      const updated: EmailItem[] = [
+        ...emailItemsList,
+        { id: `em-${Date.now()}`, email: '', iconUrl: '' },
+      ];
+      setEditingAbout(prev => ({
+        ...prev,
+        emailItems: updated,
+        emails: updated.map(e => e.email),
+        email: updated[0]?.email || '',
+      }));
+    }
+  };
+
+  const handleRemoveEmailItem = (index: number) => {
+    if (emailItemsList.length <= 1) return;
+    const updated = emailItemsList.filter((_, i) => i !== index);
+    setEditingAbout(prev => ({
+      ...prev,
+      emailItems: updated,
+      emails: updated.map(e => e.email),
+      email: updated[0]?.email || '',
+    }));
+  };
+
+  const handleEmailIconUpload = async (index: number, file: File) => {
+    if (!file.type.startsWith('image/')) return;
+    try {
+      const compressed = await compressImage(file, 200, 200, 0.9);
+      handleUpdateEmailItem(index, 'iconUrl', compressed);
+    } catch {
+      // fallback
+    }
+  };
+
+  const handleFounderImageUpload = async (file: File) => {
+    if (!file.type.startsWith('image/')) return;
+    try {
+      const compressed = await compressImage(file, 1200, 1200, 0.85);
+      setEditingAbout(prev => ({ ...prev, founderImage: compressed }));
+    } catch {
+      // fallback
+    }
+  };
+
+  const handleNavbarLogoUpload = async (file: File) => {
+    if (!file.type.startsWith('image/')) return;
+    try {
+      const compressed = await compressImage(file, 600, 600, 0.9);
+      setEditingAbout(prev => ({ ...prev, logoUrl: compressed }));
+    } catch {
+      // fallback
+    }
   };
 
   const socialLinksList: SocialLinkItem[] =
@@ -286,14 +390,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     setEditingAbout(prev => ({ ...prev, socialLinks: updated }));
   };
 
-  const handleSocialIconUpload = (index: number, file: File) => {
+  const handleSocialIconUpload = async (index: number, file: File) => {
     if (!file.type.startsWith('image/')) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const dataUrl = reader.result as string;
-      handleUpdateSocialLink(index, 'iconUrl', dataUrl);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const compressed = await compressImage(file, 200, 200, 0.9);
+      handleUpdateSocialLink(index, 'iconUrl', compressed);
+    } catch {
+      // fallback
+    }
   };
 
   const handleDeleteSocialLink = (index: number) => {
@@ -336,14 +440,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     setEditingAbout(prev => ({ ...prev, teamMembers: updated }));
   };
 
-  const handleMemberAvatarUpload = (index: number, file: File) => {
+  const handleMemberAvatarUpload = async (index: number, file: File) => {
     if (!file.type.startsWith('image/')) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const dataUrl = reader.result as string;
-      handleUpdateTeamMember(index, 'avatarUrl', dataUrl);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const compressed = await compressImage(file, 400, 400, 0.85);
+      handleUpdateTeamMember(index, 'avatarUrl', compressed);
+    } catch {
+      // fallback
+    }
   };
 
   const handleDeleteTeamMember = (index: number) => {
@@ -520,20 +624,21 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   return (
     <div
-      className="py-6 sm:py-14 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 bg-[#d9d9d9]"
+      className="w-full bg-[#d9d9d9] min-h-screen py-0 px-0 sm:py-8 sm:px-6 lg:px-8"
       style={{ backgroundColor: '#d9d9d9' }}
     >
-      {/* Top Banner & Tabs */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-300/80 mb-8">
-        <div>
-          <h1 className="font-phenomena-bold text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
+      <div className="w-full sm:max-w-7xl sm:mx-auto sm:space-y-8">
+        {/* Studio Dashboard Title: Non-sticky (scrolls naturally) */}
+        <div className="pt-6 pb-2 px-4 sm:px-0 w-full">
+          <h1 className="font-phenomena-bold text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight">
             Studio Dashboard
           </h1>
         </div>
 
-        {/* Dashboard Tab Switcher: Icons on mobile when inactive, full text when active */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar whitespace-nowrap p-1 bg-white rounded-2xl border border-slate-200/90 shadow-sm max-w-full">
+        {/* Sticky Tab Filter Bar (Only the filter bar is sticky, no background) */}
+        <div className="sticky top-0 sm:top-16 z-30 bg-transparent py-2.5 px-4 sm:px-0 w-full transition-all flex items-center justify-between gap-3 overflow-visible">
+        {/* Dashboard Tab Switcher: Icons on mobile when inactive, text on desktop */}
+        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar whitespace-nowrap p-1 bg-white rounded-2xl border border-slate-200/90 shadow-sm max-w-full">
             {/* Filter 1: Project */}
             <button
               type="button"
@@ -545,7 +650,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               }`}
               title="Projects"
             >
-              <FolderGit2 className="w-3.5 h-3.5 shrink-0" />
+              <FolderGit2 className="w-3.5 h-3.5 shrink-0 sm:hidden" />
               <span className={activeTab === 'projects' ? 'inline' : 'hidden sm:inline'}>
                 Project ({projects.length})
               </span>
@@ -562,7 +667,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               }`}
               title="About"
             >
-              <Building className="w-3.5 h-3.5 shrink-0" />
+              <Building className="w-3.5 h-3.5 shrink-0 sm:hidden" />
               <span className={activeTab === 'about' ? 'inline' : 'hidden sm:inline'}>
                 About
               </span>
@@ -579,7 +684,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               }`}
               title="Navigation on footer"
             >
-              <Layout className="w-3.5 h-3.5 shrink-0" />
+              <Layout className="w-3.5 h-3.5 shrink-0 sm:hidden" />
               <span className={activeTab === 'nav_footer' ? 'inline' : 'hidden sm:inline'}>
                 Navigation on footer
               </span>
@@ -596,7 +701,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               }`}
               title="Client Briefs"
             >
-              <FileText className="w-3.5 h-3.5 shrink-0" />
+              <FileText className="w-3.5 h-3.5 shrink-0 sm:hidden" />
               <span className={activeTab === 'briefs' ? 'inline' : 'hidden sm:inline'}>
                 Client Briefs ({submittedBriefs.length})
               </span>
@@ -610,66 +715,105 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   onResetDefaults();
                 }
               }}
-              className="px-3.5 py-2 text-xs text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+              className="p-2 sm:px-3 sm:py-2 text-xs text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
               title="Restore 4 initial projects"
             >
-              <span>Reset</span>
+              <RotateCcw className="w-3.5 h-3.5 shrink-0" />
             </button>
           )}
-        </div>
       </div>
 
       {/* =====================================================================
          FILTER 4: CLIENT BRIEFS & LEADS INBOX
          ===================================================================== */}
       {activeTab === 'briefs' ? (
-        <div className="space-y-6 max-w-6xl">
-          <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-8">
-            {/* Header & Filter Controls (Subheading removed as requested) */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5 mb-6">
+        <div className="w-full space-y-0 divide-y divide-black sm:space-y-8 sm:divide-y-0">
+          <div className="w-full bg-white rounded-none sm:rounded-3xl border-0 sm:border sm:border-slate-200/90 p-6 sm:p-10 lg:p-12 shadow-none sm:shadow-sm">
+            {/* Header & Sticky Filter */}
+            <div className="sticky top-12 sm:top-28 z-20 bg-white/95 backdrop-blur-md pb-4 pt-1 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100">
               <div>
                 <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-900">
                   Client Briefs &amp; Direct Leads
                 </h2>
               </div>
 
-              {/* Read / Unread / All Filter Pills */}
-              <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-2xl border border-slate-200/80">
+              {/* Desktop View: Horizontal Filter Tabs */}
+              <div className="hidden sm:flex items-center gap-1.5 p-1 bg-slate-100 rounded-2xl border border-slate-200/80">
+                {[
+                  { id: 'all', label: `All (${submittedBriefs.length})` },
+                  { id: 'unread', label: `Unread (${unreadBriefsCount})` },
+                  { id: 'read', label: `Read (${readBriefsCount})` },
+                ].map(tab => {
+                  const isSel = briefFilter === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => setBriefFilter(tab.id as any)}
+                      className={`px-3.5 py-1.5 text-xs font-semibold rounded-xl transition-all cursor-pointer ${
+                        isSel
+                          ? 'bg-slate-900 text-white shadow-xs font-bold'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Mobile View: Compressed Dropdown Filter (Sticky & Only active shows) */}
+              <div className="relative sm:hidden w-fit self-start">
                 <button
                   type="button"
-                  onClick={() => setBriefFilter('all')}
-                  className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
-                    briefFilter === 'all'
-                      ? 'bg-slate-900 text-white shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
+                  onClick={() => setIsBriefFilterDropdownOpen(prev => !prev)}
+                  className="px-3.5 py-2 text-xs font-bold rounded-xl bg-slate-900 text-white shadow-sm flex items-center gap-2 cursor-pointer transition-all shrink-0"
                 >
-                  All ({submittedBriefs.length})
+                  <span>
+                    {briefFilter === 'unread'
+                      ? `Unread (${unreadBriefsCount})`
+                      : briefFilter === 'read'
+                      ? `Read (${readBriefsCount})`
+                      : `All (${submittedBriefs.length})`}
+                  </span>
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isBriefFilterDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
 
-                <button
-                  type="button"
-                  onClick={() => setBriefFilter('unread')}
-                  className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
-                    briefFilter === 'unread'
-                      ? 'bg-amber-600 text-white shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  Unread ({unreadBriefsCount})
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setBriefFilter('read')}
-                  className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
-                    briefFilter === 'read'
-                      ? 'bg-emerald-700 text-white shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  Read ({readBriefsCount})
-                </button>
+                {isBriefFilterDropdownOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-40"
+                      onClick={() => setIsBriefFilterDropdownOpen(false)}
+                    />
+                    <div className="absolute left-0 top-full mt-1.5 w-44 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-xl p-1.5 z-50 space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
+                      {[
+                        { id: 'all', label: `All (${submittedBriefs.length})` },
+                        { id: 'unread', label: `Unread (${unreadBriefsCount})` },
+                        { id: 'read', label: `Read (${readBriefsCount})` },
+                      ].map(tab => {
+                        const isSel = briefFilter === tab.id;
+                        return (
+                          <button
+                            key={tab.id}
+                            type="button"
+                            onClick={() => {
+                              setBriefFilter(tab.id as any);
+                              setIsBriefFilterDropdownOpen(false);
+                            }}
+                            className={`w-full px-3 py-2 text-xs font-semibold rounded-xl flex items-center justify-between gap-2 transition-all cursor-pointer ${
+                              isSel
+                                ? 'bg-slate-900 text-white font-bold'
+                                : 'text-slate-700 hover:bg-slate-100'
+                            }`}
+                          >
+                            <span>{tab.label}</span>
+                            {isSel && <Check className="w-3.5 h-3.5 text-emerald-400" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
@@ -685,13 +829,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <div className="space-y-4">
                 {filteredBriefs.map((brief, idx) => {
                   const isUnread = brief.status === 'new' || brief.status === 'unread' || !brief.status;
+                  const briefKey = brief.referenceId || brief.id || String(idx);
+
                   return (
                     <div
-                      key={brief.referenceId || brief.id || idx}
+                      key={briefKey}
                       onClick={() => handleOpenDetails(brief)}
                       className={`p-5 sm:p-6 rounded-2xl space-y-4 transition-all shadow-2xs cursor-pointer border ${
                         isUnread
-                          ? 'bg-slate-50 border-amber-300/80 hover:border-amber-400 ring-1 ring-amber-400/20'
+                          ? 'bg-slate-50/80 border-slate-300 hover:border-slate-400'
                           : 'bg-white border-slate-200/80 hover:border-slate-300'
                       }`}
                     >
@@ -702,9 +848,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                               REF: {brief.referenceId || 'N/A'}
                             </span>
 
-                            {/* Read / Unread Tag */}
+                            {/* Read / Unread Tag (No yellow border) */}
                             {isUnread ? (
-                              <span className="text-[10px] font-bold text-amber-800 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                              <span className="text-[10px] font-bold text-slate-800 bg-slate-200/90 border border-slate-300 px-2 py-0.5 rounded-full uppercase tracking-wider">
                                 Unread
                               </span>
                             ) : (
@@ -726,14 +872,109 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                           </h3>
                         </div>
 
-                        {/* Action Buttons: Details right beside Download Brief PDF */}
-                        <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
+                        {/* Mobile Action Menu: Hamburger Menu (sm:hidden) */}
+                        <div className="relative self-end sm:hidden" onClick={e => e.stopPropagation()}>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setActiveBriefMenuId(prev => (prev === briefKey ? null : briefKey))
+                            }
+                            className="p-2 text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl transition-all cursor-pointer shadow-2xs flex items-center justify-center"
+                            title="Actions Menu"
+                          >
+                            <Menu className="w-4 h-4" />
+                          </button>
+
+                          {activeBriefMenuId === briefKey && (
+                            <>
+                              <div
+                                className="fixed inset-0 z-40"
+                                onClick={() => setActiveBriefMenuId(null)}
+                              />
+                              <div className="absolute right-0 top-full mt-1.5 w-48 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200 shadow-2xl p-1.5 z-50 space-y-1 animate-in fade-in zoom-in-95 duration-150">
+                                {/* 1. Details */}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setActiveBriefMenuId(null);
+                                    handleOpenDetails(brief);
+                                  }}
+                                  className="w-full px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-100 rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer text-left"
+                                >
+                                  <Eye className="w-4 h-4 text-sky-600 shrink-0" />
+                                  <span>Details</span>
+                                </button>
+
+                                {/* 2. Download PDF */}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setActiveBriefMenuId(null);
+                                    try {
+                                      const docPdf = generateBriefPdf(brief);
+                                      docPdf.save(`VDVC_Brief_${(brief.businessName || 'Client').replace(/[^a-zA-Z0-9]/g, '_')}.pdf`);
+                                    } catch (e) {
+                                      console.error('PDF error:', e);
+                                    }
+                                  }}
+                                  className="w-full px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-100 rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer text-left"
+                                >
+                                  <FileText className="w-4 h-4 text-slate-700 shrink-0" />
+                                  <span>Download PDF</span>
+                                </button>
+
+                                {/* 3. Check mark (Mark as Read / Unread) */}
+                                <button
+                                  type="button"
+                                  onClick={e => {
+                                    setActiveBriefMenuId(null);
+                                    handleToggleReadStatus(brief, e);
+                                  }}
+                                  className="w-full px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-100 rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer text-left"
+                                >
+                                  <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                                  <span>{isUnread ? 'Mark as Read' : 'Mark as Unread'}</span>
+                                </button>
+
+                                <div className="border-t border-slate-100 my-1" />
+
+                                {/* 4. Delete: Highlighted with a red icon and red border */}
+                                <button
+                                  type="button"
+                                  onClick={async e => {
+                                    setActiveBriefMenuId(null);
+                                    e.stopPropagation();
+                                    if (window.confirm(`Delete brief REF ${brief.referenceId || brief.id}?`)) {
+                                      try {
+                                        if (brief.referenceId) {
+                                          await deleteDoc(doc(db, 'briefs', brief.referenceId));
+                                        }
+                                      } catch {
+                                        // fallback local
+                                      }
+                                      setSubmittedBriefs(prev =>
+                                        prev.filter(b => (b.referenceId || b.id) !== briefKey)
+                                      );
+                                    }
+                                  }}
+                                  className="w-full px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 border border-rose-300 rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer text-left"
+                                >
+                                  <Trash2 className="w-4 h-4 text-rose-600 shrink-0" />
+                                  <span>Delete Brief</span>
+                                </button>
+                              </div>
+                            </>
+                          )}
+                        </div>
+
+                        {/* Desktop Action Buttons: Visible directly on desktop */}
+                        <div className="hidden sm:flex items-center gap-2 shrink-0" onClick={e => e.stopPropagation()}>
                           <button
                             type="button"
                             onClick={() => handleOpenDetails(brief)}
-                            className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                            className="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors flex items-center gap-1.5 cursor-pointer"
                           >
-                            <Eye className="w-3.5 h-3.5 text-[#38bdf8]" />
+                            <Eye className="w-3.5 h-3.5 text-sky-600" />
                             <span>Details</span>
                           </button>
 
@@ -747,26 +988,26 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                                 console.error('PDF error:', e);
                               }
                             }}
-                            className="px-3.5 py-2 bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                            className="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors flex items-center gap-1.5 cursor-pointer"
                           >
                             <FileText className="w-3.5 h-3.5 text-slate-700" />
-                            <span>Download Brief PDF</span>
+                            <span>Download PDF</span>
                           </button>
 
                           <button
                             type="button"
                             onClick={e => handleToggleReadStatus(brief, e)}
-                            className="p-2 text-slate-500 hover:text-slate-900 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl transition-all cursor-pointer"
+                            className="p-1.5 rounded-xl text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer"
                             title={isUnread ? 'Mark as Read' : 'Mark as Unread'}
                           >
-                            <Check className="w-3.5 h-3.5" />
+                            <Check className={`w-4 h-4 ${isUnread ? 'text-slate-400' : 'text-emerald-600'}`} />
                           </button>
 
                           <button
                             type="button"
                             onClick={async e => {
                               e.stopPropagation();
-                              if (window.confirm(`Delete brief REF ${brief.referenceId}?`)) {
+                              if (window.confirm(`Delete brief REF ${brief.referenceId || brief.id}?`)) {
                                 try {
                                   if (brief.referenceId) {
                                     await deleteDoc(doc(db, 'briefs', brief.referenceId));
@@ -774,13 +1015,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                                 } catch {
                                   // fallback local
                                 }
-                                setSubmittedBriefs(prev => prev.filter(b => b.referenceId !== brief.referenceId));
+                                setSubmittedBriefs(prev =>
+                                  prev.filter(b => (b.referenceId || b.id) !== briefKey)
+                                );
                               }
                             }}
-                            className="p-2 text-slate-400 hover:text-red-600 bg-white hover:bg-red-50 border border-slate-200 rounded-xl transition-all cursor-pointer"
-                            title="Delete Brief"
+                            className="p-1.5 rounded-xl text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-300 transition-all cursor-pointer"
+                            title="Delete brief"
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
+                            <Trash2 className="w-4 h-4 text-rose-600" />
                           </button>
                         </div>
                       </div>
@@ -816,11 +1059,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
         </div>
       ) : activeTab === 'nav_footer' ? (
-        <form onSubmit={handleSaveAbout} className="space-y-8 max-w-4xl">
-          <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-8 space-y-6">
+        <form onSubmit={handleSaveAbout} className="w-full space-y-0 divide-y divide-black sm:space-y-8 sm:divide-y-0">
+          <div className="w-full bg-white rounded-none sm:rounded-3xl border-0 sm:border sm:border-slate-200/90 p-6 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div>
-                <h2 className="font-display text-xl font-bold text-slate-900">
+                <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-900">
                   Navigation &amp; Footer Configuration
                 </h2>
                 <p className="text-xs text-slate-500 font-light mt-0.5">
@@ -848,15 +1091,44 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
-                  Navbar Logo URL
+                  Navbar Logo (Upload from Device or Drop Link)
                 </label>
-                <input
-                  type="text"
-                  value={editingAbout.logoUrl || ''}
-                  onChange={e => setEditingAbout(prev => ({ ...prev, logoUrl: e.target.value }))}
-                  placeholder="/VDVC 4 - Logo - NO-TEXT-TRANSPARENT-BG.png"
-                  className="w-full px-4 py-2.5 text-sm text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 font-mono-numbers text-xs"
-                />
+                <div className="flex items-center gap-2">
+                  <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0 overflow-hidden p-1">
+                    {editingAbout.logoUrl ? (
+                      <img
+                        src={editingAbout.logoUrl}
+                        alt="Logo Preview"
+                        className="w-full h-full object-contain"
+                      />
+                    ) : (
+                      <ImageIcon className="w-5 h-5 text-slate-400" />
+                    )}
+                  </div>
+                  <input
+                    type="text"
+                    value={editingAbout.logoUrl || ''}
+                    onChange={e => setEditingAbout(prev => ({ ...prev, logoUrl: e.target.value }))}
+                    placeholder="/VDVC 4 - Logo - NO-TEXT-TRANSPARENT-BG.png or image link"
+                    className="flex-1 px-4 py-2.5 text-xs text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 font-mono"
+                  />
+                  <label
+                    className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white cursor-pointer shrink-0 transition-colors shadow-sm flex items-center justify-center"
+                    title="Upload logo from device (auto-compressed)"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={e => {
+                        if (e.target.files && e.target.files[0]) {
+                          handleNavbarLogoUpload(e.target.files[0]);
+                        }
+                      }}
+                    />
+                  </label>
+                </div>
               </div>
             </div>
 
@@ -916,135 +1188,87 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         /* ===================================================================
            FILTER 2: ABOUT SECTION & ACCORDIONS (Dynamic Section Management)
            =================================================================== */
-        <form onSubmit={handleSaveAbout} className="space-y-8 max-w-5xl">
-          {/* Main Statement & Availability */}
-          <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-8 space-y-6">
+        <form onSubmit={handleSaveAbout} className="w-full space-y-0 divide-y divide-black sm:space-y-8 sm:divide-y-0">
+          {/* SECTION 1: ABOUT PICTURE */}
+          <div className="w-full bg-white rounded-none sm:rounded-3xl border-0 sm:border sm:border-slate-200/90 p-6 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div>
-                <h2 className="font-display text-xl font-bold text-slate-900">
-                  Global About Info &amp; Centralized Tagline
+                <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-900">
+                  About Picture
                 </h2>
-                <p className="text-xs text-slate-500 font-light mt-0.5">
-                  Main headline, availability status, and founder image.
-                </p>
               </div>
               <div className="p-2.5 rounded-2xl bg-slate-100 text-slate-800">
-                <Building className="w-5 h-5" />
+                <ImageIcon className="w-5 h-5" />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
-                  Centralized Tagline (Under Vapour Dense Virtual Cafe)
+            <div>
+              {/* Picture URL or Upload */}
+              <div className="space-y-2 max-w-xl">
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  Picture Link or Device Upload
                 </label>
-                <input
-                  type="text"
-                  value={editingAbout.footerTagline || editingAbout.bio || ''}
-                  onChange={e =>
-                    setEditingAbout(prev => ({
-                      ...prev,
-                      footerTagline: e.target.value,
-                      bio: e.target.value,
-                    }))
-                  }
-                  placeholder="a flexible system for your paper workloads"
-                  className="w-full px-4 py-2.5 text-sm text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
-                  Founder / Studio Image URL
-                </label>
-                <input
-                  type="text"
-                  value={editingAbout.founderImage || ''}
-                  onChange={e => setEditingAbout(prev => ({ ...prev, founderImage: e.target.value }))}
-                  placeholder="/VDVC 4 - Logo.png"
-                  className="w-full px-4 py-2.5 text-sm text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 font-mono-numbers text-xs"
-                />
-              </div>
-
-              {/* Portrait Image Size Slider */}
-              <div className="md:col-span-2 p-4 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <span className="text-xs font-bold text-slate-900 block">
-                    Portrait / Picture Display Size ({editingAbout.founderImageScale || 100}%)
-                  </span>
-                  <span className="text-[11px] text-slate-500">
-                    Control how large the picture card appears in the About section.
-                  </span>
-                </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0 overflow-hidden p-1">
+                    {editingAbout.founderImage ? (
+                      <img
+                        src={editingAbout.founderImage}
+                        alt="Preview"
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                    ) : (
+                      <ImageIcon className="w-5 h-5 text-slate-400" />
+                    )}
+                  </div>
                   <input
-                    type="range"
-                    min={50}
-                    max={150}
-                    step={5}
-                    value={editingAbout.founderImageScale || 100}
-                    onChange={e => setEditingAbout(prev => ({ ...prev, founderImageScale: Number(e.target.value) }))}
-                    className="w-32 sm:w-44 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-900"
+                    type="text"
+                    value={editingAbout.founderImage || ''}
+                    onChange={e => setEditingAbout(prev => ({ ...prev, founderImage: e.target.value }))}
+                    placeholder="/VDVC 4 - Logo.png or paste image link"
+                    className="flex-1 px-4 py-2.5 text-xs text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 font-mono"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setEditingAbout(prev => ({ ...prev, founderImageScale: 100 }))}
-                    className="px-2.5 py-1 text-xs font-semibold text-slate-700 bg-white border border-slate-200 hover:border-slate-400 rounded-lg transition-colors cursor-pointer"
+                  <label
+                    className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white cursor-pointer shrink-0 transition-colors shadow-sm flex items-center justify-center"
+                    title="Upload picture from device (auto-compressed)"
                   >
-                    Reset
-                  </button>
+                    <Plus className="w-4 h-4" />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={e => {
+                        if (e.target.files && e.target.files[0]) {
+                          handleFounderImageUpload(e.target.files[0]);
+                        }
+                      }}
+                    />
+                  </label>
                 </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-100">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
-                  Location Text
-                </label>
-                <input
-                  type="text"
-                  value={editingAbout.location || ''}
-                  onChange={e => setEditingAbout(prev => ({ ...prev, location: e.target.value }))}
-                  className="w-full px-4 py-2.5 text-sm text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800"
-                />
-              </div>
-
-              <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-2xl self-end">
-                <div>
-                  <span className="text-xs font-bold text-slate-900 block">
-                    Available for Select Projects
-                  </span>
-                  <span className="text-[11px] text-slate-500">
-                    Live availability flag
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setEditingAbout(prev => ({ ...prev, available: !prev.available }))}
-                  className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors cursor-pointer ${
-                    editingAbout.available ? 'bg-emerald-500' : 'bg-slate-300'
-                  }`}
-                >
-                  <motion.div
-                    className="bg-white w-4 h-4 rounded-full shadow-md"
-                    animate={{ x: editingAbout.available ? 24 : 0 }}
-                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                  />
-                </button>
-              </div>
+            {/* Save Changes Button for Section 1 */}
+            <div className="flex items-center justify-end pt-4 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={handleSaveAbout}
+                className="px-5 py-2.5 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-xl shadow-sm transition-all flex items-center gap-2 cursor-pointer"
+              >
+                {isSavedNotice ? <Check className="w-4 h-4 text-emerald-400" /> : <Save className="w-4 h-4" />}
+                <span>{isSavedNotice ? 'Saved Changes!' : 'Save Changes'}</span>
+              </button>
             </div>
           </div>
 
-          {/* Leadership & Team Members (Under Picture) */}
-          <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-8 space-y-6">
+          {/* SECTION 2: TEAM MEMBERS */}
+          <div className="w-full bg-white rounded-none sm:rounded-3xl border-0 sm:border sm:border-slate-200/90 p-6 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div>
-                <h2 className="font-display text-xl font-bold text-slate-900">
-                  Leadership &amp; Team Members
+                <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-900">
+                  Team Members
                 </h2>
                 <p className="text-xs text-slate-500 font-light mt-0.5">
-                  Appears directly under the portrait/picture in the About section.
+                  Team members and roles
                 </p>
               </div>
               <div className="p-2.5 rounded-2xl bg-slate-100 text-slate-800">
@@ -1052,11 +1276,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </div>
             </div>
 
-            {/* CEO / Founder Fields */}
+            {/* Founder / Lead Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
-                  CEO / Founder Name
+                  Founder Name
                 </label>
                 <input
                   type="text"
@@ -1075,7 +1299,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
-                  CEO Title / Position
+                  Title
                 </label>
                 <input
                   type="text"
@@ -1092,11 +1316,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                    Members of the Team ({teamMembersList.length})
+                    Team Members ({teamMembersList.length})
                   </label>
-                  <p className="text-[11px] text-slate-500">
-                    Add team members with their names, roles, and optional avatars.
-                  </p>
                 </div>
                 <button
                   type="button"
@@ -1104,7 +1325,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer self-start sm:self-auto"
                 >
                   <Plus className="w-3.5 h-3.5" />
-                  <span>Add Team Member</span>
+                  <span>Add Member</span>
                 </button>
               </div>
 
@@ -1172,7 +1393,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                           type="text"
                           value={member.name}
                           onChange={e => handleUpdateTeamMember(idx, 'name', e.target.value)}
-                          placeholder="Team member name"
+                          placeholder="Member name"
                           className="w-full px-3 py-1.5 text-xs text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 font-semibold"
                         />
                       </div>
@@ -1180,13 +1401,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       {/* Member Role */}
                       <div>
                         <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
-                          Role / Title
+                          Role
                         </label>
                         <input
                           type="text"
                           value={member.role}
                           onChange={e => handleUpdateTeamMember(idx, 'role', e.target.value)}
-                          placeholder="e.g. Lead Designer / DTP Specialist"
+                          placeholder="Role"
                           className="w-full px-3 py-1.5 text-xs text-slate-700 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800"
                         />
                       </div>
@@ -1194,7 +1415,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       {/* Avatar upload / URL */}
                       <div>
                         <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
-                          Avatar (Device Upload or URL)
+                          Avatar
                         </label>
                         <div className="flex items-center gap-2">
                           {member.avatarUrl ? (
@@ -1212,7 +1433,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             type="text"
                             value={member.avatarUrl || ''}
                             onChange={e => handleUpdateTeamMember(idx, 'avatarUrl', e.target.value)}
-                            placeholder="Avatar URL or upload ->"
+                            placeholder="Avatar URL or upload"
                             className="flex-1 px-2.5 py-1.5 text-xs text-slate-700 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 font-mono text-[11px]"
                           />
                           <label className="p-1.5 rounded-xl bg-white border border-slate-200 hover:border-slate-400 text-slate-700 cursor-pointer shrink-0 transition-colors" title="Upload avatar from device">
@@ -1236,112 +1457,240 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
                 {teamMembersList.length === 0 && (
                   <div className="p-4 rounded-xl border border-dashed border-slate-200 text-center text-xs text-slate-400">
-                    No team members added yet. Click &quot;Add Team Member&quot; to add one.
+                    No team members added yet. Click &quot;Add Member&quot; to add one.
                   </div>
                 )}
               </div>
             </div>
+
+            {/* Save Changes Button for Section 2 */}
+            <div className="flex items-center justify-end pt-4 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={handleSaveAbout}
+                className="px-5 py-2.5 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-xl shadow-sm transition-all flex items-center gap-2 cursor-pointer"
+              >
+                {isSavedNotice ? <Check className="w-4 h-4 text-emerald-400" /> : <Save className="w-4 h-4" />}
+                <span>{isSavedNotice ? 'Saved Changes!' : 'Save Changes'}</span>
+              </button>
+            </div>
           </div>
 
-          {/* Contact Channels */}
-          <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-8 space-y-6">
-            <h2 className="font-display text-xl font-bold text-slate-900 border-b border-slate-100 pb-4">
-              Contact &amp; Social Channels
-            </h2>
+          {/* SECTION 3: CONTACT & SOCIAL CHANNELS */}
+          <div className="w-full bg-white rounded-none sm:rounded-3xl border-0 sm:border sm:border-slate-200/90 p-6 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div>
+                <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-900">
+                  Contact &amp; Social Channels
+                </h2>
+                <p className="text-xs text-slate-500 font-light mt-0.5">
+                  Phone numbers, email addresses, and social media buttons
+                </p>
+              </div>
+              <div className="p-2.5 rounded-2xl bg-slate-100 text-slate-800">
+                <Phone className="w-5 h-5" />
+              </div>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
-                  Phone Numbers
-                </label>
-                <div className="space-y-2">
-                  {phonesList.map((phone, idx) => (
-                    <div key={idx} className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        value={phone || ''}
-                        onChange={e => handlePhoneChange(idx, e.target.value)}
-                        placeholder="0701 841 6894"
-                        className="flex-1 px-4 py-2 text-sm text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800"
-                      />
-                      {phonesList.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => handleRemovePhone(idx)}
-                          className="p-2 text-rose-500 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                  {phonesList.length < 5 && (
+              {/* Phone Numbers List */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                    Phone Numbers ({phoneItemsList.length})
+                  </label>
+                  {phoneItemsList.length < 5 && (
                     <button
                       type="button"
-                      onClick={handleAddPhone}
-                      className="text-xs font-semibold text-slate-700 hover:text-slate-900 flex items-center gap-1.5 cursor-pointer pt-1"
+                      onClick={handleAddPhoneItem}
+                      className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-900 text-white hover:bg-slate-800 flex items-center gap-1 cursor-pointer transition-colors"
                     >
-                      <PlusCircle className="w-3.5 h-3.5" />
-                      <span>Add another phone number</span>
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Add Phone</span>
                     </button>
                   )}
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
-                  Email Addresses
-                </label>
-                <div className="space-y-2">
-                  {emailsList.map((email, idx) => (
-                    <div key={idx} className="flex items-center gap-2">
-                      <input
-                        type="email"
-                        value={email || ''}
-                        onChange={e => handleEmailChange(idx, e.target.value)}
-                        placeholder="vapourdense@gmail.com"
-                        className="flex-1 px-4 py-2 text-sm text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800"
-                      />
-                      {emailsList.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveEmail(idx)}
-                          className="p-2 text-rose-500 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      )}
+                <div className="space-y-3">
+                  {phoneItemsList.map((ph, idx) => (
+                    <div key={ph.id || idx} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-2.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                          Phone #{idx + 1}
+                        </span>
+                        {phoneItemsList.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => handleRemovePhoneItem(idx)}
+                            className="p-1 text-rose-500 hover:bg-rose-50 rounded-lg cursor-pointer transition-colors"
+                            title="Remove phone"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                            Number
+                          </label>
+                          <input
+                            type="text"
+                            value={ph.number || ''}
+                            onChange={e => handleUpdatePhoneItem(idx, 'number', e.target.value)}
+                            placeholder="0701 841 6894"
+                            className="w-full px-3 py-1.5 text-xs text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 font-mono-numbers"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                            Icon (Upload or Link)
+                          </label>
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0 p-1">
+                              {ph.iconUrl ? (
+                                <img src={ph.iconUrl} alt="Phone icon" className="w-5 h-5 object-contain" />
+                              ) : (
+                                <Phone className="w-3.5 h-3.5 text-slate-500" />
+                              )}
+                            </div>
+                            <input
+                              type="text"
+                              value={ph.iconUrl || ''}
+                              onChange={e => handleUpdatePhoneItem(idx, 'iconUrl', e.target.value)}
+                              placeholder="Paste icon URL or upload"
+                              className="flex-1 min-w-0 px-2.5 py-1.5 text-xs text-slate-700 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 font-mono text-[11px]"
+                            />
+                            <label className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white cursor-pointer shrink-0 transition-colors shadow-2xs" title="Upload phone icon from device">
+                              <Plus className="w-3.5 h-3.5" />
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={e => {
+                                  if (e.target.files && e.target.files[0]) {
+                                    handlePhoneIconUpload(idx, e.target.files[0]);
+                                  }
+                                }}
+                              />
+                            </label>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   ))}
-                  {emailsList.length < 5 && (
+                </div>
+              </div>
+
+              {/* Email Addresses List */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                    Email Addresses ({emailItemsList.length})
+                  </label>
+                  {emailItemsList.length < 5 && (
                     <button
                       type="button"
-                      onClick={handleAddEmail}
-                      className="text-xs font-semibold text-slate-700 hover:text-slate-900 flex items-center gap-1.5 cursor-pointer pt-1"
+                      onClick={handleAddEmailItem}
+                      className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-900 text-white hover:bg-slate-800 flex items-center gap-1 cursor-pointer transition-colors"
                     >
-                      <PlusCircle className="w-3.5 h-3.5" />
-                      <span>Add another email address</span>
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Add Email</span>
                     </button>
                   )}
+                </div>
+
+                <div className="space-y-3">
+                  {emailItemsList.map((em, idx) => (
+                    <div key={em.id || idx} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-2.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                          Email #{idx + 1}
+                        </span>
+                        {emailItemsList.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveEmailItem(idx)}
+                            className="p-1 text-rose-500 hover:bg-rose-50 rounded-lg cursor-pointer transition-colors"
+                            title="Remove email"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                            Email
+                          </label>
+                          <input
+                            type="email"
+                            value={em.email || ''}
+                            onChange={e => handleUpdateEmailItem(idx, 'email', e.target.value)}
+                            placeholder="vapourdense@gmail.com"
+                            className="w-full px-3 py-1.5 text-xs text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                            Icon (Upload or Link)
+                          </label>
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0 p-1">
+                              {em.iconUrl ? (
+                                <img src={em.iconUrl} alt="Email icon" className="w-5 h-5 object-contain" />
+                              ) : (
+                                <Mail className="w-3.5 h-3.5 text-slate-500" />
+                              )}
+                            </div>
+                            <input
+                              type="text"
+                              value={em.iconUrl || ''}
+                              onChange={e => handleUpdateEmailItem(idx, 'iconUrl', e.target.value)}
+                              placeholder="Paste icon URL or upload"
+                              className="flex-1 min-w-0 px-2.5 py-1.5 text-xs text-slate-700 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 font-mono text-[11px]"
+                            />
+                            <label className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white cursor-pointer shrink-0 transition-colors shadow-2xs" title="Upload email icon from device">
+                              <Plus className="w-3.5 h-3.5" />
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={e => {
+                                  if (e.target.files && e.target.files[0]) {
+                                    handleEmailIconUpload(idx, e.target.files[0]);
+                                  }
+                                }}
+                              />
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
 
-            {/* Social Media Buttons Manager (Icon Upload, URL, Destination Link, Reorder, Delete) */}
+            {/* Social Media Buttons Manager */}
             <div className="pt-6 border-t border-slate-100 space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <div>
+                <div className="min-w-0">
                   <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
                     Social Media Buttons ({socialLinksList.length})
                   </label>
-                  <p className="text-[11px] text-slate-500">
-                    Upload icon straight from your device or provide an icon link, and set the destination link. The public website displays only the icons.
+                  <p className="text-[11px] text-slate-500 truncate">
+                    Upload icon from device or provide an icon link, and set the destination URL.
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={handleAddSocialLink}
-                  className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer self-start sm:self-auto"
+                  className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer self-start sm:self-auto shrink-0"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Add Social Icon</span>
@@ -1365,12 +1714,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   return (
                     <div
                       key={soc.id || idx}
-                      className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-3 transition-all"
+                      className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-3 transition-all min-w-0 overflow-hidden"
                     >
                       {/* Top bar: Index, Platform/Label & Actions */}
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="flex items-center gap-2 flex-1">
-                          <span className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 text-xs font-bold flex items-center justify-center font-mono">
+                      <div className="flex items-center justify-between gap-3 min-w-0">
+                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                          <span className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 text-xs font-bold flex items-center justify-center font-mono shrink-0">
                             {idx + 1}
                           </span>
                           <input
@@ -1378,12 +1727,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             value={soc.platform || ''}
                             onChange={e => handleUpdateSocialLink(idx, 'platform', e.target.value)}
                             placeholder="Platform / Label (e.g. Instagram, WhatsApp)"
-                            className="max-w-xs px-3 py-1.5 text-xs font-bold text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800"
+                            className="w-full sm:max-w-xs px-3 py-1.5 text-xs font-bold text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800"
                           />
                         </div>
 
                         {/* Controls */}
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1 shrink-0">
                           <button
                             type="button"
                             disabled={idx === 0}
@@ -1422,13 +1771,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       </div>
 
                       {/* Main Inputs: Icon & Destination Link */}
-                      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 pt-1">
+                      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 pt-1 min-w-0">
                         {/* Icon Field: Device Upload OR Icon Link */}
-                        <div className="lg:col-span-6 space-y-1.5">
+                        <div className="lg:col-span-6 space-y-1.5 min-w-0">
                           <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                             1. Icon (Upload from Device OR Link)
                           </label>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
                             {/* Live Icon Preview */}
                             <div className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center shrink-0 p-1">
                               {soc.iconUrl ? (
@@ -1448,13 +1797,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                               value={soc.iconUrl || ''}
                               onChange={e => handleUpdateSocialLink(idx, 'iconUrl', e.target.value)}
                               placeholder="Paste icon image URL or upload ->"
-                              className="flex-1 px-3 py-1.5 text-xs text-slate-700 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 font-mono text-[11px]"
+                              className="flex-1 min-w-0 px-3 py-1.5 text-xs text-slate-700 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 font-mono text-[11px]"
                             />
 
                             {/* Upload Icon Button */}
-                            <label className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 shadow-xs">
-                              <Upload className="w-3.5 h-3.5" />
-                              <span>Upload Icon</span>
+                            <label className="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 shadow-xs" title="Upload Icon from device">
+                              <Plus className="w-3.5 h-3.5" />
+                              <span className="hidden sm:inline">Upload</span>
                               <input
                                 type="file"
                                 accept="image/*"
@@ -1470,11 +1819,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         </div>
 
                         {/* Destination Link Input */}
-                        <div className="lg:col-span-6 space-y-1.5">
+                        <div className="lg:col-span-6 space-y-1.5 min-w-0">
                           <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                             2. Destination Link (Where icon clicks to)
                           </label>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
                             <div className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">
                               <LinkIcon className="w-4 h-4" />
                             </div>
@@ -1483,7 +1832,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                               value={soc.url || ''}
                               onChange={e => handleUpdateSocialLink(idx, 'url', e.target.value)}
                               placeholder="https://instagram.com/yourhandle or https://wa.me/..."
-                              className="flex-1 px-3 py-1.5 text-xs text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 font-mono text-[11px]"
+                              className="flex-1 min-w-0 px-3 py-1.5 text-xs text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 font-mono text-[11px]"
                             />
                           </div>
                         </div>
@@ -1499,10 +1848,22 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 )}
               </div>
             </div>
+
+            {/* Save Changes Button for Section 3 */}
+            <div className="flex items-center justify-end pt-4 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={handleSaveAbout}
+                className="px-5 py-2.5 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-xl shadow-sm transition-all flex items-center gap-2 cursor-pointer"
+              >
+                {isSavedNotice ? <Check className="w-4 h-4 text-emerald-400" /> : <Save className="w-4 h-4" />}
+                <span>{isSavedNotice ? 'Saved Changes!' : 'Save Changes'}</span>
+              </button>
+            </div>
           </div>
 
           {/* DYNAMIC ABOUT ACCORDION SECTIONS (Full Reordering, Table Drawer with Colors, Software, Lists) */}
-          <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-8 space-y-6">
+          <div className="w-full bg-white rounded-none sm:rounded-3xl border-0 sm:border sm:border-slate-200/90 p-6 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
               <div>
                 <h2 className="font-display text-xl font-bold text-slate-900">
@@ -1644,14 +2005,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                           <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                             Organizational Theme / Content Type
                           </label>
-                          <div className="grid grid-cols-2 sm:grid-cols-6 gap-2">
+                          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                             {[
                               { id: 'text', label: 'Rich Text', icon: FileText },
                               { id: 'table', label: 'Table Drawer', icon: TableIcon },
                               { id: 'software', label: 'Software Suite', icon: Cpu },
                               { id: 'list', label: 'Numbered List', icon: List },
                               { id: 'grid', label: '2-Col Grid', icon: Grid },
-                              { id: 'contact', label: 'Contact Card', icon: Phone },
                             ].map(theme => {
                               const Icon = theme.icon;
                               const isSel = (sec.type || 'text') === theme.id;
@@ -2040,13 +2400,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
 
             {/* Save All Changes Action Bar */}
+            {/* Save Changes Button for Section 4 */}
             <div className="flex items-center justify-end pt-4 border-t border-slate-100">
               <button
-                type="submit"
-                className="px-6 py-3 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer"
+                type="button"
+                onClick={handleSaveAbout}
+                className="px-5 py-2.5 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-xl shadow-sm transition-all flex items-center gap-2 cursor-pointer"
               >
-                {isSavedNotice ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}
-                <span>{isSavedNotice ? 'Saved to Firestore!' : 'Save All Changes'}</span>
+                {isSavedNotice ? <Check className="w-4 h-4 text-emerald-400" /> : <Save className="w-4 h-4" />}
+                <span>{isSavedNotice ? 'Saved Changes!' : 'Save Changes'}</span>
               </button>
             </div>
           </div>
@@ -2056,76 +2418,175 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
            FILTER 1: PROJECT (Projects table with big delete buttons)
            =================================================================== */
         <>
-          {/* Grid Controls: Filter bar, Search bar, and "+ Add New Project" button */}
-          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 mb-6">
-            <div className="flex items-center gap-1.5 p-1 bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-x-auto scrollbar-none">
-              {CATEGORIES.map(category => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-3.5 py-1.5 text-xs font-medium rounded-xl whitespace-nowrap transition-all cursor-pointer ${
-                    selectedCategory === category
-                      ? 'bg-slate-900 text-white font-semibold shadow-sm'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-transparent'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-
-            <div className="flex items-center gap-3">
-              <div className="relative w-full sm:w-64">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                <input
-                  type="text"
-                  value={searchQuery || ''}
-                  onChange={e => setSearchQuery(e.target.value)}
-                  placeholder="Search projects..."
-                  className="w-full pl-9 pr-4 py-2 text-xs text-slate-800 placeholder-slate-400 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 transition-all shadow-xs"
-                />
+          {/* Single Unified Container for Filter, Drag & Drop, and Projects Table/Cards */}
+          <div className="w-full bg-white rounded-none sm:rounded-3xl border-0 sm:border sm:border-slate-200/90 p-4 sm:p-8 lg:p-10 shadow-none sm:shadow-sm space-y-6">
+            <div className="sticky top-12 sm:top-24 z-20 bg-white/95 backdrop-blur-md pb-4 pt-1 flex flex-row items-center justify-between gap-2 sm:gap-4 border-b border-slate-100">
+              {/* Desktop View: Horizontal Category Tabs */}
+              <div className="hidden sm:flex items-center gap-1.5 p-1 bg-slate-100 rounded-2xl border border-slate-200/80">
+                {CATEGORIES.map(category => {
+                  const isSel = selectedCategory === category;
+                  const getCatIcon = () => {
+                    if (category === 'Graphic Design') return <Palette className="w-3.5 h-3.5" />;
+                    if (category === 'Web Design') return <Globe className="w-3.5 h-3.5" />;
+                    return <FolderGit2 className="w-3.5 h-3.5" />;
+                  };
+                  return (
+                    <button
+                      key={category}
+                      type="button"
+                      onClick={() => setSelectedCategory(category)}
+                      className={`px-3.5 py-1.5 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer ${
+                        isSel
+                          ? 'bg-slate-900 text-white shadow-xs font-bold'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      {getCatIcon()}
+                      <span>{category === 'All' ? 'All Projects' : category}</span>
+                    </button>
+                  );
+                })}
               </div>
 
-              <button
-                onClick={onAddNew}
-                className="px-4 py-2 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Add Project</span>
-              </button>
-            </div>
-          </div>
+              {/* Mobile View: Compressed Category Dropdown (Sticky & Only active filter shows) */}
+              <div className="relative sm:hidden w-fit">
+                <button
+                  type="button"
+                  onClick={() => setIsProjectCategoryDropdownOpen(prev => !prev)}
+                  className="px-3.5 py-2 text-xs font-bold rounded-xl bg-slate-900 text-white shadow-sm flex items-center gap-2 cursor-pointer transition-all shrink-0"
+                >
+                  {selectedCategory === 'Graphic Design' ? (
+                    <Palette className="w-3.5 h-3.5" />
+                  ) : selectedCategory === 'Web Design' ? (
+                    <Globe className="w-3.5 h-3.5" />
+                  ) : (
+                    <FolderGit2 className="w-3.5 h-3.5" />
+                  )}
+                  <span>{selectedCategory === 'All' ? 'All Projects' : selectedCategory}</span>
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isProjectCategoryDropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
 
-          {/* Drag & Drop Visual Hint */}
-          <div
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            className={`mb-8 p-6 border-2 border-dashed rounded-3xl text-center transition-all cursor-pointer ${
-              isDragOver
-                ? 'border-slate-800 bg-slate-200/80 shadow-inner'
-                : 'border-slate-300 bg-white/70 hover:bg-white hover:border-slate-400'
-            }`}
-          >
-            <div className="flex items-center justify-center gap-3 text-slate-600 text-xs">
-              <UploadCloud className="w-5 h-5 text-slate-800" />
-              <span>Drag &amp; drop an image here anytime to create a new project in Firestore</span>
-            </div>
-          </div>
+                {isProjectCategoryDropdownOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-40"
+                      onClick={() => setIsProjectCategoryDropdownOpen(false)}
+                    />
+                    <div className="absolute left-0 top-full mt-1.5 w-48 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-xl p-1.5 z-50 space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
+                      {CATEGORIES.map(category => {
+                        const isSel = selectedCategory === category;
+                        const getCatIcon = () => {
+                          if (category === 'Graphic Design') return <Palette className="w-3.5 h-3.5" />;
+                          if (category === 'Web Design') return <Globe className="w-3.5 h-3.5" />;
+                          return <FolderGit2 className="w-3.5 h-3.5" />;
+                        };
+                        return (
+                          <button
+                            key={category}
+                            type="button"
+                            onClick={() => {
+                              setSelectedCategory(category);
+                              setIsProjectCategoryDropdownOpen(false);
+                            }}
+                            className={`w-full px-3 py-2 text-xs font-semibold rounded-xl flex items-center justify-between gap-2 transition-all cursor-pointer ${
+                              isSel
+                                ? 'bg-slate-900 text-white font-bold'
+                                : 'text-slate-700 hover:bg-slate-100'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              {getCatIcon()}
+                              <span>{category === 'All' ? 'All Projects' : category}</span>
+                            </div>
+                            {isSel && <Check className="w-3.5 h-3.5 text-emerald-400" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
+              </div>
 
-          {/* Projects Table & Mobile Cards */}
-          <div className="bg-white sm:rounded-3xl border-y sm:border border-slate-200/90 shadow-sm overflow-hidden -mx-3 sm:mx-0">
-            {/* Mobile View Cards (block sm:hidden) */}
-            <div className="block sm:hidden divide-y divide-slate-100">
-              {filteredProjects.length === 0 ? (
-                <div className="py-12 text-center text-slate-400 font-light">
-                  No projects found.
-                </div>
-              ) : (
-                filteredProjects.map(proj => {
-                  const heroImg = proj.images && proj.images.length > 0 ? proj.images[0] : null;
-                  return (
-                    <div key={proj.id} className="p-4 space-y-3 bg-white">
+              {/* Right Aligned Controls: Search Icon (expandable) and Add Project Button (icon only) */}
+              <div className="flex items-center gap-2 shrink-0 ml-auto">
+                {isSearchExpanded || searchQuery ? (
+                  <div className="relative flex items-center animate-in fade-in zoom-in-95 duration-150">
+                    <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <input
+                      autoFocus
+                      type="text"
+                      value={searchQuery || ''}
+                      onChange={e => setSearchQuery(e.target.value)}
+                      placeholder="Search..."
+                      className="w-32 sm:w-56 pl-8 pr-7 py-1.5 sm:py-2 text-xs text-slate-800 placeholder-slate-400 bg-white border border-slate-300 rounded-xl focus:outline-none focus:border-slate-800 transition-all shadow-xs"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchQuery('');
+                        setIsSearchExpanded(false);
+                      }}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 cursor-pointer"
+                      title="Close search"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setIsSearchExpanded(true)}
+                    className="p-2 sm:p-2.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-900 shadow-2xs flex items-center justify-center transition-all cursor-pointer"
+                    title="Search projects"
+                  >
+                    <Search className="w-4 h-4" />
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={onAddNew}
+                  className="p-2 sm:p-2.5 text-white bg-slate-900 hover:bg-slate-800 rounded-xl shadow-md transition-all flex items-center justify-center cursor-pointer shrink-0"
+                  title="Add Project"
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Drag & Drop Visual Hint Section */}
+            <div
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={`p-5 sm:p-6 border-2 border-dashed rounded-2xl text-center transition-all cursor-pointer ${
+                isDragOver
+                  ? 'border-slate-800 bg-slate-200/80 shadow-inner'
+                  : 'border-slate-300 bg-slate-50/70 hover:bg-white hover:border-slate-400'
+              }`}
+            >
+              <div className="flex items-center justify-center gap-3 text-slate-600 text-xs">
+                <UploadCloud className="w-5 h-5 text-slate-800" />
+                <span>Drag &amp; drop an image here anytime to create a new project in Firestore</span>
+              </div>
+            </div>
+
+            {/* Projects Table & Mobile Cards Section */}
+            <div className="overflow-x-auto pt-1">
+              {/* Mobile View Cards (block sm:hidden) with subtle border box around each item */}
+              <div className="block sm:hidden space-y-3">
+                {filteredProjects.length === 0 ? (
+                  <div className="py-12 text-center text-slate-400 font-light">
+                    No projects found.
+                  </div>
+                ) : (
+                  filteredProjects.map(proj => {
+                    const heroImg = proj.images && proj.images.length > 0 ? proj.images[0] : null;
+                    return (
+                      <div
+                        key={proj.id}
+                        className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-2xs space-y-3"
+                      >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3">
                           <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0">
@@ -2317,8 +2778,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </table>
             </div>
           </div>
+        </div>
 
-          {/* Delete Confirmation Modal */}
+        {/* Delete Confirmation Modal */}
           <AnimatePresence>
             {deleteConfirmId && (
               <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -2367,6 +2829,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </AnimatePresence>
         </>
       )}
+      </div>
 
       {/* Full-Screen Brief Details Modal (Portaled to document.body above navbar & footer) */}
       {typeof document !== 'undefined' &&
@@ -2403,7 +2866,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         Read
                       </span>
                     ) : (
-                      <span className="text-[10px] font-bold text-amber-300 bg-amber-950/80 border border-amber-700/60 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                      <span className="text-[10px] font-bold text-slate-200 bg-slate-800 border border-slate-700 px-2 py-0.5 rounded-full uppercase tracking-wider">
                         Unread
                       </span>
                     )}

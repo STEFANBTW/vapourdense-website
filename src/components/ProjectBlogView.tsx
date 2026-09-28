@@ -63,6 +63,9 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
   // Active client remark type
   const [activeRemarkType, setActiveRemarkType] = useState<ClientRemarkType>('voice');
 
+  // Mobile active pane switcher ('gallery_process' | 'other_details')
+  const [mobileActivePane, setMobileActivePane] = useState<'gallery_process' | 'other_details'>('gallery_process');
+
   // Voice note audio player state
   const [isPlayingVoice, setIsPlayingVoice] = useState(false);
   const [voicePlaybackProgress, setVoicePlaybackProgress] = useState(0);
@@ -108,6 +111,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
       setVoicePlaybackProgress(0);
       setExpandedImage(null);
       setIsAddingProcess(false);
+      setMobileActivePane('gallery_process');
     }
   }, [initialProject]);
 
@@ -687,30 +691,38 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
       </header>
 
       {/* Main Full-Screen Layout */}
-      <div className="flex-1 w-full flex flex-row overflow-hidden min-h-0">
+      <div className="flex-1 w-full flex flex-row overflow-hidden min-h-0 py-0">
         {/* SLIM LEFT COLUMN: PREVIOUS ARROW ONLY */}
         <aside
           aria-label="Previous project navigation"
-          className="w-8 sm:w-10 md:w-12 shrink-0 flex items-center justify-center h-full z-20 bg-transparent border-0"
+          className="w-8 sm:w-10 md:w-12 lg:w-16 shrink-0 flex items-center justify-center h-full z-20 bg-transparent border-0"
         >
           <button
             disabled={!prevProject}
             onClick={() => prevProject && onNavigateProject(prevProject)}
-            className={`p-2 transition-transform cursor-pointer bg-transparent border-0 ${
+            className={`p-2 transition-colors duration-[250ms] ease-out cursor-pointer bg-transparent border-0 ${
               prevProject
-                ? 'text-white/60 hover:text-white hover:scale-125'
+                ? 'text-white/40 hover:text-white/90'
                 : 'text-white/10 cursor-not-allowed'
             }`}
             title={prevProject ? `Previous: ${prevProject.title}` : 'No previous project'}
           >
-            <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7" />
+            <ChevronLeft
+              className="w-6 h-6 sm:w-7 sm:h-7"
+              strokeWidth={1.96}
+              style={{ transform: 'scaleX(0.98)' }}
+            />
           </button>
         </aside>
 
-        {/* MAIN SECTION: 70 / 30 SPLIT DIVIDED ONLY BY A THIN LINE */}
-        <div className="flex-1 flex flex-col lg:flex-row min-w-0 h-full overflow-hidden">
-          {/* LEFT PANEL (70%): GALLERY & PROCESS */}
-          <div className="w-full lg:w-[70%] lg:border-r border-white/10 p-5 sm:p-7 md:p-8 flex flex-col space-y-8 sm:space-y-10 min-w-0 h-full overflow-y-auto no-scrollbar">
+        {/* MAIN SECTION: IN ONE BOX THAT SPANS 80vw AND CLAMPS AT 2000px (Borderless, 100% height, touching header) */}
+        <div className="flex-1 flex flex-col lg:flex-row min-w-0 h-full overflow-hidden w-full lg:w-[80vw] lg:max-w-[2000px] lg:mx-auto lg:rounded-none lg:border-0 bg-transparent lg:bg-transparent">
+          {/* LEFT PANEL: GALLERY & PROCESS */}
+          <div
+            className={`w-full lg:w-[70%] lg:border-r border-white/10 p-5 sm:p-7 md:p-8 flex-col space-y-8 sm:space-y-10 min-w-0 h-full overflow-y-auto no-scrollbar ${
+              mobileActivePane === 'gallery_process' ? 'flex' : 'hidden lg:flex'
+            }`}
+          >
             
             {/* SECTION 1: GALLERY (200% base size) */}
             <section aria-labelledby="gallery-title" className="min-w-0">
@@ -1256,8 +1268,12 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
             </section>
           </div>
 
-          {/* RIGHT PANEL (30%): PROJECT DETAILS & METADATA */}
-          <div className="w-full lg:w-[30%] p-5 sm:p-7 md:p-8 flex flex-col space-y-7 sm:space-y-8 min-w-0 h-full overflow-y-auto no-scrollbar">
+          {/* RIGHT PANEL (30%): PROJECT DETAILS & METADATA ("Other Details") */}
+          <div
+            className={`w-full lg:w-[30%] p-5 sm:p-7 md:p-8 flex-col space-y-7 sm:space-y-8 min-w-0 h-full overflow-y-auto no-scrollbar ${
+              mobileActivePane === 'other_details' ? 'flex' : 'hidden lg:flex'
+            }`}
+          >
             
             {/* 1. Name of the project */}
             <div>
@@ -1290,10 +1306,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   value={currentProject.monthYear || (currentProject.year ? `${currentProject.year}` : '')}
                   onChange={e => updateProjectLocal({ monthYear: e.target.value })}
                   placeholder="e.g. October 2026"
-                  className="w-full bg-white/5 px-3 py-2 text-[#38bdf8] font-vapour text-base sm:text-lg lg:text-xl font-light focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
+                  className="w-full bg-white/5 px-3 py-2 text-[#38bdf8] font-vapour text-base sm:text-lg lg:text-sm font-light focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
                 />
               ) : (
-                <div className="text-base sm:text-lg lg:text-xl text-[#38bdf8] font-vapour font-light">
+                <div className="text-base sm:text-lg lg:text-sm text-[#38bdf8] font-vapour font-light">
                   {currentProject.monthYear || `${currentProject.year}`}
                 </div>
               )}
@@ -1382,10 +1398,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                         <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />
                       </div>
                       <div>
-                        <span className="text-sm sm:text-base font-vapour text-white block">
+                        <span className="text-sm sm:text-base lg:text-xs font-vapour text-white block">
                           Client Audio Memo
                         </span>
-                        <span className="text-xs sm:text-sm text-white/50 block font-mono-numbers">
+                        <span className="text-xs sm:text-sm lg:text-[11px] text-white/50 block font-mono-numbers">
                           {remark.voiceDate || currentProject.monthYear || currentProject.year}
                         </span>
                       </div>
@@ -1396,11 +1412,11 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                         type="text"
                         value={remark.voiceDuration || '0:42'}
                         onChange={e => updateProjectLocal({ clientRemark: { ...remark, voiceDuration: e.target.value } })}
-                        className="w-16 text-right bg-white/5 text-[#38bdf8] font-mono-numbers text-xs sm:text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-[#38bdf8] rounded px-1.5 py-0.5 border border-white/10"
+                        className="w-16 text-right bg-white/5 text-[#38bdf8] font-mono-numbers text-xs sm:text-sm lg:text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#38bdf8] rounded px-1.5 py-0.5 border border-white/10"
                         title="Edit duration"
                       />
                     ) : (
-                      <span className="text-xs sm:text-sm font-mono-numbers text-[#38bdf8] font-semibold">
+                      <span className="text-xs sm:text-sm lg:text-xs font-mono-numbers text-[#38bdf8] font-semibold">
                         {remark.voiceDuration || '0:42'}
                       </span>
                     )}
@@ -1431,7 +1447,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   <div className="flex items-center justify-between pt-1">
                     <button
                       onClick={toggleVoicePlayback}
-                      className="px-4 py-2 rounded-xl bg-[#003663] hover:bg-[#002647] text-white text-xs sm:text-sm font-semibold flex items-center gap-2 transition-all cursor-pointer shadow-md border border-[#38bdf8]/40"
+                      className="px-4 py-2 rounded-xl bg-[#003663] hover:bg-[#002647] text-white text-xs sm:text-sm lg:text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer shadow-md border border-[#38bdf8]/40"
                     >
                       {isPlayingVoice ? (
                         <>
@@ -1468,15 +1484,15 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                       value={remark.comment || ''}
                       onChange={e => updateProjectLocal({ clientRemark: { ...remark, comment: e.target.value } })}
                       placeholder="Write the client's quote..."
-                      className="w-full bg-white/5 text-white italic font-unisans-regular text-base sm:text-lg lg:text-[19px] leading-relaxed focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl p-3 border border-white/10 resize-y"
+                      className="w-full bg-white/5 text-white italic font-unisans-regular text-base sm:text-lg lg:text-xs leading-relaxed lg:leading-normal focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl p-3 border border-white/10 resize-y"
                     />
                   ) : (
-                    <p className="text-base sm:text-lg lg:text-[19px] text-white/95 italic font-unisans-regular leading-relaxed">
+                    <p className="text-base sm:text-lg lg:text-xs text-white/95 italic font-unisans-regular leading-relaxed lg:leading-normal">
                       {remark.comment || `“Working with VDVC completely transformed our digital positioning.”`}
                     </p>
                   )}
                   <div className="flex items-center justify-between pt-1">
-                    <span className="text-xs sm:text-sm text-[#38bdf8] font-vapour">
+                    <span className="text-xs sm:text-sm lg:text-xs text-[#38bdf8] font-vapour">
                       Author: {remark.clientAuthor || currentProject.client}
                     </span>
                     {isEditable && (
@@ -1587,10 +1603,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   value={currentProject.clientDescription || ''}
                   onChange={e => updateProjectLocal({ clientDescription: e.target.value })}
                   placeholder="Description of the client organization..."
-                  className="w-full bg-white/5 p-3 text-white/90 font-unisans-regular text-base sm:text-lg lg:text-[19px] font-normal leading-relaxed focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10 resize-y"
+                  className="w-full bg-white/5 p-3 text-white/90 font-unisans-regular text-base sm:text-lg lg:text-xs font-normal leading-relaxed lg:leading-normal focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10 resize-y"
                 />
               ) : (
-                <p className="font-unisans-regular text-base sm:text-lg lg:text-[19px] text-white/85 font-normal leading-relaxed">
+                <p className="font-unisans-regular text-base sm:text-lg lg:text-xs text-white/85 font-normal leading-relaxed lg:leading-normal">
                   {currentProject.clientDescription ||
                     `${currentProject.client} is a premier international partner collaborating on bespoke identity and interactive digital experiences.`}
                 </p>
@@ -1608,10 +1624,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   value={currentProject.shortDescription || currentProject.description || ''}
                   onChange={e => updateProjectLocal({ shortDescription: e.target.value, description: e.target.value })}
                   placeholder="Short description of the project..."
-                  className="w-full bg-white/5 p-3 text-white/90 font-unisans-regular text-base sm:text-lg lg:text-[19px] font-normal leading-relaxed focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10 resize-y"
+                  className="w-full bg-white/5 p-3 text-white/90 font-unisans-regular text-base sm:text-lg lg:text-xs font-normal leading-relaxed lg:leading-normal focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10 resize-y"
                 />
               ) : (
-                <p className="font-unisans-regular text-base sm:text-lg lg:text-[19px] text-white/85 font-normal leading-relaxed">
+                <p className="font-unisans-regular text-base sm:text-lg lg:text-xs text-white/85 font-normal leading-relaxed lg:leading-normal">
                   {currentProject.shortDescription || currentProject.description}
                 </p>
               )}
@@ -1628,10 +1644,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   value={currentProject.price || ''}
                   onChange={e => updateProjectLocal({ price: e.target.value })}
                   placeholder="e.g. $24,500 USD"
-                  className="w-full bg-white/5 px-3 py-2 text-[#38bdf8] font-vapour text-2xl sm:text-3xl font-light focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
+                  className="w-full bg-white/5 px-3 py-2 text-[#38bdf8] font-vapour text-2xl sm:text-3xl lg:text-2xl font-light focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
                 />
               ) : (
-                <span className="font-vapour text-2xl sm:text-3xl lg:text-4xl font-light text-[#38bdf8] block">
+                <span className="font-vapour text-2xl sm:text-3xl lg:text-2xl font-light text-[#38bdf8] block">
                   {currentProject.price || 'Undisclosed'}
                 </span>
               )}
@@ -1648,10 +1664,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   value={currentProject.duration || ''}
                   onChange={e => updateProjectLocal({ duration: e.target.value })}
                   placeholder="e.g. 6 Weeks"
-                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl font-light focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
+                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-2xl font-light focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
                 />
               ) : (
-                <span className="font-vapour text-2xl sm:text-3xl lg:text-4xl font-light text-white block">
+                <span className="font-vapour text-2xl sm:text-3xl lg:text-2xl font-light text-white block">
                   {currentProject.duration || '6 Weeks'}
                 </span>
               )}
@@ -1668,10 +1684,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   value={currentProject.threeWordDesc || currentProject.descriptors || ''}
                   onChange={e => updateProjectLocal({ threeWordDesc: e.target.value, descriptors: e.target.value })}
                   placeholder="e.g. Rational Swiss Architecture"
-                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-xl sm:text-2xl font-light tracking-wide focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
+                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-xl sm:text-2xl lg:text-base font-light tracking-wide focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
                 />
               ) : (
-                <span className="font-vapour text-xl sm:text-2xl lg:text-3xl font-light text-white tracking-wide block">
+                <span className="font-vapour text-xl sm:text-2xl lg:text-base font-light text-white tracking-wide block">
                   {currentProject.threeWordDesc || currentProject.descriptors || 'Minimal Swiss Direction'}
                 </span>
               )}
@@ -1690,7 +1706,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                         key={cat}
                         type="button"
                         onClick={() => updateProjectLocal({ category: cat })}
-                        className={`px-3.5 py-1.5 text-sm rounded-xl font-unisans-regular transition-all cursor-pointer border ${
+                        className={`px-3.5 py-1.5 text-sm lg:text-xs rounded-xl font-unisans-regular transition-all cursor-pointer border ${
                           currentProject.category === cat
                             ? 'bg-[#003663] text-white border-[#38bdf8]/80 shadow-md shadow-[#003663]/30 ring-2 ring-[#38bdf8]/40'
                             : 'bg-white/5 text-white/70 border-white/15 hover:bg-white/15 hover:text-white'
@@ -1702,11 +1718,11 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   </div>
                 ) : (
                   <div className="flex flex-wrap items-center gap-2.5">
-                    <span className="inline-block px-3.5 py-1.5 rounded-xl text-sm sm:text-base font-unisans-regular font-normal bg-white/5 text-white/90 border border-white/10">
+                    <span className="inline-block px-3.5 py-1.5 lg:px-3 lg:py-1 rounded-xl text-sm sm:text-base lg:text-xs font-unisans-regular font-normal bg-white/5 text-white/90 border border-white/10">
                       {currentProject.category}
                     </span>
                     {currentProject.isRealLife && (
-                      <span className="inline-block px-3.5 py-1.5 rounded-xl text-sm sm:text-base font-unisans-regular font-normal bg-white/5 text-white/90 border border-white/10">
+                      <span className="inline-block px-3.5 py-1.5 lg:px-3 lg:py-1 rounded-xl text-sm sm:text-base lg:text-xs font-unisans-regular font-normal bg-white/5 text-white/90 border border-white/10">
                         Real-Life Project
                       </span>
                     )}
@@ -1725,7 +1741,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                       : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10'
                   }`}
                 >
-                  <span className="text-sm font-unisans-regular font-normal text-white">Mark as &apos;Real-Life Project&apos;</span>
+                  <span className="text-sm lg:text-xs font-unisans-regular font-normal text-white">Mark as &apos;Real-Life Project&apos;</span>
                   <div className={`w-5 h-5 rounded-lg flex items-center justify-center border transition-all ${
                     currentProject.isRealLife ? 'bg-[#38bdf8] border-[#38bdf8] text-[#003663]' : 'border-white/30 bg-transparent'
                   }`}>
@@ -1745,7 +1761,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   {(currentProject.deliverables || []).map((deliv, dIdx) => (
                     <span
                       key={dIdx}
-                      className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-sm sm:text-base font-unisans-regular font-normal bg-white/5 text-white/90 border border-white/10 group"
+                      className="inline-flex items-center gap-2 px-3.5 py-1.5 lg:px-3 lg:py-1 rounded-xl text-sm sm:text-base lg:text-xs font-unisans-regular font-normal bg-white/5 text-white/90 border border-white/10 group"
                     >
                       <span>{deliv}</span>
                       {isEditable && (
@@ -1784,7 +1800,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           }
                         }
                       }}
-                      className="flex-1 px-3.5 py-2.5 text-sm text-white bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#38bdf8]"
+                      className="flex-1 px-3.5 py-2.5 text-sm lg:text-xs text-white bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#38bdf8]"
                     />
                     <button
                       type="button"
@@ -1796,7 +1812,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           setNewDeliverableText('');
                         }
                       }}
-                      className="px-4 py-2.5 text-sm font-bold bg-[#003663] text-white rounded-xl hover:bg-[#002647] transition-all cursor-pointer shadow-md border border-[#38bdf8]/40"
+                      className="px-4 py-2.5 text-sm lg:text-xs font-bold bg-[#003663] text-white rounded-xl hover:bg-[#002647] transition-all cursor-pointer shadow-md border border-[#38bdf8]/40"
                     >
                       Add
                     </button>
@@ -1810,21 +1826,68 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
         {/* SLIM RIGHT COLUMN: NEXT ARROW ONLY */}
         <aside
           aria-label="Next project navigation"
-          className="w-8 sm:w-10 md:w-12 shrink-0 flex items-center justify-center h-full z-20 bg-transparent border-0"
+          className="w-8 sm:w-10 md:w-12 lg:w-16 shrink-0 flex items-center justify-center h-full z-20 bg-transparent border-0"
         >
           <button
             disabled={!nextProject}
             onClick={() => nextProject && onNavigateProject(nextProject)}
-            className={`p-2 transition-transform cursor-pointer bg-transparent border-0 ${
+            className={`p-2 transition-colors duration-[250ms] ease-out cursor-pointer bg-transparent border-0 ${
               nextProject
-                ? 'text-white/60 hover:text-white hover:scale-125'
+                ? 'text-white/40 hover:text-white/90'
                 : 'text-white/10 cursor-not-allowed'
             }`}
             title={nextProject ? `Next: ${nextProject.title}` : 'No next project'}
           >
-            <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7" />
+            <ChevronRight
+              className="w-6 h-6 sm:w-7 sm:h-7"
+              strokeWidth={1.96}
+              style={{ transform: 'scaleX(0.98)' }}
+            />
           </button>
         </aside>
+      </div>
+
+      {/* MOBILE FILTER SLIDER AT THE BOTTOM */}
+      <div className="lg:hidden shrink-0 px-4 py-2.5 bg-[#130f30]/95 backdrop-blur-md border-t border-white/10 flex items-center justify-center z-30">
+        <div className="flex items-center p-1 bg-white/10 rounded-2xl border border-white/10 w-full max-w-sm relative">
+          <button
+            type="button"
+            onClick={() => setMobileActivePane('gallery_process')}
+            className={`flex-1 py-2 px-3 text-xs font-bold rounded-xl transition-colors relative z-10 text-center cursor-pointer ${
+              mobileActivePane === 'gallery_process'
+                ? 'text-white'
+                : 'text-white/60 hover:text-white'
+            }`}
+          >
+            {mobileActivePane === 'gallery_process' && (
+              <motion.div
+                layoutId="mobile-showroom-slider"
+                className="absolute inset-0 bg-[#003663] rounded-xl -z-10 shadow-sm border border-[#38bdf8]/40"
+                transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+              />
+            )}
+            Gallery &amp; Process
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setMobileActivePane('other_details')}
+            className={`flex-1 py-2 px-3 text-xs font-bold rounded-xl transition-colors relative z-10 text-center cursor-pointer ${
+              mobileActivePane === 'other_details'
+                ? 'text-white'
+                : 'text-white/60 hover:text-white'
+            }`}
+          >
+            {mobileActivePane === 'other_details' && (
+              <motion.div
+                layoutId="mobile-showroom-slider"
+                className="absolute inset-0 bg-[#003663] rounded-xl -z-10 shadow-sm border border-[#38bdf8]/40"
+                transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+              />
+            )}
+            Other Details
+          </button>
+        </div>
       </div>
 
       {/* MODAL: Enlarge Image */}

@@ -31,6 +31,18 @@ export interface DisciplineItem {
   description: string;
 }
 
+export interface PhoneItem {
+  id: string;
+  number: string;
+  iconUrl?: string;
+}
+
+export interface EmailItem {
+  id: string;
+  email: string;
+  iconUrl?: string;
+}
+
 export interface SocialLinks {
   instagram?: string;
   twitter?: string;
@@ -103,8 +115,10 @@ export interface AboutData {
   sections?: AboutCustomSection[];
   phone: string;
   phones?: string[];
+  phoneItems?: PhoneItem[];
   email: string;
   emails?: string[];
+  emailItems?: EmailItem[];
   socials?: SocialLinks;
   socialLinks?: SocialLinkItem[];
   websiteName?: string;
@@ -210,15 +224,6 @@ export const defaultAboutSections: AboutCustomSection[] = [
     ],
   },
   {
-    id: 'sec-contact',
-    category: 'CONTACT',
-    tagline: 'HOW TO REACH ME',
-    type: 'contact',
-    phone: '0701 841 6894',
-    email: 'vapourdense@gmail.com',
-    content: "I AM MOSTLY IN SCHOOL OR ON TRANSIT, BIRDS HAVE NEST, MY LAPTOP HAS A BAG BUT VDVC DOESN'T HAVE AN OFFICE. WE REMAIN ONLINE FOR NOW. YOU CAN ALWAYS REACH US VIA ANY OF OUR PLATFORMS: WHATSAPP OR GMAIL.",
-  },
-  {
     id: 'sec-tools',
     category: 'SOME OF OUR TOOLS',
     tagline: 'SOFTWARE, CREATIVE SUITES & WORKFLOW ENGINES',
@@ -273,12 +278,17 @@ interface AboutSectionProps {
 }
 
 export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutData }) => {
-  const sections = data.sections && data.sections.length > 0 ? data.sections : defaultAboutSections;
+  const allSections = data.sections && data.sections.length > 0 ? data.sections : defaultAboutSections;
+  
+  // Filter out contact section from accordions as requested
+  const accordionSections = allSections.filter(
+    sec => sec.id !== 'sec-contact' && sec.type !== 'contact' && sec.category !== 'CONTACT'
+  );
 
   // Initialize all sections as open by default
   const [openPanels, setOpenPanels] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
-    sections.forEach((sec, idx) => {
+    accordionSections.forEach((sec, idx) => {
       initial[sec.id || `sec-${idx}`] = idx === 0 || idx === 1 || idx === 3 || idx === 4 || idx === 5;
     });
     return initial;
@@ -328,6 +338,28 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
   const activeSocials = data.socialLinks && data.socialLinks.length > 0
     ? data.socialLinks
     : defaultSocialLinks;
+
+  // Effective phone numbers with support for custom icons or uploaded icons
+  const effectivePhones = React.useMemo(() => {
+    if (data.phoneItems && data.phoneItems.length > 0) {
+      return data.phoneItems;
+    }
+    const raw = data.phones && data.phones.length > 0 ? data.phones : [data.phone || '0701 841 6894'];
+    return raw.map((num, i) => ({ id: `p-${i}`, number: num, iconUrl: '' }));
+  }, [data.phoneItems, data.phones, data.phone]);
+
+  // Effective email addresses with support for custom icons or uploaded icons
+  const effectiveEmails = React.useMemo(() => {
+    if (data.emailItems && data.emailItems.length > 0) {
+      return data.emailItems;
+    }
+    const raw = data.emails && data.emails.length > 0 ? data.emails : [data.email || 'vapourdense@gmail.com'];
+    return raw.map((em, i) => ({ id: `e-${i}`, email: em, iconUrl: '' }));
+  }, [data.emailItems, data.emails, data.email]);
+
+  const contactNoticeContent =
+    allSections.find(s => s.type === 'contact' || s.category === 'CONTACT')?.content ||
+    "I AM MOSTLY IN SCHOOL OR ON TRANSIT, BIRDS HAVE NEST, MY LAPTOP HAS A BAG BUT VDVC DOESN'T HAVE AN OFFICE. WE REMAIN ONLINE FOR NOW. YOU CAN ALWAYS REACH US VIA ANY OF OUR PLATFORMS: WHATSAPP OR GMAIL.";
 
   return (
     <section id="about" className="py-20 sm:py-28 relative">
@@ -432,9 +464,114 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
               </p>
             </div>
 
+            {/* STANDALONE CONTACT SECTION: Rendered right under name and tagline before accordions start */}
+            <div className="space-y-4 pt-1">
+              <div className="space-y-1">
+                <span className="font-unisans-thin-caps text-[11px] sm:text-xs text-slate-500 font-normal block">
+                  CONTACT
+                </span>
+                <span className="font-phenomena text-[18px] sm:text-[20px] md:text-[22px] text-[#090132] block leading-snug font-normal">
+                  HOW TO REACH ME
+                </span>
+              </div>
+
+              <div className="space-y-4 pt-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {effectivePhones.map((ph, pIdx) => (
+                    <a
+                      key={ph.id || pIdx}
+                      href={`tel:${ph.number.replace(/\s+/g, '')}`}
+                      className="flex items-center gap-3 p-3 rounded-xl bg-black/[0.03] hover:bg-black/[0.06] transition-colors"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-slate-800 shadow-2xs shrink-0 overflow-hidden">
+                        {ph.iconUrl ? (
+                          <img src={ph.iconUrl} alt="Phone" className="w-5 h-5 object-contain" />
+                        ) : (
+                          <Phone className="w-4 h-4" />
+                        )}
+                      </div>
+                      <div className="truncate">
+                        <span className="text-[10px] text-slate-600 block uppercase tracking-wider font-semibold">
+                          Phone {effectivePhones.length > 1 ? `#${pIdx + 1}` : ''}
+                        </span>
+                        <span className="text-xs sm:text-sm font-bold text-slate-900 font-mono-numbers">
+                          {ph.number}
+                        </span>
+                      </div>
+                    </a>
+                  ))}
+
+                  {effectiveEmails.map((em, eIdx) => (
+                    <a
+                      key={em.id || eIdx}
+                      href={`mailto:${em.email}`}
+                      className="flex items-center gap-3 p-3 rounded-xl bg-black/[0.03] hover:bg-black/[0.06] transition-colors"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-slate-800 shadow-2xs shrink-0 overflow-hidden">
+                        {em.iconUrl ? (
+                          <img src={em.iconUrl} alt="Email" className="w-5 h-5 object-contain" />
+                        ) : (
+                          <Mail className="w-4 h-4" />
+                        )}
+                      </div>
+                      <div className="truncate">
+                        <span className="text-[10px] text-slate-600 block uppercase tracking-wider font-semibold">
+                          Email {effectiveEmails.length > 1 ? `#${eIdx + 1}` : ''}
+                        </span>
+                        <span className="text-xs sm:text-sm font-bold text-slate-900 truncate block">
+                          {em.email}
+                        </span>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+
+                {/* SOCIAL MEDIA BUTTONS IN CONTACT SECTION (ICONS ONLY) */}
+                {activeSocials.length > 0 && (
+                  <div className="pt-2">
+                    <span className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold block mb-2 font-unisans-thin-caps">
+                      Connect Across Platforms
+                    </span>
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      {activeSocials.map(soc => {
+                        const IconComponent = getSocialIcon(soc.platform);
+                        return (
+                          <a
+                            key={soc.id}
+                            href={soc.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={soc.platform || 'Social Link'}
+                            aria-label={soc.platform || 'Social Link'}
+                            className="w-10 h-10 rounded-xl bg-black/[0.04] hover:bg-black/[0.08] flex items-center justify-center transition-all border border-black/5 hover:border-black/10 group cursor-pointer"
+                          >
+                            {soc.iconUrl ? (
+                              <img
+                                src={soc.iconUrl}
+                                alt={soc.platform || 'Social Icon'}
+                                className="w-5 h-5 object-contain"
+                              />
+                            ) : (
+                              <IconComponent className="w-5 h-5 text-slate-700 group-hover:text-black shrink-0 transition-colors" />
+                            )}
+                          </a>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {contactNoticeContent && (
+                  <div className="p-3.5 rounded-xl bg-transparent text-xs sm:text-sm text-slate-800 uppercase leading-relaxed font-semibold">
+                    {contactNoticeContent}
+                  </div>
+                )}
+              </div>
+            </div>
+
             {/* DYNAMIC ACCORDION CONTAINER */}
-            <div className="space-y-3.5 pt-2">
-              {sections.map((section, idx) => {
+            <div className="space-y-3.5 pt-6 border-t border-black/10">
+              {accordionSections.map((section, idx) => {
                 const secKey = section.id || `sec-${idx}`;
                 const isOpen = openPanels[secKey] ?? false;
 

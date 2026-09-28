@@ -158,9 +158,9 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
           </div>
         </div>
 
-        {/* STICKY FILTER BAR & SEARCH BAR: Transparent bar with translucent blurred filter controls */}
+        {/* STICKY FILTER BAR & SEARCH BAR: Transparent on mobile, solid #d9d9d9 on desktop */}
         <div
-          className="sticky top-0 sm:top-16 z-30 bg-transparent py-2 sm:py-3.5 mb-6 sm:mb-12 transition-all overflow-visible"
+          className="sticky top-0 sm:top-16 z-30 bg-transparent sm:bg-[#d9d9d9] py-2 sm:py-3.5 mb-6 sm:mb-12 transition-all overflow-visible"
         >
           {/* Single line filter container with overflow-visible so dropdown opens on mobile */}
           <div className="flex items-center justify-between gap-1.5 sm:gap-2 overflow-visible whitespace-nowrap pb-1 sm:pb-0 w-full">
@@ -182,42 +182,42 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
                   All
                 </button>
 
-                {/* Filter 1: Graphic Design (Icon on mobile, text when active) */}
+                {/* Filter 1: Graphic Design (Icon on mobile, text on desktop & when active) */}
                 <button
                   type="button"
                   onClick={() => handleSelectFilter('Graphic Design')}
-                  className={`px-2.5 sm:px-3 py-1.5 text-xs font-medium rounded-xl whitespace-nowrap transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+                  className={`px-2.5 sm:px-3.5 py-1.5 text-xs font-medium rounded-xl whitespace-nowrap transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
                     selectedFilter === 'Graphic Design'
                       ? 'bg-[#090132] text-white shadow-sm font-semibold'
                       : 'text-slate-900 hover:text-black hover:bg-white/20'
                   }`}
                   title="Graphic Design"
                 >
-                  <Palette className="w-3.5 h-3.5 shrink-0" />
+                  <Palette className="w-3.5 h-3.5 shrink-0 sm:hidden" />
                   <span className={selectedFilter === 'Graphic Design' ? 'inline' : 'hidden sm:inline'}>
                     Graphic Design
                   </span>
                 </button>
 
-                {/* Filter 2: Web Design (Icon on mobile, text when active) */}
+                {/* Filter 2: Web Design (Icon on mobile, text on desktop & when active) */}
                 <button
                   type="button"
                   onClick={() => handleSelectFilter('Web Design')}
-                  className={`px-2.5 sm:px-3 py-1.5 text-xs font-medium rounded-xl whitespace-nowrap transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+                  className={`px-2.5 sm:px-3.5 py-1.5 text-xs font-medium rounded-xl whitespace-nowrap transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
                     selectedFilter === 'Web Design'
                       ? 'bg-[#090132] text-white shadow-sm font-semibold'
                       : 'text-slate-900 hover:text-black hover:bg-white/20'
                   }`}
                   title="Web Design"
                 >
-                  <Globe className="w-3.5 h-3.5 shrink-0" />
+                  <Globe className="w-3.5 h-3.5 shrink-0 sm:hidden" />
                   <span className={selectedFilter === 'Web Design' ? 'inline' : 'hidden sm:inline'}>
                     Web Design
                   </span>
                 </button>
               </div>
 
-              {/* Filter 3: Real Life Projects Dropdown (Icon on mobile, text when active) */}
+              {/* Filter 3: Real Life Projects Dropdown (Icon on mobile, text on desktop & when active) */}
               <div className="relative shrink-0" ref={dropdownRef}>
                 <button
                   type="button"
@@ -229,7 +229,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
                   }`}
                   title="Real Life Projects"
                 >
-                  <Briefcase className="w-3.5 h-3.5 shrink-0" />
+                  <Briefcase className="w-3.5 h-3.5 shrink-0 sm:hidden" />
                   <span className={isRealLifeActive ? 'inline' : 'hidden sm:inline'}>
                     {isRealLifeActive
                       ? selectedFilter.replace('Real Life: ', 'Real Life: ')
