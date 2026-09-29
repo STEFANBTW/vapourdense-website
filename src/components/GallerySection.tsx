@@ -7,6 +7,7 @@ interface GallerySectionProps {
   projects: Project[];
   onSelectProject: (project: Project) => void;
   onDropImage: (file: File) => void;
+  isMobileNavVisible?: boolean;
 }
 
 export type FilterMode =
@@ -21,13 +22,35 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
   projects,
   onSelectProject,
   onDropImage,
+  isMobileNavVisible,
 }) => {
   const [selectedFilter, setSelectedFilter] = useState<FilterMode>('All');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isDragOver, setIsDragOver] = useState(false);
+  const [isPastGallery, setIsPastGallery] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
+
+  // Keep filter bar strictly confined within the Gallery section on mobile
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!sectionRef.current) return;
+      const rect = sectionRef.current.getBoundingClientRect();
+      const navOffset = isMobileNavVisible !== false ? 44 : 0;
+      // When the bottom edge of the gallery reaches or passes above the bottom threshold
+      const threshold = window.innerHeight - navOffset;
+      setIsPastGallery(rect.bottom <= threshold);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
+    handleScroll();
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, [isMobileNavVisible]);
 
   const handleSelectFilter = (filter: FilterMode) => {
     setSelectedFilter(filter);
@@ -135,10 +158,11 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
   return (
     <section
       id="gallery"
+      ref={sectionRef}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      className={`py-12 sm:py-16 relative transition-colors ${
+      className={`pt-12 pb-28 sm:py-16 relative transition-colors ${
         isDragOver ? 'ring-2 ring-sky-400 bg-sky-50/60' : ''
       }`}
     >
@@ -158,22 +182,26 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
           </div>
         </div>
 
-        {/* STICKY FILTER BAR & SEARCH BAR: Transparent on mobile, solid #d9d9d9 on desktop */}
+        {/* STICKY FILTER BAR & SEARCH BAR: Confined strictly to Gallery section on mobile (<sm), sticky top-16 on tablet/desktop (>=sm) */}
         <div
-          className="sticky top-0 sm:top-16 z-30 bg-transparent sm:bg-[#d9d9d9] py-2 sm:py-3.5 mb-6 sm:mb-12 transition-all overflow-visible"
+          className={`z-30 left-0 right-0 sm:left-auto sm:right-auto px-4 sm:px-0 py-2 sm:py-3.5 mb-0 sm:mb-12 transition-[bottom,transform,background-color] duration-300 ease-in-out overflow-visible bg-[#d9d9d9]/95 backdrop-blur-md sm:bg-[#d9d9d9] border-t border-slate-300/80 sm:border-0 shadow-lg sm:shadow-none sm:sticky sm:top-16 sm:bottom-auto ${
+            isPastGallery
+              ? 'max-sm:absolute max-sm:bottom-0'
+              : `max-sm:fixed ${isMobileNavVisible !== false ? 'max-sm:bottom-11' : 'max-sm:bottom-0'}`
+          }`}
         >
           {/* Single line filter container with overflow-visible so dropdown opens on mobile */}
-          <div className="flex items-center justify-between gap-1.5 sm:gap-2 overflow-visible whitespace-nowrap pb-1 sm:pb-0 w-full">
+          <div className="flex items-center justify-between gap-1.5 sm:gap-2 overflow-visible whitespace-nowrap pb-0 w-full max-w-7xl mx-auto">
             {/* Filters: All, Graphic Design, Web Design */}
             <div className="flex items-center gap-1 sm:gap-1.5 shrink-0 overflow-visible">
               <div
-                className="flex items-center gap-1 sm:gap-1.5 p-1 bg-white/20 backdrop-blur-md rounded-2xl border border-slate-400/30 shadow-xs"
+                className="h-9 sm:h-10 flex items-center gap-1 sm:gap-1.5 p-1 bg-white/20 backdrop-blur-md rounded-2xl border border-slate-400/30 shadow-xs"
               >
                 {/* Filter 0: All (Always text) */}
                 <button
                   type="button"
                   onClick={() => handleSelectFilter('All')}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-xl whitespace-nowrap transition-all duration-200 cursor-pointer ${
+                  className={`h-full px-3 text-xs font-medium rounded-xl whitespace-nowrap transition-all duration-200 cursor-pointer flex items-center justify-center ${
                     selectedFilter === 'All'
                       ? 'bg-[#090132] text-white shadow-sm font-semibold'
                       : 'text-slate-900 hover:text-black hover:bg-white/20'
@@ -186,7 +214,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
                 <button
                   type="button"
                   onClick={() => handleSelectFilter('Graphic Design')}
-                  className={`px-2.5 sm:px-3.5 py-1.5 text-xs font-medium rounded-xl whitespace-nowrap transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+                  className={`h-full px-2.5 sm:px-3.5 text-xs font-medium rounded-xl whitespace-nowrap transition-all duration-200 cursor-pointer flex items-center gap-1.5 justify-center ${
                     selectedFilter === 'Graphic Design'
                       ? 'bg-[#090132] text-white shadow-sm font-semibold'
                       : 'text-slate-900 hover:text-black hover:bg-white/20'
@@ -203,7 +231,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
                 <button
                   type="button"
                   onClick={() => handleSelectFilter('Web Design')}
-                  className={`px-2.5 sm:px-3.5 py-1.5 text-xs font-medium rounded-xl whitespace-nowrap transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+                  className={`h-full px-2.5 sm:px-3.5 text-xs font-medium rounded-xl whitespace-nowrap transition-all duration-200 cursor-pointer flex items-center gap-1.5 justify-center ${
                     selectedFilter === 'Web Design'
                       ? 'bg-[#090132] text-white shadow-sm font-semibold'
                       : 'text-slate-900 hover:text-black hover:bg-white/20'
@@ -222,7 +250,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsDropdownOpen(prev => !prev)}
-                  className={`px-3 py-1.5 sm:py-2 text-xs font-medium rounded-2xl border transition-all duration-200 cursor-pointer flex items-center gap-1.5 shadow-xs backdrop-blur-md ${
+                  className={`h-9 sm:h-10 px-3 text-xs font-medium rounded-2xl border transition-all duration-200 cursor-pointer flex items-center gap-1.5 shadow-xs backdrop-blur-md ${
                     isRealLifeActive
                       ? 'bg-[#090132] text-white border-[#090132] font-semibold'
                       : 'bg-white/20 hover:bg-white/30 border-slate-400/30 text-slate-900'
@@ -242,7 +270,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
                   />
                 </button>
 
-                {/* Dropdown Menu */}
+                {/* Dropdown Menu (Opens upwards on mobile at bottom, downwards on desktop) */}
                 <AnimatePresence>
                   {isDropdownOpen && (
                     <motion.div
@@ -250,7 +278,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 4, scale: 0.98 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute left-0 top-full mt-1.5 w-52 sm:w-56 bg-white/95 backdrop-blur-2xl rounded-2xl border border-slate-300 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] py-1.5 z-50 overflow-hidden"
+                      className="absolute left-0 bottom-full mb-2 sm:bottom-auto sm:top-full sm:mt-1.5 w-52 sm:w-56 bg-white/95 backdrop-blur-2xl rounded-2xl border border-slate-300 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] py-1.5 z-50 overflow-hidden"
                     >
                       <div className="px-3 py-1.5 text-[10px] uppercase tracking-wider text-slate-800 font-bold border-b border-slate-400/30">
                         Real Life Categories
@@ -293,15 +321,15 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
               </div>
             </div>
 
-            {/* Sticky Search Bar - fitted in single line with translucent background */}
-            <div className="relative shrink-0 w-36 sm:w-72">
-              <Search className="w-3.5 h-3.5 text-slate-600 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            {/* Sticky Search Bar - unified height with distinct magnifying glass icon */}
+            <div className="h-9 sm:h-10 relative shrink-0 flex items-center">
+              <Search className="w-4 h-4 text-slate-700 absolute left-3 pointer-events-none z-10 shrink-0" />
               <input
                 type="text"
                 value={searchQuery || ''}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search..."
-                className="w-full pl-7 pr-2.5 py-1 text-[11px] sm:pl-9 sm:pr-4 sm:py-2 sm:text-xs text-slate-900 placeholder-slate-600 bg-white/20 backdrop-blur-md border border-slate-400/30 rounded-xl focus:outline-none focus:border-slate-800 focus:bg-white/40 transition-all shadow-xs"
+                className="h-full w-36 sm:w-64 pl-9 pr-3 text-[12px] sm:text-xs text-slate-900 placeholder-slate-600 bg-white/20 backdrop-blur-md border border-slate-400/30 rounded-2xl focus:outline-none focus:border-slate-800 focus:bg-white/40 transition-all shadow-xs"
               />
             </div>
           </div>
@@ -366,15 +394,15 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
 
                     {/* Outside under it: scaled down text on mobile */}
                     <div className="pt-2 sm:pt-4 px-0.5 sm:px-1 w-[95%] sm:w-[90%] mx-auto space-y-0.5 sm:space-y-1.5 text-left">
-                      <h3 className="font-phenomena text-[14px] sm:text-[22px] lg:text-[23px] font-bold text-slate-950 group-hover:text-sky-900 transition-colors line-clamp-2 leading-tight tracking-tight">
+                      <h3 className="font-phenomena text-[17px] sm:text-[22px] lg:text-[23px] font-bold text-slate-950 group-hover:text-sky-900 transition-colors line-clamp-2 leading-tight tracking-tight">
                         {project.title}
                       </h3>
 
-                      <div className="font-unisans-regular text-[10px] sm:text-xs font-normal text-slate-800 tracking-wide whitespace-nowrap overflow-hidden text-ellipsis">
+                      <div className="font-unisans-regular text-[12px] sm:text-xs font-normal text-slate-800 tracking-wide whitespace-nowrap overflow-hidden text-ellipsis">
                         {descriptorsText}
                       </div>
 
-                      <div className="font-unisans-thin text-[9px] sm:text-xs font-[100] sm:font-[200] text-slate-600 line-clamp-2 leading-relaxed">
+                      <div className="font-unisans-thin text-[11px] sm:text-xs font-[100] sm:font-[200] text-slate-600 line-clamp-2 leading-relaxed">
                         {project.client}
                       </div>
                     </div>

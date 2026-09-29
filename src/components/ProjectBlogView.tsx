@@ -579,13 +579,31 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
     setLinkModalTarget(null);
   };
 
-  // 200% base size calculation: 360px for gallery cards, 280px for process cards at 100% scale
-  const galleryCardPixelWidth = Math.max(160, Math.round(360 * (imageScalePercent / 100)));
-  const processCardPixelWidth = Math.max(130, Math.round(280 * (imageScalePercent / 100)));
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== 'undefined' ? window.innerWidth : 1024
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize, { passive: true });
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Scaled down appropriately for mobile screens in mobile view:
+  // Mobile (<640px): 230px base for gallery cards, 185px base for process cards
+  // Tablet (640px-1024px): 300px base for gallery cards, 240px base for process cards
+  // Desktop (>=1024px): 360px base for gallery cards, 280px base for process cards
+  const baseGalleryWidth = windowWidth < 640 ? 230 : windowWidth < 1024 ? 300 : 360;
+  const baseProcessWidth = windowWidth < 640 ? 185 : windowWidth < 1024 ? 240 : 280;
+  const galleryCardPixelWidth = Math.max(150, Math.round(baseGalleryWidth * (imageScalePercent / 100)));
+  const processCardPixelWidth = Math.max(120, Math.round(baseProcessWidth * (imageScalePercent / 100)));
 
   return (
     <div
-      className="fixed inset-0 z-50 overflow-hidden flex flex-col selection:bg-[#003663] selection:text-white"
+      className="fixed inset-0 z-50 h-[100dvh] max-h-[100dvh] w-full overflow-hidden flex flex-col overscroll-contain selection:bg-[#003663] selection:text-white"
       style={{ backgroundColor: '#130f30' }}
     >
       {/* Hidden file inputs for local device uploads */}
@@ -625,11 +643,11 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
         className="hidden"
       />
 
-      {/* Top Utility Bar */}
-      <header className="h-[52px] shrink-0 w-full bg-[#130f30] px-4 sm:px-6 flex items-center justify-between text-white/70 border-b border-white/5">
+      {/* Top Utility Bar (Always Sticky at top) */}
+      <header className="sticky top-0 z-40 h-[52px] shrink-0 w-full bg-[#130f30] px-4 sm:px-6 flex items-center justify-between text-white/70 border-b border-white/5">
         <div className="flex items-center gap-3 sm:gap-4">
           <span className="text-sm sm:text-base font-semibold text-white/90">
-            Project Show
+            Project Details
           </span>
 
           {/* Project switcher dropdown when in editable mode */}
@@ -679,16 +697,59 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
             </div>
           )}
 
-          {/* Top-right Close Icon */}
+          {/* Top-right Close Icon (Always visible on all screens) */}
           <button
             onClick={onClose}
-            className="p-1.5 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer bg-transparent border-0"
-            title="Close Project Show (Esc)"
+            className="flex p-1.5 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer bg-transparent border-0"
+            title="Close Project Details (Esc)"
           >
             <X className="w-5 h-5 sm:w-6 sm:h-6 text-white/80" />
           </button>
         </div>
       </header>
+
+      {/* TABLET ONLY: Pane Selector Slider sticky at top right beneath header */}
+      <div className="hidden sm:flex lg:hidden shrink-0 sticky top-[52px] z-30 px-4 py-2 bg-[#130f30]/95 backdrop-blur-md border-b border-white/10 items-center justify-center">
+        <div className="flex items-center p-1 bg-white/10 rounded-2xl border border-white/10 w-full max-w-sm relative">
+          <button
+            type="button"
+            onClick={() => setMobileActivePane('gallery_process')}
+            className={`flex-1 py-1.5 px-3 text-xs font-bold rounded-xl transition-colors relative z-10 text-center cursor-pointer ${
+              mobileActivePane === 'gallery_process'
+                ? 'text-white'
+                : 'text-white/60 hover:text-white'
+            }`}
+          >
+            {mobileActivePane === 'gallery_process' && (
+              <motion.div
+                layoutId="showroom-tablet-top-slider"
+                className="absolute inset-0 bg-[#003663] rounded-xl -z-10 shadow-sm border border-[#38bdf8]/40"
+                transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+              />
+            )}
+            Gallery &amp; Process
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setMobileActivePane('other_details')}
+            className={`flex-1 py-1.5 px-3 text-xs font-bold rounded-xl transition-colors relative z-10 text-center cursor-pointer ${
+              mobileActivePane === 'other_details'
+                ? 'text-white'
+                : 'text-white/60 hover:text-white'
+            }`}
+          >
+            {mobileActivePane === 'other_details' && (
+              <motion.div
+                layoutId="showroom-tablet-top-slider"
+                className="absolute inset-0 bg-[#003663] rounded-xl -z-10 shadow-sm border border-[#38bdf8]/40"
+                transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+              />
+            )}
+            Project Details
+          </button>
+        </div>
+      </div>
 
       {/* Main Full-Screen Layout */}
       <div className="flex-1 w-full flex flex-row overflow-hidden min-h-0 py-0">
@@ -716,10 +777,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
         </aside>
 
         {/* MAIN SECTION: IN ONE BOX THAT SPANS 80vw AND CLAMPS AT 2000px (Borderless, 100% height, touching header) */}
-        <div className="flex-1 flex flex-col lg:flex-row min-w-0 h-full overflow-hidden w-full lg:w-[80vw] lg:max-w-[2000px] lg:mx-auto lg:rounded-none lg:border-0 bg-transparent lg:bg-transparent">
+        <div className="flex-1 flex flex-col lg:flex-row min-w-0 min-h-0 h-full overflow-hidden w-full lg:w-[80vw] lg:max-w-[2000px] lg:mx-auto lg:rounded-none lg:border-0 bg-transparent lg:bg-transparent">
           {/* LEFT PANEL: GALLERY & PROCESS */}
           <div
-            className={`w-full lg:w-[70%] lg:border-r border-white/10 p-5 sm:p-7 md:p-8 flex-col space-y-8 sm:space-y-10 min-w-0 h-full overflow-y-auto no-scrollbar ${
+            className={`w-full lg:w-[70%] lg:border-r border-white/10 p-5 sm:p-7 md:p-8 flex-col space-y-8 sm:space-y-10 min-w-0 min-h-0 h-full overflow-y-auto no-scrollbar ${
               mobileActivePane === 'gallery_process' ? 'flex' : 'hidden lg:flex'
             }`}
           >
@@ -934,12 +995,64 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
 
             {/* SECTION 2: PROCESS */}
             <section aria-labelledby="process-title" className="pt-2 min-w-0">
-              <h2
-                id="process-title"
-                className="font-dense font-bold text-2xl sm:text-3xl md:text-4xl text-white tracking-tight leading-none mb-5 sm:mb-6"
-              >
-                Process
-              </h2>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 sm:mb-6">
+                <h2
+                  id="process-title"
+                  className="font-dense font-bold text-2xl sm:text-3xl md:text-4xl text-white tracking-tight leading-none"
+                >
+                  Process
+                </h2>
+
+                {/* Interactive Image Scale Slider also available in Process when in edit mode */}
+                {isEditable && (
+                  <div className="flex items-center gap-3 bg-white/5 px-3 py-1.5 rounded-xl border border-white/10 self-start sm:self-auto">
+                    <div className="flex items-center gap-1.5 text-[#38bdf8]">
+                      <Sliders className="w-3.5 h-3.5" />
+                      <span className="text-[12px] font-semibold uppercase tracking-wider">
+                        Size: {imageScalePercent}%
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleScaleChange(imageScalePercent - 10)}
+                      className="p-1 rounded bg-white/5 hover:bg-white/15 text-white/70 hover:text-white transition-colors cursor-pointer"
+                      title="Decrease image size"
+                    >
+                      <Minus className="w-3 h-3" />
+                    </button>
+
+                    <input
+                      type="range"
+                      min={50}
+                      max={250}
+                      step={5}
+                      value={imageScalePercent}
+                      onChange={e => handleScaleChange(Number(e.target.value))}
+                      className="w-24 sm:w-32 h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer accent-[#003663]"
+                      title={`Image scale: ${imageScalePercent}%`}
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => handleScaleChange(imageScalePercent + 10)}
+                      className="p-1 rounded bg-white/5 hover:bg-white/15 text-white/70 hover:text-white transition-colors cursor-pointer"
+                      title="Increase image size"
+                    >
+                      <Plus className="w-3 h-3" />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleScaleChange(100)}
+                      className="text-[11px] font-semibold text-[#38bdf8] hover:text-white px-2 py-0.5 rounded bg-[#003663]/60 border border-[#003663] transition-colors cursor-pointer"
+                      title="Reset to 100% default"
+                    >
+                      Default
+                    </button>
+                  </div>
+                )}
+              </div>
 
               {/* Process Steps List */}
               <div className="space-y-8 sm:space-y-10 min-w-0">
@@ -1270,7 +1383,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
 
           {/* RIGHT PANEL (30%): PROJECT DETAILS & METADATA ("Other Details") */}
           <div
-            className={`w-full lg:w-[30%] p-5 sm:p-7 md:p-8 flex-col space-y-7 sm:space-y-8 min-w-0 h-full overflow-y-auto no-scrollbar ${
+            className={`w-full lg:w-[30%] p-5 sm:p-7 md:p-8 flex-col space-y-7 sm:space-y-8 min-w-0 min-h-0 h-full overflow-y-auto no-scrollbar ${
               mobileActivePane === 'other_details' ? 'flex' : 'hidden lg:flex'
             }`}
           >
@@ -1823,10 +1936,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
           </div>
         </div>
 
-        {/* SLIM RIGHT COLUMN: NEXT ARROW ONLY */}
+        {/* SLIM RIGHT COLUMN: NEXT ARROW + MOBILE CIRCULAR CLOSE BUTTON AT BOTTOM */}
         <aside
           aria-label="Next project navigation"
-          className="w-8 sm:w-10 md:w-12 lg:w-16 shrink-0 flex items-center justify-center h-full z-20 bg-transparent border-0"
+          className="w-8 sm:w-10 md:w-12 lg:w-16 shrink-0 flex items-center justify-center h-full z-20 bg-transparent border-0 relative"
         >
           <button
             disabled={!nextProject}
@@ -1847,8 +1960,19 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
         </aside>
       </div>
 
-      {/* MOBILE FILTER SLIDER AT THE BOTTOM */}
-      <div className="lg:hidden shrink-0 px-4 py-2.5 bg-[#130f30]/95 backdrop-blur-md border-t border-white/10 flex items-center justify-center z-30">
+      {/* Floating Circular Close Button on mobile & tablet */}
+      <button
+        type="button"
+        onClick={onClose}
+        className="lg:hidden fixed bottom-[72px] sm:bottom-6 right-4 sm:right-6 md:right-8 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 border border-white/25 text-white/90 hover:text-white flex items-center justify-center transition-all cursor-pointer shadow-xl z-50 backdrop-blur-md"
+        title="Close Project Details"
+        aria-label="Close Project Details"
+      >
+        <X className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+      </button>
+
+      {/* MOBILE ONLY: Pane Selector Slider sticky at the bottom */}
+      <div className="sm:hidden shrink-0 sticky bottom-0 px-4 py-2.5 bg-[#130f30]/95 backdrop-blur-md border-t border-white/10 flex items-center justify-center z-30">
         <div className="flex items-center p-1 bg-white/10 rounded-2xl border border-white/10 w-full max-w-sm relative">
           <button
             type="button"
@@ -1861,7 +1985,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
           >
             {mobileActivePane === 'gallery_process' && (
               <motion.div
-                layoutId="mobile-showroom-slider"
+                layoutId="showroom-mobile-bottom-slider"
                 className="absolute inset-0 bg-[#003663] rounded-xl -z-10 shadow-sm border border-[#38bdf8]/40"
                 transition={{ type: 'spring', stiffness: 400, damping: 32 }}
               />
@@ -1880,12 +2004,12 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
           >
             {mobileActivePane === 'other_details' && (
               <motion.div
-                layoutId="mobile-showroom-slider"
+                layoutId="showroom-mobile-bottom-slider"
                 className="absolute inset-0 bg-[#003663] rounded-xl -z-10 shadow-sm border border-[#38bdf8]/40"
                 transition={{ type: 'spring', stiffness: 400, damping: 32 }}
               />
             )}
-            Other Details
+            Project Details
           </button>
         </div>
       </div>

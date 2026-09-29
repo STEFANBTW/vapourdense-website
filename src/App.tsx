@@ -33,14 +33,26 @@ export default function App() {
   const [selectedCaseStudy, setSelectedCaseStudy] = useState<Project | null>(null);
   const [isEditingCaseStudy, setIsEditingCaseStudy] = useState<boolean>(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [isMobileNavVisible, setIsMobileNavVisible] = useState(true);
+  const lastScrollY = React.useRef(0);
 
-  // Throttled scroll listener to avoid layout recalculation thrash
+  // Throttled scroll listener to avoid layout recalculation thrash and synchronize bottom bars
   useEffect(() => {
     let ticking = false;
     const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // Handle mobile navbar / gallery filter slide in / slide out synchronization
+      if (currentScrollY > lastScrollY.current && currentScrollY > 30) {
+        setIsMobileNavVisible(false);
+      } else {
+        setIsMobileNavVisible(true);
+      }
+      lastScrollY.current = currentScrollY;
+
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          const shouldShow = window.scrollY > 400;
+          const shouldShow = currentScrollY > 400;
           setShowScrollTop(prev => (prev !== shouldShow ? shouldShow : prev));
           ticking = false;
         });
@@ -145,6 +157,7 @@ export default function App() {
         onNavigateToLogin={() => setCurrentView('login')}
         websiteName={aboutData.websiteName}
         logoUrl={aboutData.logoUrl}
+        isMobileNavVisible={isMobileNavVisible}
       />
 
       {/* Main Content Area */}
@@ -165,6 +178,7 @@ export default function App() {
                 setIsEditingCaseStudy(false);
               }}
               onDropImage={handleInitiateImageUpload}
+              isMobileNavVisible={isMobileNavVisible}
             />
             {/* 2. Booking Section (Positioned before About as requested) */}
             <BookingSection />

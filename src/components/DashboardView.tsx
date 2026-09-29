@@ -101,6 +101,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   onPreview,
   onDropImage,
   onResetDefaults,
+  onUpdateProject,
 }) => {
   // Three filters as requested:
   // 1. Project
@@ -2637,6 +2638,31 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         </div>
                       )}
 
+                      {/* Image Scale Adjustment in Dashboard */}
+                      <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-100 text-xs">
+                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Image Scale</span>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="range"
+                            min={50}
+                            max={250}
+                            step={5}
+                            value={proj.imageScalePercent || 100}
+                            onChange={e => {
+                              const val = Number(e.target.value);
+                              if (onUpdateProject) {
+                                onUpdateProject(proj.id, { ...proj, imageScalePercent: val });
+                              }
+                            }}
+                            className="w-24 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#090132]"
+                            title={`Image scale: ${proj.imageScalePercent || 100}%`}
+                          />
+                          <span className="text-[11px] font-mono-numbers text-slate-700 font-semibold w-9 text-right">
+                            {proj.imageScalePercent || 100}%
+                          </span>
+                        </div>
+                      </div>
+
                       {/* Action Buttons */}
                       <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
                         <button
@@ -2682,13 +2708,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     <th className="py-3.5 px-4">Client</th>
                     <th className="py-3.5 px-4">Descriptors</th>
                     <th className="py-3.5 px-4">Fee / Year</th>
+                    <th className="py-3.5 px-4">Image Scale</th>
                     <th className="py-3.5 px-6 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 text-xs text-slate-700">
                   {filteredProjects.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="py-12 text-center text-slate-400 font-light">
+                      <td colSpan={7} className="py-12 text-center text-slate-400 font-light">
                         No projects found.
                       </td>
                     </tr>
@@ -2740,6 +2767,29 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             <div className="text-[11px] text-slate-400">
                               {proj.year}
                               {proj.duration ? ` · ${proj.duration}` : ''}
+                            </div>
+                          </td>
+
+                          <td className="py-4 px-4">
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="range"
+                                min={50}
+                                max={250}
+                                step={5}
+                                value={proj.imageScalePercent || 100}
+                                onChange={e => {
+                                  const val = Number(e.target.value);
+                                  if (onUpdateProject) {
+                                    onUpdateProject(proj.id, { ...proj, imageScalePercent: val });
+                                  }
+                                }}
+                                className="w-20 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#090132]"
+                                title={`Image scale: ${proj.imageScalePercent || 100}%`}
+                              />
+                              <span className="text-[11px] font-mono-numbers text-slate-700 font-semibold w-9 text-right">
+                                {proj.imageScalePercent || 100}%
+                              </span>
                             </div>
                           </td>
 

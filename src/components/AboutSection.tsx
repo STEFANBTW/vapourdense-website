@@ -530,7 +530,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
                 {activeSocials.length > 0 && (
                   <div className="pt-2">
                     <span className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold block mb-2 font-unisans-thin-caps">
-                      Connect Across Platforms
+                      See social media
                     </span>
                     <div className="flex flex-wrap items-center gap-2.5">
                       {activeSocials.map(soc => {
@@ -760,7 +760,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
                             {activeSocials.length > 0 && (
                               <div className="pt-2">
                                 <span className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold block mb-2 font-unisans-thin-caps">
-                                  Connect Across Platforms
+                                  See social media
                                 </span>
                                 <div className="flex flex-wrap items-center gap-2.5">
                                   {activeSocials.map(soc => {
