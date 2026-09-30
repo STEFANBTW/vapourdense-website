@@ -499,7 +499,15 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
 
               <div className="pt-2">
                 <button
-                  onClick={() => goToStep('who')}
+                  onClick={() => {
+                    goToStep('who');
+                    setTimeout(() => {
+                      const el = document.getElementById('booking');
+                      if (el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }
+                    }, 50);
+                  }}
                   className="px-10 sm:px-12 py-4 text-base sm:text-lg font-bold text-white bg-[#003663] hover:bg-[#002647] border border-[#38bdf8]/40 rounded-none shadow-xl transition-all cursor-pointer"
                 >
                   Let&apos;s Get Started →
@@ -522,8 +530,8 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
               className="w-full h-full max-h-[100dvh] flex flex-col justify-between bg-transparent rounded-none relative overflow-hidden py-1 sm:py-6"
             >
               {/* VIEWPORT CONTAINER */}
-              <div className="flex-1 w-full flex flex-col justify-between items-center p-2 sm:p-8 md:p-14 lg:p-16 relative rounded-none overflow-y-auto">
-                <div className="w-full max-w-4xl lg:max-w-5xl mx-auto space-y-2.5 sm:space-y-2.5 sm:space-y-7 my-auto">
+              <div className="flex-1 w-[85vw] max-w-[85vw] sm:w-full sm:max-w-none max-h-[86dvh] sm:max-h-full mx-auto my-auto sm:my-0 flex flex-col justify-between items-center px-1 py-2 sm:p-8 md:p-14 lg:p-16 relative rounded-none overflow-y-auto">
+                <div className="w-full max-w-4xl lg:max-w-5xl mx-auto space-y-3.5 sm:space-y-7 my-auto">
                   {/* Wide Orange Progress Bar (On top of back arrow, no percentage) */}
                   <div className="w-full">
                     <div className="h-1.5 w-full bg-white/10 relative rounded-none overflow-hidden">
@@ -557,7 +565,7 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
                           BEFORE WE DIVE IN —
                         </span>
-                        <h3 className="font-phenomena text-xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
+                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
                           Which of these sounds like you?
                         </h3>
                       </div>
@@ -615,9 +623,9 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                     <div className="space-y-2.5 sm:space-y-7">
                       <div>
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
-                          GREAT! NOW TELL US —
+                          NEXT, TELL US  —
                         </span>
-                        <h3 className="font-phenomena text-xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
+                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
                           What are you looking to get done?
                         </h3>
                       </div>
@@ -707,23 +715,23 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
                           {profileType === 'idea'
                             ? service === 'graphic'
-                              ? 'Q2 — WHAT DO YOU NEED?'
-                              : 'Q2 — WHAT ARE YOU LOOKING TO GET DONE?'
+                              ? 'Q2 — DELIVERABLE SCOPE'
+                              : 'Q2 — MAIN GOAL'
                             : service === 'website'
                             ? 'Q2 — PROJECT TYPE'
                             : service === 'graphic'
-                            ? 'Q2 — DELIVERABLE TYPE'
-                            : 'Q2 — SYSTEM TYPE'}
+                            ? 'Q2 — DELIVERABLE SCOPE'
+                            : 'Q2 — PROJECT TYPE'}
                         </span>
-                        <h3 className="font-phenomena text-xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
+                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
                           {profileType === 'idea'
                             ? service === 'graphic'
-                              ? 'What do you need?'
+                              ? 'What are we crafting together?'
                               : 'What are you looking to get done?'
                             : service === 'website'
                             ? 'What type of project are you building?'
                             : service === 'graphic'
-                            ? 'What deliverable type do you need? (Select all that apply)'
+                            ? 'What are we crafting together?'
                             : 'What type of system are you building?'}
                         </h3>
                       </div>
@@ -894,8 +902,8 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
                           Q3 — BUSINESS INFO
                         </span>
-                        <h3 className="font-phenomena text-xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
-                          Tell us about your business.
+                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
+                          Tell us about your brand.
                         </h3>
                       </div>
 
@@ -1019,17 +1027,17 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                       <div>
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
                           {profileType === 'idea'
-                            ? 'Q4 — WHAT DO YOU WANT PEOPLE TO DO WHEN THEY VISIT YOUR SITE? (UP TO 2)'
+                            ? 'Q4 — CALL TO ACTION (UP TO 2)'
                             : service === 'backend'
-                            ? 'Q4 — PRIMARY GOAL (UP TO 2)'
+                            ? 'Q4 — KEY CRITERIA (UP TO 2)'
                             : 'Q4 — GOALS (UP TO 2)'}
                         </span>
 
-                        <h3 className="font-phenomena text-xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
+                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
                           {profileType === 'idea'
                             ? 'What do you want people to do when they visit your site?'
                             : service === 'backend'
-                            ? 'What is the primary goal of this system?'
+                            ? 'What does success look like for this engine?'
                             : 'What do you want people to do when they land on your site?'}
                         </h3>
                       </div>
@@ -1134,21 +1142,15 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                     <div className="space-y-2.5 sm:space-y-7">
                       <div>
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
-                          {profileType === 'idea'
-                            ? service === 'graphic'
-                              ? 'Q4 — WHAT SHOULD PEOPLE FEEL WHEN THEY SEE YOUR DESIGN?'
-                              : 'Q5 — HOW DO YOU WANT IT TO FEEL?'
-                            : service === 'graphic'
-                            ? 'Q4 — STYLE DIRECTION'
+                          {service === 'graphic'
+                            ? 'Q4 — DESIGN DIRECTION'
                             : 'Q5 — DESIGN DIRECTION'}
                         </span>
-                        <h3 className="font-phenomena text-xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
-                          {profileType === 'idea'
-                            ? service === 'graphic'
-                              ? 'What should people feel when they see your design?'
-                              : 'How do you want it to feel?'
-                            : service === 'graphic'
-                            ? 'What is your style direction?'
+                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
+                          {service === 'graphic'
+                            ? 'What should people feel when they see your design?'
+                            : profileType === 'idea'
+                            ? 'How do you want it to feel?'
                             : 'Do you have a design direction in mind?'}
                         </h3>
                       </div>
@@ -1321,12 +1323,12 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                       <div>
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
                           {service === 'graphic'
-                            ? 'Q5 — DO YOU HAVE ANYTHING WE CAN WORK WITH?'
-                            : 'Q6 — DO YOU HAVE ANYTHING ALREADY?'}
+                            ? 'Q5 — ASSETS'
+                            : 'Q6 — EXISTING ARTIFACTS'}
                         </span>
-                        <h3 className="font-phenomena text-xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
+                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
                           {service === 'graphic'
-                            ? 'Do you have anything we can work with?'
+                            ? 'Are there brand guidelines or materials we can work with already in place?'
                             : 'Do you have anything already?'}
                         </h3>
                       </div>
@@ -1408,7 +1410,7 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
                           Q6 — PAGES / SCOPE
                         </span>
-                        <h3 className="font-phenomena text-xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
+                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
                           How many pages or views do you need?
                         </h3>
                       </div>
@@ -1452,8 +1454,8 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
                           Q5 — EXISTING BRAND ASSETS
                         </span>
-                        <h3 className="font-phenomena text-xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
-                          Do you have existing brand assets?
+                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
+                          What do you have on ground?
                         </h3>
                       </div>
 
@@ -1519,9 +1521,9 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                     <div className="space-y-2.5 sm:space-y-7">
                       <div>
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
-                          Q6 — {profileType === 'idea' ? 'HOW MANY PIECES DO YOU NEED?' : 'QUANTITY'}
+                          Q6 — QUANTITY
                         </span>
-                        <h3 className="font-phenomena text-xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
+                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
                           {profileType === 'idea'
                             ? 'How many pieces do you need?'
                             : 'What quantity are you looking for?'}
@@ -1578,10 +1580,10 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                     <div className="space-y-2.5 sm:space-y-7">
                       <div>
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
-                          Q5 — TECH PREFERENCES
+                          Q5 — TOOLING CHOICES
                         </span>
-                        <h3 className="font-phenomena text-xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
-                          Do you have a tech stack preference?
+                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
+                          Do you have a preferred stack in mind?
                         </h3>
                       </div>
 
@@ -1645,8 +1647,8 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
                           Q6 — CURRENT STATE
                         </span>
-                        <h3 className="font-phenomena text-xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
-                          What is the current state of this system?
+                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
+                          What stage are we picking things up from?
                         </h3>
                       </div>
 
@@ -1691,10 +1693,10 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                     <div className="space-y-2.5 sm:space-y-7">
                       <div>
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
-                          Q7 — TIMELINE
+                          Q7 — ALMOST THERE, TIMELINE
                         </span>
-                        <h3 className="font-phenomena text-xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
-                          {profileType === 'idea' ? 'Timeline' : 'When do you need this live?'}
+                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
+                          {profileType === 'idea' ? 'When do you want it?' : 'When do you need this live?'}
                         </h3>
                       </div>
 
@@ -1803,10 +1805,10 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                     <div className="space-y-2.5 sm:space-y-7">
                       <div>
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
-                          Q8 — BUDGET
+                          {profileType === 'idea' ? 'Q8 — FINALLY, BUDGET' : 'Q8 — FINALLY, INVESTMENT'}
                         </span>
-                        <h3 className="font-phenomena text-xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
-                          {profileType === 'idea' ? 'Budget' : 'What budget range are you working with?'}
+                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
+                          {profileType === 'idea' ? 'How much do you want to pay for it?' : 'What budget range are you working with?'}
                         </h3>
                         <p className="text-xs sm:text-sm text-slate-300 font-light mt-1.5">
                           Slide to choose an exact budget or type your specific amount up to ₦10,000,000+.
@@ -1828,9 +1830,6 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                               <h4 className="text-base font-bold text-white">
                                 Slider
                               </h4>
-                              <p className="text-xs text-slate-300 font-light">
-                                Shows exact price in Nigerian Naira (₦)
-                              </p>
                             </div>
 
                             {/* Direct editable numeric input with COMMA SEPARATION */}
@@ -1854,10 +1853,10 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                           {/* Continuous Slider up to 10M */}
                           <input
                             type="range"
-                            min={50000}
+                            min={service === 'graphic' ? 20000 : 50000}
                             max={10000000}
-                            step={10000}
-                            value={Math.min(10000000, Math.max(50000, exactBudgetAmount))}
+                            step={service === 'graphic' ? 5000 : 10000}
+                            value={Math.min(10000000, Math.max(service === 'graphic' ? 20000 : 50000, exactBudgetAmount))}
                             onChange={e => {
                               setExactBudgetAmount(Number(e.target.value));
                               setBudgetType('exact');
@@ -1867,7 +1866,7 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
 
                           {/* Benchmark indicators */}
                           <div className="flex justify-between text-[11px] text-slate-300 font-mono-numbers mt-2.5">
-                            <span>₦50k</span>
+                            <span>{service === 'graphic' ? '₦20k' : '₦50k'}</span>
                             <span>₦1M</span>
                             <span>₦2.5M</span>
                             <span>₦5M</span>
@@ -1890,7 +1889,7 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                               Below your minimum
                             </h4>
                             <p className="text-xs text-slate-300 font-light mt-1">
-                              Under ₦50,000 starter package.
+                              Under {service === 'graphic' ? '₦20,000' : '₦50,000'} starter package.
                             </p>
                           </button>
 
@@ -1933,9 +1932,9 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                     <div className="space-y-2.5 sm:space-y-7">
                       <div>
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
-                          WHERE SHOULD WE SEND YOUR SUMMARY? —
+                          THANKS FOR CHOOSING US —
                         </span>
-                        <h3 className="font-phenomena text-xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
+                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
                           Where should we send your summary?
                         </h3>
                         <p className="text-xs sm:text-sm text-slate-300 font-light mt-1.5">
