@@ -29,7 +29,9 @@ export const Navbar: React.FC<NavbarProps> = ({
       ? logoUrl
       : '/VDVC 4 - Logo - NO-TEXT-TRANSPARENT-BG.png';
 
-  // Mobile scroll handler for slide in / slide out bottom navbar
+  const [isOverBooking, setIsOverBooking] = useState(false);
+
+  // Scroll handler for mobile slide in/out and booking section viewport tracking
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -41,9 +43,22 @@ export const Navbar: React.FC<NavbarProps> = ({
         setIsVisible(true);
       }
       lastScrollY.current = currentScrollY;
+
+      // Check if booking section reaches the top of viewport and until it leaves
+      const bookingEl = document.getElementById('booking');
+      if (bookingEl) {
+        const rect = bookingEl.getBoundingClientRect();
+        // Desktop navbar is 64px (h-16). When booking top reaches viewport top (<= 64px) and until it leaves (> 0px)
+        const isAtTop = rect.top <= 64 && rect.bottom > 0;
+        setIsOverBooking(isAtTop);
+      } else {
+        setIsOverBooking(false);
+      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    // Check initial position on mount
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -63,7 +78,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <>
       {/* DESKTOP NAVBAR (Top Sticky, visible on sm and larger screens) */}
-      <header className="sticky top-0 z-40 w-full bg-[#d9d9d9] border-b border-slate-300/80 transition-all duration-300 hidden sm:block">
+      <header
+        className={`sticky top-0 z-40 w-full transition-colors duration-300 hidden sm:block ${
+          isOverBooking
+            ? 'bg-[#130f30]'
+            : 'bg-[#d9d9d9]'
+        }`}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Zone 1: Logo and VDVC wordmark on left end */}
           <button
@@ -97,7 +118,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             ) : (
               <VDVCLogo className="w-8 h-8" />
             )}
-            <span className="font-moon-light text-lg sm:text-xl text-slate-900 group-hover:text-slate-600 transition-colors">
+            <span
+              className={`font-moon-light text-lg sm:text-xl transition-colors ${
+                isOverBooking
+                  ? 'text-[#d9d9d9] group-hover:text-white'
+                  : 'text-slate-900 group-hover:text-slate-600'
+              }`}
+            >
               VDVC
             </span>
           </button>
@@ -106,21 +133,33 @@ export const Navbar: React.FC<NavbarProps> = ({
           <nav className="flex items-center gap-6 sm:gap-8 font-phenomena text-lg sm:text-xl font-bold tracking-wide">
             <button
               onClick={() => scrollTo('gallery')}
-              className={`transition-colors hover:text-slate-900 cursor-pointer ${
-                currentView === 'portfolio' ? 'text-slate-900' : 'text-slate-600'
+              className={`transition-colors cursor-pointer ${
+                isOverBooking
+                  ? 'text-[#d9d9d9] hover:text-white'
+                  : currentView === 'portfolio'
+                  ? 'text-slate-900'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Gallery
             </button>
             <button
               onClick={() => scrollTo('booking')}
-              className="text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
+              className={`transition-colors cursor-pointer ${
+                isOverBooking
+                  ? 'text-[#d9d9d9] hover:text-white'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
             >
               Book
             </button>
             <button
               onClick={() => scrollTo('about')}
-              className="text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
+              className={`transition-colors cursor-pointer ${
+                isOverBooking
+                  ? 'text-[#d9d9d9] hover:text-white'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
             >
               About
             </button>
@@ -142,9 +181,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* MOBILE BOTTOM NAVBAR (Fixed at bottom of screen, reduced height h-11/h-12, slide in/out on scroll) */}
       <header
-        className={`fixed bottom-0 left-0 right-0 z-50 bg-[#d9d9d9]/95 backdrop-blur-md border-t border-slate-300/80 shadow-lg px-6 h-11 flex items-center justify-between sm:hidden transition-transform duration-300 ease-in-out ${
-          effectiveMobileVisible ? 'translate-y-0' : 'translate-y-full'
-        }`}
+        className={`fixed bottom-0 left-0 right-0 z-50 backdrop-blur-md shadow-lg px-6 h-11 flex items-center justify-between sm:hidden transition-all duration-300 ease-in-out ${
+          isOverBooking
+            ? 'bg-[#130f30]/95'
+            : 'bg-[#d9d9d9]/95'
+        } ${effectiveMobileVisible ? 'translate-y-0' : 'translate-y-full'}`}
       >
         {/* Left: Logo Icon ONLY (No VDVC text) */}
         <button
@@ -170,7 +211,11 @@ export const Navbar: React.FC<NavbarProps> = ({
         <nav className="flex items-center gap-2">
           <button
             onClick={() => scrollTo('gallery')}
-            className="p-1 text-slate-700 hover:text-slate-950 active:scale-95 transition-transform cursor-pointer"
+            className={`p-1 active:scale-95 transition-transform cursor-pointer ${
+              isOverBooking
+                ? 'text-[#d9d9d9] hover:text-white'
+                : 'text-slate-700 hover:text-slate-950'
+            }`}
             title="Gallery"
             aria-label="Gallery"
           >
@@ -178,7 +223,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
           <button
             onClick={() => scrollTo('booking')}
-            className="p-1 text-slate-700 hover:text-slate-950 active:scale-95 transition-transform cursor-pointer"
+            className={`p-1 active:scale-95 transition-transform cursor-pointer ${
+              isOverBooking
+                ? 'text-[#d9d9d9] hover:text-white'
+                : 'text-slate-700 hover:text-slate-950'
+            }`}
             title="Book"
             aria-label="Book"
           >
@@ -186,7 +235,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
           <button
             onClick={() => scrollTo('about')}
-            className="p-1 text-slate-700 hover:text-slate-950 active:scale-95 transition-transform cursor-pointer"
+            className={`p-1 active:scale-95 transition-transform cursor-pointer ${
+              isOverBooking
+                ? 'text-[#d9d9d9] hover:text-white'
+                : 'text-slate-700 hover:text-slate-950'
+            }`}
             title="About"
             aria-label="About"
           >

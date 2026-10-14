@@ -162,7 +162,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      className={`pt-12 pb-28 sm:py-16 relative transition-colors ${
+      className={`pt-3 sm:pt-4 pb-28 sm:pb-16 relative transition-colors ${
         isDragOver ? 'ring-2 ring-sky-400 bg-sky-50/60' : ''
       }`}
     >

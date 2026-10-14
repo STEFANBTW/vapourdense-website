@@ -508,7 +508,10 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                       }
                     }, 50);
                   }}
-                  className="px-10 sm:px-12 py-4 text-base sm:text-lg font-bold text-white bg-[#003663] hover:bg-[#002647] border border-[#38bdf8]/40 rounded-none shadow-xl transition-all cursor-pointer"
+                  className="px-10 sm:px-12 py-4 text-base sm:text-lg font-bold text-[#130f30] border border-black/20 rounded-none shadow-xl cursor-pointer tracking-wide"
+                  style={{
+                    background: 'linear-gradient(125deg, #f58338 0%, #f58338 72%, #fcd2bb 72%, #fcd2bb 80%, #ee5266 80%, #ee5266 100%)',
+                  }}
                 >
                   Let&apos;s Get Started →
                 </button>
@@ -2015,7 +2018,10 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                           <button
                             type="submit"
                             disabled={!fullName.trim() || !email.trim()}
-                            className="px-12 py-4 text-base font-bold text-white bg-[#003663] hover:bg-[#002647] border border-[#38bdf8]/40 disabled:opacity-40 disabled:pointer-events-none rounded-none shadow-xl transition-all cursor-pointer"
+                            className="px-12 py-4 text-base font-bold text-[#130f30] border border-black/20 disabled:opacity-40 disabled:pointer-events-none rounded-none shadow-xl hover:brightness-105 hover:scale-[1.02] active:scale-[0.99] transition-all cursor-pointer tracking-wide"
+                            style={{
+                              background: 'linear-gradient(125deg, #f58338 0%, #f58338 72%, #fcd2bb 72%, #fcd2bb 80%, #ee5266 80%, #ee5266 100%)',
+                            }}
                           >
                             Send My Brief →
                           </button>

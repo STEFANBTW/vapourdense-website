@@ -625,21 +625,21 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   return (
     <div
-      className="w-full bg-[#d9d9d9] min-h-screen py-0 px-0 sm:py-8 sm:px-6 lg:px-8"
+      className="w-full bg-[#d9d9d9] min-h-screen py-0 px-0 sm:pt-2 sm:pb-8 sm:px-6 lg:px-8"
       style={{ backgroundColor: '#d9d9d9' }}
     >
-      <div className="w-full sm:max-w-7xl sm:mx-auto sm:space-y-8">
+      <div className="w-full sm:max-w-7xl sm:mx-auto space-y-2 sm:space-y-3">
         {/* Studio Dashboard Title: Non-sticky (scrolls naturally) */}
-        <div className="pt-6 pb-2 px-4 sm:px-0 w-full">
+        <div className="pt-1 sm:pt-2 pb-1 px-4 sm:px-0 w-full">
           <h1 className="font-phenomena-bold text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight">
             Studio Dashboard
           </h1>
         </div>
 
         {/* Sticky Tab Filter Bar (Only the filter bar is sticky, no background) */}
-        <div className="sticky top-0 sm:top-16 z-30 bg-transparent py-2.5 px-4 sm:px-0 w-full transition-all flex items-center justify-between gap-3 overflow-visible">
+        <div className="sticky top-0 sm:top-16 z-30 bg-transparent py-1 px-4 sm:px-0 w-full transition-all flex items-center justify-between gap-3 overflow-visible">
         {/* Dashboard Tab Switcher: Icons on mobile when inactive, text on desktop */}
-        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar whitespace-nowrap p-1 bg-white rounded-2xl border border-slate-200/90 shadow-sm max-w-full">
+        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar whitespace-nowrap p-1 bg-[#f7f7f7] rounded-2xl border-0 shadow-sm max-w-full">
             {/* Filter 1: Project */}
             <button
               type="button"
@@ -716,7 +716,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   onResetDefaults();
                 }
               }}
-              className="p-2 sm:px-3 sm:py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+              className="p-2 sm:px-3 sm:py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-[#f7f7f7] hover:bg-[#ededed] border-0 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
               title="Restore 4 initial projects"
             >
               <RotateCcw className="w-3.5 h-3.5 shrink-0" />
@@ -730,9 +730,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
          ===================================================================== */}
       {activeTab === 'briefs' ? (
         <div className="w-full space-y-0 divide-y divide-black sm:space-y-8 sm:divide-y-0">
-          <div className="w-full bg-white rounded-none sm:rounded-3xl border-0 sm:border sm:border-slate-200/90 p-6 sm:p-10 lg:p-12 shadow-none sm:shadow-sm">
+          <div className="w-full bg-[#f7f7f7] rounded-none sm:rounded-3xl border-0 p-6 sm:p-10 lg:p-12 shadow-none sm:shadow-sm">
             {/* Header & Sticky Filter */}
-            <div className="sticky top-12 sm:top-28 z-20 bg-white/95 backdrop-blur-md pb-4 pt-1 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100">
+            <div className="sticky top-12 sm:top-28 z-20 bg-[#f7f7f7]/95 backdrop-blur-md pb-4 pt-1 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-0">
               <div>
                 <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-900">
                   Client Briefs &amp; Direct Leads
@@ -740,7 +740,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </div>
 
               {/* Desktop View: Horizontal Filter Tabs */}
-              <div className="hidden sm:flex items-center gap-1.5 p-1 bg-slate-100 rounded-2xl border border-slate-200/80">
+              <div className="hidden sm:flex items-center gap-1.5 p-1 bg-[#ededed] rounded-2xl border-0">
                 {[
                   { id: 'all', label: `All (${submittedBriefs.length})` },
                   { id: 'unread', label: `Unread (${unreadBriefsCount})` },
@@ -787,7 +787,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       className="fixed inset-0 z-40"
                       onClick={() => setIsBriefFilterDropdownOpen(false)}
                     />
-                    <div className="absolute left-0 top-full mt-1.5 w-44 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-xl p-1.5 z-50 space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
+                    <div className="absolute left-0 top-full mt-1.5 w-44 bg-[#f7f7f7]/95 backdrop-blur-md rounded-2xl border-0 shadow-xl p-1.5 z-50 space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
                       {[
                         { id: 'all', label: `All (${submittedBriefs.length})` },
                         { id: 'unread', label: `Unread (${unreadBriefsCount})` },
@@ -839,11 +839,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       onClick={() => handleOpenDetails(brief)}
                       className={`p-5 sm:p-6 rounded-2xl space-y-4 transition-all shadow-2xs cursor-pointer border ${
                         isUnread
-                          ? 'bg-slate-50/80 border-slate-300 hover:border-slate-400'
-                          : 'bg-white border-slate-200/80 hover:border-slate-300'
+                          ? 'bg-[#fafafa] hover:bg-[#f2f2f2] border-0'
+                          : 'bg-[#ededed] hover:bg-[#e6e6e6] border-0'
                       }`}
                     >
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/60 pb-3">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3">
                         <div>
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="text-[11px] font-mono-numbers font-bold text-slate-600 uppercase tracking-wider bg-slate-200/80 px-2 py-0.5 rounded-md">
@@ -881,7 +881,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             onClick={() =>
                               setActiveBriefMenuId(prev => (prev === briefKey ? null : briefKey))
                             }
-                            className="p-2 text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl transition-all cursor-pointer shadow-2xs flex items-center justify-center"
+                            className="p-2 text-slate-700 hover:text-slate-900 bg-[#ededed] hover:bg-[#e6e6e6] border-0 rounded-xl transition-all cursor-pointer shadow-2xs flex items-center justify-center"
                             title="Actions Menu"
                           >
                             <Menu className="w-4 h-4" />
@@ -893,7 +893,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                                 className="fixed inset-0 z-40"
                                 onClick={() => setActiveBriefMenuId(null)}
                               />
-                              <div className="absolute right-0 top-full mt-1.5 w-48 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200 shadow-2xl p-1.5 z-50 space-y-1 animate-in fade-in zoom-in-95 duration-150">
+                              <div className="absolute right-0 top-full mt-1.5 w-48 bg-[#f7f7f7]/95 backdrop-blur-md rounded-2xl border-0 shadow-2xl p-1.5 z-50 space-y-1 animate-in fade-in zoom-in-95 duration-150">
                                 {/* 1. Details */}
                                 <button
                                   type="button"
@@ -903,7 +903,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                                   }}
                                   className="w-full px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-100 rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer text-left"
                                 >
-                                  <Eye className="w-4 h-4 text-sky-600 shrink-0" />
                                   <span>Details</span>
                                 </button>
 
@@ -976,7 +975,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             onClick={() => handleOpenDetails(brief)}
                             className="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors flex items-center gap-1.5 cursor-pointer"
                           >
-                            <Eye className="w-3.5 h-3.5 text-sky-600" />
                             <span>Details</span>
                           </button>
 
@@ -1031,20 +1029,20 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-                        <div className="p-3 bg-white rounded-xl border border-slate-200/60">
+                        <div className="p-3 bg-[#ededed] rounded-xl border-0">
                           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Contact</span>
                           <div className="font-semibold text-slate-900 mt-0.5">{brief.email}</div>
                           <div className="text-slate-500 font-mono-numbers">{brief.phone || 'No phone provided'}</div>
                           <div className="text-[11px] text-slate-600 mt-1">Prefers: <strong className="text-slate-800">{brief.preferredContact}</strong></div>
                         </div>
 
-                        <div className="p-3 bg-white rounded-xl border border-slate-200/60">
+                        <div className="p-3 bg-[#ededed] rounded-xl border-0">
                           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Timeline &amp; Budget</span>
                           <div className="font-semibold text-slate-900 mt-0.5">{brief.budgetBand || brief.budgetType || 'N/A'}</div>
                           <div className="text-slate-600">Timeline: {brief.timelineType === 'weeks' ? `${brief.timelineWeeks} Weeks` : brief.timelineType}</div>
                         </div>
 
-                        <div className="p-3 bg-white rounded-xl border border-slate-200/60 lg:col-span-2">
+                        <div className="p-3 bg-[#ededed] rounded-xl border-0 lg:col-span-2">
                           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Goals &amp; Deliverables</span>
                           <div className="text-slate-800 font-medium mt-0.5">
                             {brief.projectType ? `${brief.projectType} — ` : ''}
@@ -1062,7 +1060,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
       ) : activeTab === 'nav_footer' ? (
         <form onSubmit={handleSaveAbout} className="w-full space-y-0 divide-y divide-black sm:space-y-8 sm:divide-y-0">
-          <div className="w-full bg-white rounded-none sm:rounded-3xl border-0 sm:border sm:border-slate-200/90 p-6 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
+          <div className="w-full bg-[#f7f7f7] rounded-none sm:rounded-3xl border-0 p-6 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div>
                 <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-900">
@@ -1192,7 +1190,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
            =================================================================== */
         <form onSubmit={handleSaveAbout} className="w-full space-y-0 divide-y divide-black sm:space-y-8 sm:divide-y-0">
           {/* SECTION 1: ABOUT PICTURE */}
-          <div className="w-full bg-white rounded-none sm:rounded-3xl border-0 sm:border sm:border-slate-200/90 p-6 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
+          <div className="w-full bg-[#f7f7f7] rounded-none sm:rounded-3xl border-0 p-6 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div>
                 <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-900">
@@ -1263,7 +1261,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           {/* SECTION 2: TEAM MEMBERS */}
-          <div className="w-full bg-white rounded-none sm:rounded-3xl border-0 sm:border sm:border-slate-200/90 p-6 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
+          <div className="w-full bg-[#f7f7f7] rounded-none sm:rounded-3xl border-0 p-6 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div>
                 <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-900">
@@ -1355,7 +1353,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                           className={`p-1 rounded-lg ${
                             idx === 0
                               ? 'text-slate-300 cursor-not-allowed'
-                              : 'text-slate-600 hover:bg-white hover:text-slate-900 cursor-pointer'
+                              : 'text-slate-600 hover:bg-[#f7f7f7] hover:text-slate-900 cursor-pointer'
                           }`}
                           title="Move up"
                         >
@@ -1368,7 +1366,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                           className={`p-1 rounded-lg ${
                             idx === teamMembersList.length - 1
                               ? 'text-slate-300 cursor-not-allowed'
-                              : 'text-slate-600 hover:bg-white hover:text-slate-900 cursor-pointer'
+                              : 'text-slate-600 hover:bg-[#f7f7f7] hover:text-slate-900 cursor-pointer'
                           }`}
                           title="Move down"
                         >
@@ -1396,7 +1394,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                           value={member.name}
                           onChange={e => handleUpdateTeamMember(idx, 'name', e.target.value)}
                           placeholder="Member name"
-                          className="w-full px-3 py-1.5 text-xs text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 font-semibold"
+                          className="w-full px-3 py-1.5 text-xs text-slate-800 bg-[#ededed] border-0 rounded-xl focus:outline-none focus:border-slate-800 font-semibold"
                         />
                       </div>
 
@@ -1410,7 +1408,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                           value={member.role}
                           onChange={e => handleUpdateTeamMember(idx, 'role', e.target.value)}
                           placeholder="Role"
-                          className="w-full px-3 py-1.5 text-xs text-slate-700 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800"
+                          className="w-full px-3 py-1.5 text-xs text-slate-700 bg-[#ededed] border-0 rounded-xl focus:outline-none focus:border-slate-800"
                         />
                       </div>
 
@@ -1436,9 +1434,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             value={member.avatarUrl || ''}
                             onChange={e => handleUpdateTeamMember(idx, 'avatarUrl', e.target.value)}
                             placeholder="Avatar URL or upload"
-                            className="flex-1 px-2.5 py-1.5 text-xs text-slate-700 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 font-mono text-[11px]"
+                            className="flex-1 px-2.5 py-1.5 text-xs text-slate-700 bg-[#ededed] border-0 rounded-xl focus:outline-none focus:border-slate-800 font-mono text-[11px]"
                           />
-                          <label className="p-1.5 rounded-xl bg-white border border-slate-200 hover:border-slate-400 text-slate-700 cursor-pointer shrink-0 transition-colors" title="Upload avatar from device">
+                          <label className="p-1.5 rounded-xl bg-[#ededed] border-0 hover:bg-[#e6e6e6] text-slate-700 cursor-pointer shrink-0 transition-colors" title="Upload avatar from device">
                             <Upload className="w-3.5 h-3.5" />
                             <input
                               type="file"
@@ -1479,7 +1477,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           {/* SECTION 3: CONTACT & SOCIAL CHANNELS */}
-          <div className="w-full bg-white rounded-none sm:rounded-3xl border-0 sm:border sm:border-slate-200/90 p-6 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
+          <div className="w-full bg-[#f7f7f7] rounded-none sm:rounded-3xl border-0 p-6 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div>
                 <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-900">
@@ -1542,7 +1540,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             value={ph.number || ''}
                             onChange={e => handleUpdatePhoneItem(idx, 'number', e.target.value)}
                             placeholder="0701 841 6894"
-                            className="w-full px-3 py-1.5 text-xs text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 font-mono-numbers"
+                            className="w-full px-3 py-1.5 text-xs text-slate-800 bg-[#ededed] border-0 rounded-xl focus:outline-none focus:border-slate-800 font-mono-numbers"
                           />
                         </div>
 
@@ -1551,7 +1549,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             Icon (Upload or Link)
                           </label>
                           <div className="flex items-center gap-1.5 min-w-0">
-                            <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0 p-1">
+                            <div className="w-8 h-8 rounded-lg bg-[#ededed] border-0 flex items-center justify-center shrink-0 p-1">
                               {ph.iconUrl ? (
                                 <img src={ph.iconUrl} alt="Phone icon" className="w-5 h-5 object-contain" />
                               ) : (
@@ -1563,7 +1561,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                               value={ph.iconUrl || ''}
                               onChange={e => handleUpdatePhoneItem(idx, 'iconUrl', e.target.value)}
                               placeholder="Paste icon URL or upload"
-                              className="flex-1 min-w-0 px-2.5 py-1.5 text-xs text-slate-700 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 font-mono text-[11px]"
+                              className="flex-1 min-w-0 px-2.5 py-1.5 text-xs text-slate-700 bg-[#ededed] border-0 rounded-xl focus:outline-none focus:border-slate-800 font-mono text-[11px]"
                             />
                             <label className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white cursor-pointer shrink-0 transition-colors shadow-2xs" title="Upload phone icon from device">
                               <Plus className="w-3.5 h-3.5" />
@@ -1633,7 +1631,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             value={em.email || ''}
                             onChange={e => handleUpdateEmailItem(idx, 'email', e.target.value)}
                             placeholder="vapourdense@gmail.com"
-                            className="w-full px-3 py-1.5 text-xs text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800"
+                            className="w-full px-3 py-1.5 text-xs text-slate-800 bg-[#ededed] border-0 rounded-xl focus:outline-none focus:border-slate-800"
                           />
                         </div>
 
@@ -1642,7 +1640,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             Icon (Upload or Link)
                           </label>
                           <div className="flex items-center gap-1.5 min-w-0">
-                            <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0 p-1">
+                            <div className="w-8 h-8 rounded-lg bg-[#ededed] border-0 flex items-center justify-center shrink-0 p-1">
                               {em.iconUrl ? (
                                 <img src={em.iconUrl} alt="Email icon" className="w-5 h-5 object-contain" />
                               ) : (
@@ -1654,7 +1652,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                               value={em.iconUrl || ''}
                               onChange={e => handleUpdateEmailItem(idx, 'iconUrl', e.target.value)}
                               placeholder="Paste icon URL or upload"
-                              className="flex-1 min-w-0 px-2.5 py-1.5 text-xs text-slate-700 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 font-mono text-[11px]"
+                              className="flex-1 min-w-0 px-2.5 py-1.5 text-xs text-slate-700 bg-[#ededed] border-0 rounded-xl focus:outline-none focus:border-slate-800 font-mono text-[11px]"
                             />
                             <label className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white cursor-pointer shrink-0 transition-colors shadow-2xs" title="Upload email icon from device">
                               <Plus className="w-3.5 h-3.5" />
@@ -1729,7 +1727,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             value={soc.platform || ''}
                             onChange={e => handleUpdateSocialLink(idx, 'platform', e.target.value)}
                             placeholder="Platform / Label (e.g. Instagram, WhatsApp)"
-                            className="w-full sm:max-w-xs px-3 py-1.5 text-xs font-bold text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800"
+                            className="w-full sm:max-w-xs px-3 py-1.5 text-xs font-bold text-slate-800 bg-[#ededed] border-0 rounded-xl focus:outline-none focus:border-slate-800"
                           />
                         </div>
 
@@ -1742,7 +1740,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             className={`p-1.5 rounded-lg ${
                               idx === 0
                                 ? 'text-slate-300 cursor-not-allowed'
-                                : 'text-slate-600 hover:bg-white hover:text-slate-900 cursor-pointer'
+                                : 'text-slate-600 hover:bg-[#f7f7f7] hover:text-slate-900 cursor-pointer'
                             }`}
                             title="Move up"
                           >
@@ -1755,7 +1753,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             className={`p-1.5 rounded-lg ${
                               idx === socialLinksList.length - 1
                                 ? 'text-slate-300 cursor-not-allowed'
-                                : 'text-slate-600 hover:bg-white hover:text-slate-900 cursor-pointer'
+                                : 'text-slate-600 hover:bg-[#f7f7f7] hover:text-slate-900 cursor-pointer'
                             }`}
                             title="Move down"
                           >
@@ -1781,7 +1779,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                           </label>
                           <div className="flex items-center gap-2 min-w-0">
                             {/* Live Icon Preview */}
-                            <div className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center shrink-0 p-1">
+                            <div className="w-9 h-9 rounded-xl bg-[#ededed] border-0 flex items-center justify-center shrink-0 p-1">
                               {soc.iconUrl ? (
                                 <img
                                   src={soc.iconUrl}
@@ -1799,7 +1797,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                               value={soc.iconUrl || ''}
                               onChange={e => handleUpdateSocialLink(idx, 'iconUrl', e.target.value)}
                               placeholder="Paste icon image URL or upload ->"
-                              className="flex-1 min-w-0 px-3 py-1.5 text-xs text-slate-700 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 font-mono text-[11px]"
+                              className="flex-1 min-w-0 px-3 py-1.5 text-xs text-slate-700 bg-[#ededed] border-0 rounded-xl focus:outline-none focus:border-slate-800 font-mono text-[11px]"
                             />
 
                             {/* Upload Icon Button */}
@@ -1834,7 +1832,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                               value={soc.url || ''}
                               onChange={e => handleUpdateSocialLink(idx, 'url', e.target.value)}
                               placeholder="https://instagram.com/yourhandle or https://wa.me/..."
-                              className="flex-1 min-w-0 px-3 py-1.5 text-xs text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 font-mono text-[11px]"
+                              className="flex-1 min-w-0 px-3 py-1.5 text-xs text-slate-800 bg-[#ededed] border-0 rounded-xl focus:outline-none focus:border-slate-800 font-mono text-[11px]"
                             />
                           </div>
                         </div>
@@ -1865,7 +1863,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           {/* DYNAMIC ABOUT ACCORDION SECTIONS (Full Reordering, Table Drawer with Colors, Software, Lists) */}
-          <div className="w-full bg-white rounded-none sm:rounded-3xl border-0 sm:border sm:border-slate-200/90 p-6 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
+          <div className="w-full bg-[#f7f7f7] rounded-none sm:rounded-3xl border-0 p-6 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
               <div>
                 <h2 className="font-display text-xl font-bold text-slate-900">
@@ -1898,7 +1896,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     className="rounded-2xl border border-slate-200/90 bg-slate-50/70 overflow-hidden transition-all shadow-xs"
                   >
                     {/* Section Header Bar with Reordering Arrows */}
-                    <div className="p-4 bg-white border-b border-slate-200/70 flex items-center justify-between gap-3">
+                    <div className="p-4 bg-[#ededed] border-0 flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3 min-w-0">
                         {/* Reorder Buttons */}
                         <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl shrink-0">
@@ -1909,7 +1907,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             className={`p-1.5 rounded-lg transition-colors ${
                               sIdx === 0
                                 ? 'text-slate-300 cursor-not-allowed'
-                                : 'text-slate-700 hover:bg-white hover:shadow-xs cursor-pointer'
+                                : 'text-slate-700 hover:bg-[#f7f7f7] hover:shadow-xs cursor-pointer'
                             }`}
                             title="Move Section Up"
                           >
@@ -1922,7 +1920,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             className={`p-1.5 rounded-lg transition-colors ${
                               sIdx === activeSections.length - 1
                                 ? 'text-slate-300 cursor-not-allowed'
-                                : 'text-slate-700 hover:bg-white hover:shadow-xs cursor-pointer'
+                                : 'text-slate-700 hover:bg-[#f7f7f7] hover:shadow-xs cursor-pointer'
                             }`}
                             title="Move Section Down"
                           >
@@ -1984,7 +1982,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                               value={sec.category || ''}
                               onChange={e => handleUpdateSection(sIdx, { category: e.target.value.toUpperCase() })}
                               placeholder="e.g. WELCOME, SERVICES, GUARANTEE"
-                              className="w-full px-3.5 py-2 text-sm font-semibold text-slate-900 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800"
+                              className="w-full px-3.5 py-2 text-sm font-semibold text-slate-900 bg-[#ededed] border-0 rounded-xl focus:outline-none focus:border-slate-800"
                             />
                           </div>
 
@@ -1997,7 +1995,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                               value={sec.tagline || ''}
                               onChange={e => handleUpdateSection(sIdx, { tagline: e.target.value })}
                               placeholder="e.g. SUP, I'M _TURBOFAN"
-                              className="w-full px-3.5 py-2 text-sm font-medium text-slate-900 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800"
+                              className="w-full px-3.5 py-2 text-sm font-medium text-slate-900 bg-[#ededed] border-0 rounded-xl focus:outline-none focus:border-slate-800"
                             />
                           </div>
                         </div>
@@ -2025,7 +2023,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                                   className={`p-2.5 rounded-xl border text-xs font-semibold flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer ${
                                     isSel
                                       ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
-                                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                                      : 'bg-[#ededed] text-slate-700 border-0 hover:bg-[#e6e6e6]'
                                   }`}
                                 >
                                   <Icon className="w-4 h-4" />
@@ -2038,7 +2036,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
                         {/* 3. TYPE 1: RICH TEXT / PARAGRAPH */}
                         {(sec.type === 'text' || sec.type === 'custom' || !sec.type) && (
-                          <div className="space-y-3 bg-white p-4 rounded-2xl border border-slate-200/80">
+                          <div className="space-y-3 bg-[#ededed] p-4 rounded-2xl border-0">
                             <div className="flex items-center justify-between">
                               <label className="text-xs font-semibold text-slate-700 uppercase tracking-wider">
                                 Text Narrative Content
@@ -2073,7 +2071,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
                         {/* TYPE 2: TABLE DRAWER WITH COLOR UTILITY */}
                         {sec.type === 'table' && (
-                          <div className="space-y-4 bg-white p-4 rounded-2xl border border-slate-200/80">
+                          <div className="space-y-4 bg-[#ededed] p-4 rounded-2xl border-0">
                             <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                               <div>
                                 <span className="text-xs font-bold text-slate-900 uppercase tracking-wider block">
@@ -2109,7 +2107,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                                         value={row.bracket || ''}
                                         onChange={e => handleUpdateTableRow(sIdx, rIdx, 'bracket', e.target.value)}
                                         placeholder="FLEXIBLE / STANDARD"
-                                        className="w-full px-2.5 py-1.5 text-xs font-bold text-slate-900 bg-white border border-slate-200 rounded-lg"
+                                        className="w-full px-2.5 py-1.5 text-xs font-bold text-slate-900 bg-[#ededed] border-0 rounded-lg"
                                       />
                                     </div>
                                     <div>
@@ -2121,7 +2119,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                                         value={row.timeframe || ''}
                                         onChange={e => handleUpdateTableRow(sIdx, rIdx, 'timeframe', e.target.value)}
                                         placeholder="1 WK / 24 HRS"
-                                        className="w-full px-2.5 py-1.5 text-xs font-mono-numbers text-slate-800 bg-white border border-slate-200 rounded-lg"
+                                        className="w-full px-2.5 py-1.5 text-xs font-mono-numbers text-slate-800 bg-[#ededed] border-0 rounded-lg"
                                       />
                                     </div>
                                     <div>
@@ -2133,7 +2131,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                                         value={row.multiplier || ''}
                                         onChange={e => handleUpdateTableRow(sIdx, rIdx, 'multiplier', e.target.value)}
                                         placeholder="+25% / BASELINE"
-                                        className="w-full px-2.5 py-1.5 text-xs font-bold text-slate-800 bg-white border border-slate-200 rounded-lg"
+                                        className="w-full px-2.5 py-1.5 text-xs font-bold text-slate-800 bg-[#ededed] border-0 rounded-lg"
                                       />
                                     </div>
                                     {/* Color Utility */}
@@ -2175,7 +2173,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                                         value={row.meaning || ''}
                                         onChange={e => handleUpdateTableRow(sIdx, rIdx, 'meaning', e.target.value)}
                                         placeholder="Explanation of delivery tier..."
-                                        className="w-full px-2.5 py-1.5 text-xs text-slate-700 bg-white border border-slate-200 rounded-lg"
+                                        className="w-full px-2.5 py-1.5 text-xs text-slate-700 bg-[#ededed] border-0 rounded-lg"
                                       />
                                     </div>
                                     <button
@@ -2195,7 +2193,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
                         {/* TYPE 3: SOFTWARE SUITE MANAGER */}
                         {sec.type === 'software' && (
-                          <div className="space-y-4 bg-white p-4 rounded-2xl border border-slate-200/80">
+                          <div className="space-y-4 bg-[#ededed] p-4 rounded-2xl border-0">
                             <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                               <div>
                                 <span className="text-xs font-bold text-slate-900 uppercase tracking-wider block">
@@ -2227,7 +2225,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                                       value={tool.name || ''}
                                       onChange={e => handleUpdateSoftwareTool(sIdx, tIdx, 'name', e.target.value)}
                                       placeholder="Software Name"
-                                      className="flex-1 px-2.5 py-1.5 text-xs font-bold text-slate-900 bg-white border border-slate-200 rounded-lg"
+                                      className="flex-1 px-2.5 py-1.5 text-xs font-bold text-slate-900 bg-[#ededed] border-0 rounded-lg"
                                     />
                                     <button
                                       type="button"
@@ -2249,7 +2247,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                                         value={tool.code || ''}
                                         onChange={e => handleUpdateSoftwareTool(sIdx, tIdx, 'code', e.target.value)}
                                         placeholder="Ps, Ai, Word"
-                                        className="w-full px-2 py-1 text-xs font-mono-numbers bg-white border border-slate-200 rounded-lg"
+                                        className="w-full px-2 py-1 text-xs font-mono-numbers bg-[#ededed] border-0 rounded-lg"
                                       />
                                     </div>
                                     <div className="col-span-2">
@@ -2261,7 +2259,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                                         value={tool.logoUrl || ''}
                                         onChange={e => handleUpdateSoftwareTool(sIdx, tIdx, 'logoUrl', e.target.value)}
                                         placeholder="https://... / logo.png"
-                                        className="w-full px-2 py-1 text-xs bg-white border border-slate-200 rounded-lg"
+                                        className="w-full px-2 py-1 text-xs bg-[#ededed] border-0 rounded-lg"
                                       />
                                     </div>
                                   </div>
@@ -2275,7 +2273,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                                       value={tool.desc || ''}
                                       onChange={e => handleUpdateSoftwareTool(sIdx, tIdx, 'desc', e.target.value)}
                                       placeholder="Image Editing, Vector & Logos"
-                                      className="w-full px-2 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-lg"
+                                      className="w-full px-2 py-1 text-xs text-slate-700 bg-[#ededed] border-0 rounded-lg"
                                     />
                                   </div>
                                 </div>
@@ -2286,7 +2284,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
                         {/* TYPE 4 & 5: LIST OR GRID ITEMS */}
                         {(sec.type === 'list' || sec.type === 'grid') && (
-                          <div className="space-y-3 bg-white p-4 rounded-2xl border border-slate-200/80">
+                          <div className="space-y-3 bg-[#ededed] p-4 rounded-2xl border-0">
                             <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                               <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">
                                 Items List ({sec.items?.length || 0})
@@ -2338,7 +2336,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
                         {/* TYPE 6: CONTACT CARD */}
                         {sec.type === 'contact' && (
-                          <div className="space-y-3 bg-white p-4 rounded-2xl border border-slate-200/80">
+                          <div className="space-y-3 bg-[#ededed] p-4 rounded-2xl border-0">
                             <span className="text-xs font-bold text-slate-900 uppercase tracking-wider block border-b border-slate-100 pb-2">
                               Contact Section Details
                             </span>
@@ -2394,7 +2392,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <button
                 type="button"
                 onClick={handleAddNewSection}
-                className="w-full py-3.5 px-4 rounded-2xl border-2 border-dashed border-slate-300 hover:border-slate-800 bg-slate-50 hover:bg-white text-slate-700 hover:text-slate-900 text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
+                className="w-full py-3.5 px-4 rounded-2xl border-2 border-dashed border-slate-300 hover:border-slate-800 bg-slate-50 hover:bg-[#f7f7f7] text-slate-700 hover:text-slate-900 text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
               >
                 <Plus className="w-4 h-4" />
                 <span>+ Add Another Section to About Page</span>
@@ -2421,10 +2419,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
            =================================================================== */
         <>
           {/* Single Unified Container for Filter, Drag & Drop, and Projects Table/Cards */}
-          <div className="w-full bg-white rounded-none sm:rounded-3xl border-0 sm:border sm:border-slate-200/90 p-4 sm:p-8 lg:p-10 shadow-none sm:shadow-sm space-y-6 sm:space-y-0 sm:flex sm:flex-col sm:max-h-[calc(100vh-14rem)] sm:overflow-hidden">
-            <div className="sticky top-12 sm:static z-20 bg-white pb-4 pt-1 flex flex-row items-center justify-between gap-2 sm:gap-4 border-b border-slate-100 shrink-0">
+          <div className="w-full bg-[#f7f7f7] rounded-none sm:rounded-3xl border-0 p-4 sm:p-8 lg:p-10 shadow-none sm:shadow-sm space-y-6 sm:space-y-0 sm:flex sm:flex-col sm:max-h-[calc(100vh-14rem)] sm:overflow-hidden">
+            <div className="sticky top-12 sm:static z-20 bg-[#f7f7f7] pb-4 pt-1 flex flex-row items-center justify-between gap-2 sm:gap-4 border-0 shrink-0">
               {/* Desktop View: Horizontal Category Tabs */}
-              <div className="hidden sm:flex items-center gap-1.5 p-1 bg-slate-100 rounded-2xl border border-slate-200/80">
+              <div className="hidden sm:flex items-center gap-1.5 p-1 bg-[#ededed] rounded-2xl border-0">
                 {CATEGORIES.map(category => {
                   const isSel = selectedCategory === category;
                   const getCatIcon = () => {
@@ -2474,7 +2472,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       className="fixed inset-0 z-40"
                       onClick={() => setIsProjectCategoryDropdownOpen(false)}
                     />
-                    <div className="absolute left-0 top-full mt-1.5 w-48 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-xl p-1.5 z-50 space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
+                    <div className="absolute left-0 top-full mt-1.5 w-48 bg-[#f7f7f7]/95 backdrop-blur-md rounded-2xl border-0 shadow-xl p-1.5 z-50 space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
                       {CATEGORIES.map(category => {
                         const isSel = selectedCategory === category;
                         const getCatIcon = () => {
@@ -2538,7 +2536,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   <button
                     type="button"
                     onClick={() => setIsSearchExpanded(true)}
-                    className="p-2 sm:p-2.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-900 shadow-2xs flex items-center justify-center transition-all cursor-pointer"
+                    className="p-2 sm:p-2.5 rounded-xl bg-[#ededed] hover:bg-[#e6e6e6] border-0 text-slate-700 hover:text-slate-900 shadow-2xs flex items-center justify-center transition-all cursor-pointer"
                     title="Search projects"
                   >
                     <Search className="w-4 h-4" />
@@ -2566,7 +2564,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 className={`p-5 sm:p-6 border-2 border-dashed rounded-2xl text-center transition-all cursor-pointer ${
                   isDragOver
                     ? 'border-slate-800 bg-slate-200/80 shadow-inner'
-                    : 'border-slate-300 bg-slate-50/70 hover:bg-white hover:border-slate-400'
+                    : 'border-0 bg-[#f0f0f0] hover:bg-[#ededed]'
                 }`}
               >
                 <div className="flex items-center justify-center gap-3 text-slate-600 text-xs">
@@ -2589,7 +2587,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     return (
                       <div
                         key={proj.id}
-                        className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-2xs space-y-3"
+                        className="p-4 rounded-2xl bg-[#ededed] border-0 shadow-2xs space-y-3"
                       >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3">
@@ -2638,31 +2636,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         </div>
                       )}
 
-                      {/* Image Scale Adjustment in Dashboard */}
-                      <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-100 text-xs">
-                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Image Scale</span>
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="range"
-                            min={50}
-                            max={250}
-                            step={5}
-                            value={proj.imageScalePercent || 100}
-                            onChange={e => {
-                              const val = Number(e.target.value);
-                              if (onUpdateProject) {
-                                onUpdateProject(proj.id, { ...proj, imageScalePercent: val });
-                              }
-                            }}
-                            className="w-24 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#090132]"
-                            title={`Image scale: ${proj.imageScalePercent || 100}%`}
-                          />
-                          <span className="text-[11px] font-mono-numbers text-slate-700 font-semibold w-9 text-right">
-                            {proj.imageScalePercent || 100}%
-                          </span>
-                        </div>
-                      </div>
-
                       {/* Action Buttons */}
                       <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
                         <button
@@ -2708,14 +2681,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     <th className="py-3.5 px-4">Client</th>
                     <th className="py-3.5 px-4">Descriptors</th>
                     <th className="py-3.5 px-4">Fee / Year</th>
-                    <th className="py-3.5 px-4">Image Scale</th>
                     <th className="py-3.5 px-6 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 text-xs text-slate-700">
                   {filteredProjects.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="py-12 text-center text-slate-400 font-light">
+                      <td colSpan={6} className="py-12 text-center text-slate-400 font-light">
                         No projects found.
                       </td>
                     </tr>
@@ -2767,29 +2739,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             <div className="text-[11px] text-slate-400">
                               {proj.year}
                               {proj.duration ? ` · ${proj.duration}` : ''}
-                            </div>
-                          </td>
-
-                          <td className="py-4 px-4">
-                            <div className="flex items-center gap-2">
-                              <input
-                                type="range"
-                                min={50}
-                                max={250}
-                                step={5}
-                                value={proj.imageScalePercent || 100}
-                                onChange={e => {
-                                  const val = Number(e.target.value);
-                                  if (onUpdateProject) {
-                                    onUpdateProject(proj.id, { ...proj, imageScalePercent: val });
-                                  }
-                                }}
-                                className="w-20 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#090132]"
-                                title={`Image scale: ${proj.imageScalePercent || 100}%`}
-                              />
-                              <span className="text-[11px] font-mono-numbers text-slate-700 font-semibold w-9 text-right">
-                                {proj.imageScalePercent || 100}%
-                              </span>
                             </div>
                           </td>
 
@@ -2903,7 +2852,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   initial={{ opacity: 0, scale: 0.98, y: 8 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.98, y: 8 }}
-                  className="relative bg-white rounded-none sm:rounded-3xl border-0 shadow-[0_25px_70px_rgba(0,0,0,0.6)] max-w-full sm:max-w-3xl xl:max-w-4xl w-full h-full sm:h-auto my-0 sm:my-auto z-10 overflow-hidden text-slate-900 flex flex-col max-h-full sm:max-h-[85vh]"
+                  className="relative bg-[#f7f7f7] rounded-none sm:rounded-3xl border-0 shadow-[0_25px_70px_rgba(0,0,0,0.6)] max-w-full sm:max-w-3xl xl:max-w-4xl w-full h-full sm:h-auto my-0 sm:my-auto z-10 overflow-hidden text-slate-900 flex flex-col max-h-full sm:max-h-[85vh]"
                 >
               {/* Modal Header Bar - Seamless Dark Slate */}
               <div className="p-5 sm:p-6 bg-slate-950 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 shrink-0">
@@ -2955,7 +2904,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   <button
                     type="button"
                     onClick={() => handleToggleReadStatus(selectedBriefModal)}
-                    className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-semibold rounded-xl transition-all cursor-pointer"
+                    className="px-3 py-1.5 bg-white/10 hover:bg-[#f7f7f7]/20 text-white text-xs font-semibold rounded-xl transition-all cursor-pointer"
                   >
                     {selectedBriefModal.status === 'read' ? 'Mark Unread' : 'Mark Read'}
                   </button>
@@ -2963,7 +2912,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   <button
                     type="button"
                     onClick={() => setSelectedBriefModal(null)}
-                    className="p-1.5 text-slate-400 hover:text-white bg-white/10 hover:bg-white/20 rounded-xl transition-colors cursor-pointer"
+                    className="p-1.5 text-slate-400 hover:text-white bg-white/10 hover:bg-[#f7f7f7]/20 rounded-xl transition-colors cursor-pointer"
                     aria-label="Close modal"
                   >
                     <X className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -2982,7 +2931,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
-                    <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
+                    <div className="p-3.5 bg-[#ededed] rounded-xl border-0">
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                         Client Name
                       </span>
@@ -2991,7 +2940,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       </span>
                     </div>
 
-                    <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
+                    <div className="p-3.5 bg-[#ededed] rounded-xl border-0">
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                         Business &amp; Industry
                       </span>
@@ -3003,7 +2952,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       </span>
                     </div>
 
-                    <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
+                    <div className="p-3.5 bg-[#ededed] rounded-xl border-0">
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                         Preferred Contact
                       </span>
@@ -3012,7 +2961,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       </span>
                     </div>
 
-                    <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
+                    <div className="p-3.5 bg-[#ededed] rounded-xl border-0">
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                         Email Address
                       </span>
@@ -3024,7 +2973,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       </a>
                     </div>
 
-                    <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
+                    <div className="p-3.5 bg-[#ededed] rounded-xl border-0">
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                         Phone Number
                       </span>
@@ -3036,7 +2985,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       </a>
                     </div>
 
-                    <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
+                    <div className="p-3.5 bg-[#ededed] rounded-xl border-0">
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                         Client Readiness
                       </span>
@@ -3056,7 +3005,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                    <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
+                    <div className="p-3.5 bg-[#ededed] rounded-xl border-0">
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                         Service Category
                       </span>
@@ -3066,7 +3015,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     </div>
 
                     {selectedBriefModal.projectType && (
-                      <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
+                      <div className="p-3.5 bg-[#ededed] rounded-xl border-0">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                           Deliverable Type
                         </span>
@@ -3076,7 +3025,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       </div>
                     )}
 
-                    <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70 sm:col-span-2">
+                    <div className="p-3.5 bg-[#ededed] rounded-xl border-0 sm:col-span-2">
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                         Key Goals &amp; Objectives
                       </span>
@@ -3089,7 +3038,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     </div>
 
                     {selectedBriefModal.feelMood && (
-                      <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
+                      <div className="p-3.5 bg-[#ededed] rounded-xl border-0">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                           Design Direction / Mood
                         </span>
@@ -3100,7 +3049,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     )}
 
                     {selectedBriefModal.feelDescription && (
-                      <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
+                      <div className="p-3.5 bg-[#ededed] rounded-xl border-0">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                           Style Description / Notes
                         </span>
@@ -3111,7 +3060,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     )}
 
                     {selectedBriefModal.referenceWebsiteLink && (
-                      <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70 sm:col-span-2">
+                      <div className="p-3.5 bg-[#ededed] rounded-xl border-0 sm:col-span-2">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                           Reference Website / Inspiration Link
                         </span>
@@ -3127,7 +3076,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     )}
 
                     {selectedBriefModal.scopePages && (
-                      <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
+                      <div className="p-3.5 bg-[#ededed] rounded-xl border-0">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                           Page Count / Scope
                         </span>
@@ -3138,7 +3087,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     )}
 
                     {selectedBriefModal.graphicQuantity && (
-                      <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
+                      <div className="p-3.5 bg-[#ededed] rounded-xl border-0">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                           Design Output Quantity
                         </span>
@@ -3149,7 +3098,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     )}
 
                     {selectedBriefModal.brandAssets && (
-                      <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
+                      <div className="p-3.5 bg-[#ededed] rounded-xl border-0">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                           Brand Assets Available
                         </span>
@@ -3160,7 +3109,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     )}
 
                     {selectedBriefModal.existingAssets && (
-                      <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
+                      <div className="p-3.5 bg-[#ededed] rounded-xl border-0">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                           Existing System / Assets
                         </span>
@@ -3171,7 +3120,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     )}
 
                     {selectedBriefModal.techStackPreference && (
-                      <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
+                      <div className="p-3.5 bg-[#ededed] rounded-xl border-0">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                           Tech Stack Preferences
                         </span>
@@ -3182,7 +3131,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     )}
 
                     {selectedBriefModal.systemCurrentState && (
-                      <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
+                      <div className="p-3.5 bg-[#ededed] rounded-xl border-0">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                           System Current State
                         </span>
@@ -3203,7 +3152,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                    <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
+                    <div className="p-3.5 bg-[#ededed] rounded-xl border-0">
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                         Estimated Budget
                       </span>
@@ -3212,7 +3161,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       </span>
                     </div>
 
-                    <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
+                    <div className="p-3.5 bg-[#ededed] rounded-xl border-0">
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                         Target Delivery Window
                       </span>
@@ -3231,7 +3180,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setSelectedBriefModal(null)}
-                  className="px-5 py-2 text-xs font-bold text-slate-700 hover:text-slate-900 bg-white border border-slate-300/90 rounded-xl transition-all cursor-pointer shadow-2xs"
+                  className="px-5 py-2 text-xs font-bold text-slate-700 hover:text-slate-900 bg-[#ededed] hover:bg-[#e6e6e6] border-0 rounded-xl transition-all cursor-pointer shadow-2xs"
                 >
                   Close Details
                 </button>
