@@ -133,11 +133,7 @@ export interface AboutData {
 
 export const defaultFounderPortraitSvg = '/VDVC 4 - Logo.png';
 
-export const defaultSocialLinks: SocialLinkItem[] = [
-  { id: 'soc-1', platform: 'Instagram', url: 'https://instagram.com/vapourdense', handle: '@vapourdense' },
-  { id: 'soc-2', platform: 'Twitter / X', url: 'https://x.com/vapourdense', handle: '@vapourdense' },
-  { id: 'soc-3', platform: 'WhatsApp', url: 'https://wa.me/2347018416894', handle: '+234 701 841 6894' },
-];
+export const defaultSocialLinks: SocialLinkItem[] = [];
 
 export const defaultAboutSections: AboutCustomSection[] = [
   {
@@ -229,17 +225,17 @@ export const defaultAboutSections: AboutCustomSection[] = [
     tagline: 'SOFTWARE, CREATIVE SUITES & WORKFLOW ENGINES',
     type: 'software',
     tools: [
-      { id: 't1', name: 'Microsoft Word', code: 'Word', color: 'bg-blue-600 text-white', desc: 'Texts (.docx)' },
-      { id: 't2', name: 'Microsoft PowerPoint', code: 'PPT', color: 'bg-orange-600 text-white', desc: 'Slides (.pptx)' },
-      { id: 't3', name: 'Microsoft Excel', code: 'Excel', color: 'bg-emerald-600 text-white', desc: 'Sheets (.xlsx)' },
-      { id: 't4', name: 'Adobe Illustrator', code: 'Ai', color: 'bg-amber-500 text-slate-950 font-bold', desc: 'Vector & Logos' },
-      { id: 't5', name: 'Adobe Photoshop', code: 'Ps', color: 'bg-sky-600 text-white font-bold', desc: 'Image Editing' },
-      { id: 't6', name: 'Adobe InDesign', code: 'Id', color: 'bg-fuchsia-700 text-white font-bold', desc: 'DTP & Editorial' },
-      { id: 't7', name: 'Adobe Dimension', code: 'Dn', color: 'bg-emerald-700 text-white font-bold', desc: '3D Mockups' },
-      { id: 't8', name: 'Canva', code: 'Canva', color: 'bg-teal-500 text-white', desc: 'Fast Collateral' },
-      { id: 't9', name: 'Google Gemini / AI', code: 'Gemini', color: 'bg-indigo-600 text-white', desc: 'Generative AI' },
-      { id: 't10', name: 'ArtStation', code: 'AS', color: 'bg-cyan-600 text-white', desc: 'Digital Concept' },
-      { id: 't11', name: 'Visual Studio Code', code: 'VSCode', color: 'bg-blue-500 text-white', desc: 'Web & Scripts' },
+      { id: 't1', name: 'Microsoft Word', code: 'Word', color: 'bg-slate-800 text-white', desc: 'Texts (.docx)' },
+      { id: 't2', name: 'Microsoft PowerPoint', code: 'PPT', color: 'bg-slate-800 text-white', desc: 'Slides (.pptx)' },
+      { id: 't3', name: 'Microsoft Excel', code: 'Excel', color: 'bg-slate-800 text-white', desc: 'Sheets (.xlsx)' },
+      { id: 't4', name: 'Adobe Illustrator', code: 'Ai', color: 'bg-slate-800 text-white font-bold', desc: 'Vector & Logos' },
+      { id: 't5', name: 'Adobe Photoshop', code: 'Ps', color: 'bg-slate-800 text-white font-bold', desc: 'Image Editing' },
+      { id: 't6', name: 'Adobe InDesign', code: 'Id', color: 'bg-slate-800 text-white font-bold', desc: 'DTP & Editorial' },
+      { id: 't7', name: 'Adobe Dimension', code: 'Dn', color: 'bg-slate-800 text-white font-bold', desc: '3D Mockups' },
+      { id: 't8', name: 'Canva', code: 'Canva', color: 'bg-slate-800 text-white', desc: 'Fast Collateral' },
+      { id: 't9', name: 'Google Gemini / AI', code: 'Gemini', color: 'bg-slate-800 text-white', desc: 'Generative AI' },
+      { id: 't10', name: 'ArtStation', code: 'AS', color: 'bg-slate-800 text-white', desc: 'Digital Concept' },
+      { id: 't11', name: 'Visual Studio Code', code: 'VSCode', color: 'bg-slate-800 text-white', desc: 'Web & Scripts' },
     ],
   },
 ];
@@ -257,12 +253,8 @@ export const defaultAboutData: AboutData = {
   phones: ['0701 841 6894'],
   email: 'vapourdense@gmail.com',
   emails: ['vapourdense@gmail.com'],
-  socialLinks: defaultSocialLinks,
-  socials: {
-    instagram: 'https://instagram.com/vapourdense',
-    twitter: 'https://x.com/vapourdense',
-    whatsapp: 'https://wa.me/2347018416894',
-  },
+  socialLinks: [],
+  socials: {},
   websiteName: 'VAPOURDENSE VIRTUAL CAFE',
   footerTagline: 'a flexible system for your paper workloads',
   footerLocation: 'Jos, Plateau State // UNIJOS',
@@ -285,7 +277,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
     sec => sec.id !== 'sec-contact' && sec.type !== 'contact' && sec.category !== 'CONTACT'
   );
 
-  // Initialize all sections as open by default
+  // Initialize sections open state
   const [openPanels, setOpenPanels] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
     accordionSections.forEach((sec, idx) => {
@@ -325,7 +317,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
   };
 
   const getSocialIcon = (platform: string) => {
-    const p = platform.toLowerCase();
+    const p = (platform || '').toLowerCase();
     if (p.includes('instagram')) return Instagram;
     if (p.includes('twitter') || p.includes('x')) return Twitter;
     if (p.includes('linkedin')) return Linkedin;
@@ -335,9 +327,10 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
     return Globe;
   };
 
-  const activeSocials = data.socialLinks && data.socialLinks.length > 0
-    ? data.socialLinks
-    : defaultSocialLinks;
+  // Only show social links when explicitly added via Dashboard
+  const activeSocials = Array.isArray(data.socialLinks)
+    ? data.socialLinks.filter(soc => soc && (soc.url?.trim() || soc.iconUrl?.trim()))
+    : [];
 
   // Effective phone numbers with support for custom icons or uploaded icons
   const effectivePhones = React.useMemo(() => {
@@ -369,12 +362,12 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
           {/* PINNED LEFT COLUMN: About Heading, Picture Card & CEO/Team spot */}
           <div className="lg:col-span-5 lg:sticky lg:top-24 lg:self-start space-y-6 sm:space-y-8 z-10">
             <div>
-              <h2 className="font-phenomena-bold text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#090132]">
+              <h2 className="font-phenomena-bold text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900">
                 About
               </h2>
             </div>
 
-            {/* Picture Card with "VDVC 4 - Logo.png" (Square shape, no borders, #d6d3d3 background behind image) */}
+            {/* Picture Card with "VDVC 4 - Logo.png" */}
             <div
               className="p-4 sm:p-6 rounded-none bg-[#d6d3d3] w-full flex flex-col items-center justify-center border-0 shadow-none transition-all"
               style={{ maxWidth: `${Math.round(448 * ((data.founderImageScale || 100) / 100))}px` }}
@@ -385,7 +378,8 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
                   alt="VDVC 4 - Logo.png"
                   onError={(e) => {
                     const target = e.currentTarget as HTMLImageElement;
-                    if (target.src.indexOf('vdvc-4-logo.png') === -1) {
+                    if (!target.dataset.fallbackApplied) {
+                      target.dataset.fallbackApplied = 'true';
                       target.src = '/vdvc-4-logo.png';
                     }
                   }}
@@ -396,9 +390,8 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
 
             {/* SPOT FOR CEO NAME AND MEMBERS OF THE TEAM (Right under the picture) */}
             <div className="w-full max-w-sm sm:max-w-md space-y-4 pt-1">
-              {/* CEO Spot (Same line, Moon 2.0 Light font, body copy size & font weight, wider character spacing) */}
               <div>
-                <h4 className="font-moon-light text-sm sm:text-base font-semibold text-[#090132] leading-relaxed uppercase tracking-widest flex items-baseline gap-2 flex-wrap">
+                <h4 className="font-moon-light text-sm sm:text-base font-semibold text-slate-900 leading-relaxed uppercase tracking-widest flex items-baseline gap-2 flex-wrap">
                   <span>{data.ceoTitle ? (data.ceoTitle.endsWith(':') ? data.ceoTitle : `${data.ceoTitle}:`) : 'CEO:'}</span>
                   <span>{data.ceoName || data.founderName || '_TURBOFAN'}</span>
                 </h4>
@@ -425,11 +418,11 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
                           </div>
                         )}
                         <div className="min-w-0">
-                          <p className="font-phenomena text-lg sm:text-xl text-[#090132] font-semibold leading-tight uppercase truncate">
+                          <p className="font-phenomena text-lg sm:text-xl text-slate-900 font-semibold leading-tight uppercase truncate">
                             {member.name}
                           </p>
                           {member.role && (
-                            <p className="text-[11px] sm:text-xs text-slate-600 font-normal font-mono-numbers truncate">
+                            <p className="text-[11px] sm:text-xs text-slate-600 font-normal font-unisans-regular truncate">
                               {member.role}
                             </p>
                           )}
@@ -445,17 +438,17 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
           {/* RIGHT PANEL: Dynamic Accordion Sections & Centralized Tagline */}
           <div className="lg:col-span-7 space-y-6 lg:pt-2">
             
-            {/* Top Header of the Right Panel (Centralized Tagline under VAPOURDENSE VIRTUAL CAFE) */}
+            {/* Top Header of the Right Panel */}
             <div className="pb-6 space-y-2 text-center flex flex-col items-center justify-center border-b border-black/[0.06]">
-              <h3 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#090132] tracking-tight flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1">
+              <h3 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1">
                 <span>
                   <span className="font-vapour">VAPOUR</span><span className="font-dense">DENSE</span>
                 </span>
-                <span className="font-phenomena-extralight text-3xl sm:text-4xl lg:text-5xl text-[#090132] tracking-wider font-extralight">
+                <span className="font-phenomena-extralight text-3xl sm:text-4xl lg:text-5xl text-slate-900 tracking-wider font-extralight">
                   VIRTUAL CAFE
                 </span>
               </h3>
-              <p className="text-[18px] sm:text-[20px] text-slate-600 italic font-semibold pt-1 font-body-copy text-center max-w-xl mx-auto">
+              <p className="text-[18px] sm:text-[20px] text-slate-700 italic font-semibold pt-1 font-body-copy text-center max-w-xl mx-auto">
                 {data.footerTagline && !data.footerTagline.includes('Creative Direction')
                   ? data.footerTagline
                   : data.bio && !data.bio.includes('Creative Direction')
@@ -470,7 +463,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
                 <span className="font-unisans-thin-caps text-[11px] sm:text-xs text-slate-500 font-normal block">
                   CONTACT
                 </span>
-                <span className="font-phenomena text-[18px] sm:text-[20px] md:text-[22px] text-[#090132] block leading-snug font-normal">
+                <span className="font-phenomena text-[18px] sm:text-[20px] md:text-[22px] text-slate-900 block leading-snug font-normal">
                   HOW TO REACH ME
                 </span>
               </div>
@@ -491,10 +484,10 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
                         )}
                       </div>
                       <div className="truncate">
-                        <span className="text-[10px] text-slate-600 block uppercase tracking-wider font-semibold">
+                        <span className="text-[10px] text-slate-600 block uppercase tracking-wider font-semibold font-unisans-regular">
                           Phone {effectivePhones.length > 1 ? `#${pIdx + 1}` : ''}
                         </span>
-                        <span className="text-xs sm:text-sm font-bold text-slate-900 font-mono-numbers">
+                        <span className="text-xs sm:text-sm font-bold text-slate-900 font-unisans-regular">
                           {ph.number}
                         </span>
                       </div>
@@ -515,10 +508,10 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
                         )}
                       </div>
                       <div className="truncate">
-                        <span className="text-[10px] text-slate-600 block uppercase tracking-wider font-semibold">
+                        <span className="text-[10px] text-slate-600 block uppercase tracking-wider font-semibold font-unisans-regular">
                           Email {effectiveEmails.length > 1 ? `#${eIdx + 1}` : ''}
                         </span>
-                        <span className="text-xs sm:text-sm font-bold text-slate-900 truncate block">
+                        <span className="text-xs sm:text-sm font-bold text-slate-900 font-unisans-regular truncate block">
                           {em.email}
                         </span>
                       </div>
@@ -526,7 +519,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
                   ))}
                 </div>
 
-                {/* SOCIAL MEDIA BUTTONS IN CONTACT SECTION (ICONS ONLY) */}
+                {/* SOCIAL MEDIA BUTTONS IN CONTACT SECTION (Shown only when added via Dashboard) */}
                 {activeSocials.length > 0 && (
                   <div className="pt-2">
                     <span className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold block mb-2 font-unisans-thin-caps">
@@ -562,7 +555,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
                 )}
 
                 {contactNoticeContent && (
-                  <div className="p-3.5 rounded-xl bg-transparent text-xs sm:text-sm text-slate-800 uppercase leading-relaxed font-semibold">
+                  <div className="p-3.5 rounded-xl bg-transparent text-xs sm:text-sm text-slate-800 uppercase leading-relaxed font-semibold font-unisans-regular">
                     {contactNoticeContent}
                   </div>
                 )}
@@ -590,7 +583,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
                         <span className="font-unisans-thin-caps text-[11px] sm:text-xs text-slate-500 font-normal block">
                           {section.category}
                         </span>
-                        <span className="font-phenomena text-[18px] sm:text-[20px] md:text-[22px] text-[#090132] block leading-snug font-normal">
+                        <span className="font-phenomena text-[18px] sm:text-[20px] md:text-[22px] text-slate-900 block leading-snug font-normal">
                           {section.tagline}
                         </span>
                       </div>
@@ -604,7 +597,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
                     </button>
 
                     {isOpen && (
-                      <div className="px-4 pb-5 sm:px-5 sm:pb-5 pt-1 bg-transparent text-slate-800">
+                      <div className="px-4 pb-5 sm:px-5 sm:pb-5 pt-1 bg-transparent text-slate-800 font-unisans-regular">
                         {/* 1. TABLE TYPE */}
                         {section.type === 'table' && section.tableRows && (
                           <div className="space-y-4">
@@ -620,7 +613,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
                                       {row.bracket}
                                     </span>
                                     <div className="flex items-center gap-2 text-[11px]">
-                                      <span className="font-mono bg-black/5 px-2 py-0.5 rounded-md text-slate-900 font-semibold">
+                                      <span className="bg-black/5 px-2 py-0.5 rounded-md text-slate-900 font-semibold">
                                         {row.timeframe}
                                       </span>
                                       <span className="font-bold text-slate-900 bg-slate-900/10 px-2 py-0.5 rounded-md">
@@ -650,9 +643,10 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
                                   {section.tableRows.map((row) => (
                                     <tr
                                       key={row.id}
-                                      className="bg-transparent text-slate-800">
+                                      className="bg-transparent text-slate-800"
+                                    >
                                       <td className="py-3 px-3 sm:px-4 font-bold">{row.bracket}</td>
-                                      <td className="py-3 px-3 sm:px-4 font-mono">{row.timeframe}</td>
+                                      <td className="py-3 px-3 sm:px-4 font-semibold">{row.timeframe}</td>
                                       <td className="py-3 px-3 sm:px-4 font-bold">{row.multiplier}</td>
                                       <td className="py-3 px-3 sm:px-4 opacity-90">{row.meaning}</td>
                                     </tr>
@@ -661,11 +655,10 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
                               </table>
                             </div>
 
-                            {/* "SEE SUMMARISED PRICELIST" in phenomena font with standard black arrow to top-right */}
                             <button
                               type="button"
                               onClick={() => setActiveModal('pricelist')}
-                              className="font-phenomena text-[18px] sm:text-[20px] md:text-[22px] text-[#090132] font-normal leading-snug inline-flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer pt-2"
+                              className="font-phenomena text-[18px] sm:text-[20px] md:text-[22px] text-slate-900 font-normal leading-snug inline-flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer pt-2"
                             >
                               <span>SEE SUMMARISED PRICELIST FOR MORE INFO</span>
                               <ArrowUpRight className="w-5 h-5 text-black inline-block shrink-0 stroke-[2.2]" />
@@ -692,11 +685,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
                                         className="w-8 h-8 rounded-lg object-contain bg-white shadow-2xs shrink-0 p-1"
                                       />
                                     ) : (
-                                      <div
-                                        className={`w-8 h-8 rounded-lg flex items-center justify-center font-mono text-xs font-bold shadow-2xs shrink-0 ${
-                                          tool.color || 'bg-slate-800 text-white'
-                                        }`}
-                                      >
+                                      <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold shadow-2xs shrink-0 bg-slate-800 text-white">
                                         {tool.code ? tool.code : <IconComponent className="w-4 h-4" />}
                                       </div>
                                     )}
@@ -731,7 +720,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
                                   </div>
                                   <div className="truncate">
                                     <span className="text-[10px] text-slate-600 block uppercase tracking-wider font-semibold">Phone</span>
-                                    <span className="text-xs sm:text-sm font-bold text-slate-900 font-mono-numbers">
+                                    <span className="text-xs sm:text-sm font-bold text-slate-900">
                                       {section.phone || data.phone}
                                     </span>
                                   </div>
@@ -756,7 +745,6 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
                               )}
                             </div>
 
-                            {/* SOCIAL MEDIA BUTTONS IN CONTACT SECTION (ICONS ONLY) */}
                             {activeSocials.length > 0 && (
                               <div className="pt-2">
                                 <span className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold block mb-2 font-unisans-thin-caps">
@@ -805,7 +793,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
                             <ol className="space-y-2.5 text-sm sm:text-base font-semibold text-slate-800">
                               {section.items.map((item, iIdx) => (
                                 <li key={iIdx} className="flex items-start gap-3">
-                                  <span className="font-mono text-xs font-bold text-slate-800 px-2 py-0.5 rounded shrink-0 bg-transparent">
+                                  <span className="text-xs font-bold text-slate-800 px-2 py-0.5 rounded shrink-0 bg-transparent">
                                     {iIdx + 1}.
                                   </span>
                                   <span>{item}</span>
@@ -817,7 +805,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
                                 <button
                                   type="button"
                                   onClick={() => setActiveModal('radius')}
-                                  className="font-phenomena text-[18px] sm:text-[20px] md:text-[22px] text-[#090132] font-normal leading-snug inline-flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
+                                  className="font-phenomena text-[18px] sm:text-[20px] md:text-[22px] text-slate-900 font-normal leading-snug inline-flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
                                 >
                                   <span>SEE DELIVERY RADIUS FOR MORE INFO</span>
                                   <ArrowUpRight className="w-5 h-5 text-black inline-block shrink-0 stroke-[2.2]" />
@@ -838,7 +826,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
                                     iIdx === section.items!.length - 1 && section.items!.length % 2 !== 0 ? 'sm:col-span-2' : ''
                                   }`}
                                 >
-                                  <span className="font-mono text-xs font-bold text-slate-800 px-1.5 py-0.5 rounded bg-transparent">
+                                  <span className="text-xs font-bold text-slate-800 px-1.5 py-0.5 rounded bg-transparent">
                                     {iIdx + 1}.
                                   </span>
                                   <span>{item}</span>
@@ -876,9 +864,9 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
       {/* Modal: Summarised Pricelist */}
       {activeModal === 'pricelist' && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-slate-200 shadow-2xl space-y-5">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-slate-200 shadow-2xl space-y-5 font-unisans-regular">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-display text-xl font-bold text-slate-900">
+              <h3 className="font-phenomena-bold text-xl sm:text-2xl font-bold text-slate-900">
                 SUMMARISED PRICELIST &amp; TIMEFRAMES
               </h3>
               <button
@@ -894,33 +882,33 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
               <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
                 <div className="flex justify-between font-bold text-slate-900">
                   <span>STANDARD (1 WK)</span>
-                  <span className="font-mono text-slate-600">BASELINE</span>
+                  <span className="text-slate-800">BASELINE</span>
                 </div>
-                <p className="text-xs text-slate-500">Regular scheduling for design, DTP, slide decks, documents, and web pages.</p>
+                <p className="text-xs text-slate-600">Regular scheduling for design, DTP, slide decks, documents, and web pages.</p>
               </div>
 
               <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
                 <div className="flex justify-between font-bold text-slate-900">
                   <span>FLEXIBLE (2-3 WKS)</span>
-                  <span className="font-mono text-emerald-600 font-bold">-5% TO -20%</span>
+                  <span className="text-slate-800 font-bold">-5% TO -20%</span>
                 </div>
-                <p className="text-xs text-slate-500">Self-paced queue slotted between classes and exams. Best value for non-urgent tasks.</p>
+                <p className="text-xs text-slate-600">Self-paced queue slotted between classes and exams. Best value for non-urgent tasks.</p>
               </div>
 
               <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
                 <div className="flex justify-between font-bold text-slate-900">
                   <span>PRIORITY (48-72 HRS)</span>
-                  <span className="font-mono text-amber-600 font-bold">+25%</span>
+                  <span className="text-slate-800 font-bold">+25%</span>
                 </div>
-                <p className="text-xs text-slate-500">Queue reordered immediately for express turnaround.</p>
+                <p className="text-xs text-slate-600">Queue reordered immediately for express turnaround.</p>
               </div>
 
-              <div className="p-3 rounded-xl bg-red-50/50 border border-red-200 space-y-1">
-                <div className="flex justify-between font-bold text-red-900">
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                <div className="flex justify-between font-bold text-slate-900">
                   <span>URGENT (24 HRS)</span>
-                  <span className="font-mono text-red-600 font-bold">+50%</span>
+                  <span className="text-slate-800 font-bold">+50%</span>
                 </div>
-                <p className="text-xs text-slate-500">Same-day or next-day turnaround. Queue jumped to immediate top priority.</p>
+                <p className="text-xs text-slate-600">Same-day or next-day turnaround. Queue jumped to immediate top priority.</p>
               </div>
             </div>
 
@@ -940,9 +928,9 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
       {/* Modal: Delivery Radius */}
       {activeModal === 'radius' && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-slate-200 shadow-2xl space-y-5">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-slate-200 shadow-2xl space-y-5 font-unisans-regular">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-display text-xl font-bold text-slate-900">
+              <h3 className="font-phenomena-bold text-xl sm:text-2xl font-bold text-slate-900">
                 DELIVERY RADIUS &amp; PICKUP LOCATIONS
               </h3>
               <button
@@ -955,15 +943,15 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
             </div>
 
             <div className="space-y-4 text-xs sm:text-sm text-slate-700">
-              <div className="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200 space-y-1">
-                <h4 className="font-bold text-emerald-900">UNIJOS CAMPUSES (FREE)</h4>
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                <h4 className="font-bold text-slate-900">UNIJOS CAMPUSES (FREE)</h4>
                 <p className="text-xs text-slate-600">
                   Naraguta Campus, Bauchi Road Campus, Township Campus, and nearby student quarters.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-sky-50/70 border border-sky-200 space-y-1">
-                <h4 className="font-bold text-sky-900">JOS METROPOLIS (₦2,000 DISPATCH)</h4>
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                <h4 className="font-bold text-slate-900">JOS METROPOLIS (₦2,000 DISPATCH)</h4>
                 <p className="text-xs text-slate-600">
                   Rayfield, Terminus, Bukuru, British America, Lamingo, Hwolshe, and surrounding metropolitan hubs.
                 </p>

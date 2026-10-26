@@ -47,6 +47,7 @@ export interface Project {
   fullDescription?: string;
   threeWordDesc?: string; // Designer's Remark
   descriptors?: string;
+  websiteUrl?: string;
   isRealLife?: boolean;
   price: string;
   currency?: string;
@@ -65,6 +66,7 @@ export interface Project {
   tags?: string[];
   metrics?: string;
   featured?: boolean;
+  isHidden?: boolean;
   createdAt: number;
   updatedAt?: number;
 }

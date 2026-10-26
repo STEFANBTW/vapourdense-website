@@ -7,9 +7,9 @@ import { generateBriefPdf } from '../utils/generateBriefPdf';
 import {
   Plus,
   Search,
-  Edit2,
   Trash2,
   Eye,
+  EyeOff,
   UploadCloud,
   Save,
   Check,
@@ -364,10 +364,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     }
   };
 
-  const socialLinksList: SocialLinkItem[] =
-    editingAbout.socialLinks && editingAbout.socialLinks.length > 0
-      ? editingAbout.socialLinks
-      : defaultSocialLinks;
+  const socialLinksList: SocialLinkItem[] = Array.isArray(editingAbout.socialLinks)
+    ? editingAbout.socialLinks
+    : [];
 
   const handleAddSocialLink = () => {
     const newSocial: SocialLinkItem = {
@@ -712,12 +711,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           {activeTab === 'projects' && (
             <button
               onClick={() => {
-                if (window.confirm('Reset portfolio back to 4 default projects in Firestore?')) {
+                if (window.confirm('Reset portfolio back to default projects in Firestore?')) {
                   onResetDefaults();
                 }
               }}
               className="p-2 sm:px-3 sm:py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-[#f7f7f7] hover:bg-[#ededed] border-0 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
-              title="Restore 4 initial projects"
+              title="Restore default projects"
             >
               <RotateCcw className="w-3.5 h-3.5 shrink-0" />
               <span className="hidden sm:inline">Reset</span>
@@ -2587,7 +2586,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     return (
                       <div
                         key={proj.id}
-                        className="p-4 rounded-2xl bg-[#ededed] border-0 shadow-2xs space-y-3"
+                        onClick={() => onEdit(proj)}
+                        className={`p-4 rounded-2xl bg-[#ededed] border-0 shadow-2xs space-y-3 cursor-pointer transition-opacity ${
+                          proj.isHidden ? 'opacity-60' : ''
+                        }`}
                       >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3">
@@ -2610,6 +2612,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             </span>
                             <span className="text-[11px] text-slate-400 font-mono-numbers block">
                               {proj.id}
+                              {proj.isHidden ? ' · Hidden on Frontend' : ''}
                             </span>
                           </div>
                         </div>
@@ -2637,23 +2640,31 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       )}
 
                       {/* Action Buttons */}
-                      <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                      <div
+                        className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100"
+                        onClick={e => e.stopPropagation()}
+                      >
                         <button
                           type="button"
-                          onClick={() => onEdit(proj)}
-                          className="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors flex items-center gap-1.5 cursor-pointer"
+                          onClick={() => onUpdateProject?.(proj.id, { isHidden: !proj.isHidden })}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer ${
+                            proj.isHidden
+                              ? 'text-amber-700 bg-amber-100 hover:bg-amber-200'
+                              : 'text-slate-600 bg-slate-100 hover:bg-slate-200'
+                          }`}
+                          title={proj.isHidden ? 'Hidden on frontend — click to show' : 'Visible on frontend — click to hide'}
                         >
-                          <Edit2 className="w-3.5 h-3.5" />
-                          <span>Edit</span>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => onPreview(proj)}
-                          className="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors flex items-center gap-1.5 cursor-pointer"
-                        >
-                          <Eye className="w-3.5 h-3.5" />
-                          <span>View</span>
+                          {proj.isHidden ? (
+                            <>
+                              <EyeOff className="w-3.5 h-3.5" />
+                              <span>Hidden</span>
+                            </>
+                          ) : (
+                            <>
+                              <Eye className="w-3.5 h-3.5" />
+                              <span>Visible</span>
+                            </>
+                          )}
                         </button>
 
                         <button
@@ -2695,7 +2706,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     filteredProjects.map(proj => {
                       const heroImg = proj.images && proj.images.length > 0 ? proj.images[0] : null;
                       return (
-                        <tr key={proj.id} className="hover:bg-slate-50/70 transition-colors">
+                        <tr
+                          key={proj.id}
+                          onClick={() => onEdit(proj)}
+                          className={`hover:bg-slate-50/70 transition-all cursor-pointer ${
+                            proj.isHidden ? 'opacity-60' : ''
+                          }`}
+                        >
                           <td className="py-4 px-6">
                             <div className="flex items-center gap-3.5">
                               <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0">
@@ -2717,6 +2734,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                                 </span>
                                 <span className="text-[11px] text-slate-400 font-mono-numbers">
                                   {proj.id}
+                                  {proj.isHidden ? ' · Hidden on Frontend' : ''}
                                 </span>
                               </div>
                             </div>
@@ -2742,24 +2760,23 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             </div>
                           </td>
 
-                          <td className="py-4 px-6 text-right">
+                          <td className="py-4 px-6 text-right" onClick={e => e.stopPropagation()}>
                             <div className="flex items-center justify-end gap-2.5">
-                              {/* Edit Pen Button: Redirects directly to Project Show */}
+                              {/* Toggle Frontend Visibility Button */}
                               <button
-                                onClick={() => onEdit(proj)}
-                                className="p-2 rounded-xl text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer"
-                                title="Edit Project in Project Show"
+                                onClick={() => onUpdateProject?.(proj.id, { isHidden: !proj.isHidden })}
+                                className={`p-2 rounded-xl transition-colors cursor-pointer ${
+                                  proj.isHidden
+                                    ? 'text-amber-700 bg-amber-100 hover:bg-amber-200'
+                                    : 'text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200'
+                                }`}
+                                title={proj.isHidden ? 'Hidden on frontend — click to make visible' : 'Visible on frontend — click to hide'}
                               >
-                                <Edit2 className="w-4 h-4" />
-                              </button>
-
-                              {/* View Project Show Button */}
-                              <button
-                                onClick={() => onPreview(proj)}
-                                className="p-2 rounded-xl text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer"
-                                title="View Project Show"
-                              >
-                                <Eye className="w-4 h-4" />
+                                {proj.isHidden ? (
+                                  <EyeOff className="w-4 h-4" />
+                                ) : (
+                                  <Eye className="w-4 h-4" />
+                                )}
                               </button>
 
                               {/* Bigger Delete Button as requested */}

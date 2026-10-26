@@ -646,7 +646,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
       {/* Top Utility Bar (Always Sticky at top) */}
       <header className="sticky top-0 z-40 h-[52px] shrink-0 w-full bg-[#130f30] px-4 sm:px-6 flex items-center justify-between text-white/70 border-b border-white/5">
         <div className="flex items-center gap-3 sm:gap-4">
-          <span className="text-sm sm:text-base font-semibold text-white/90">
+          <span className="font-unisans-thin-caps text-sm sm:text-base uppercase tracking-wider text-white/90">
             Project Details
           </span>
 
@@ -658,7 +658,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                 const target = allProjects.find(p => p.id === e.target.value);
                 if (target) onNavigateProject(target);
               }}
-              className="px-3 py-1.5 text-xs sm:text-sm rounded-xl bg-white/10 border-0 text-white focus:outline-none focus:ring-1 focus:ring-[#38bdf8] cursor-pointer hidden md:block"
+              className="px-3 py-1.5 text-xs sm:text-sm font-unisans-regular rounded-xl bg-white/10 border-0 text-white focus:outline-none focus:ring-1 focus:ring-white/40 cursor-pointer hidden md:block"
             >
               {allProjects.map(p => (
                 <option key={p.id} value={p.id} className="bg-[#130f30] text-white">
@@ -670,8 +670,8 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
         </div>
 
         {/* Center Indicator */}
-        <div className="flex items-center gap-2 text-sm sm:text-base font-mono-numbers text-white/50 tracking-wider">
-          <span className="text-[#38bdf8] font-bold">{String(currentIndex + 1).padStart(2, '0')}</span>
+        <div className="flex items-center gap-2 text-sm sm:text-base font-unisans-regular text-white/60 tracking-wider">
+          <span className="text-white font-normal">{String(currentIndex + 1).padStart(2, '0')}</span>
           <span>/</span>
           <span>{String(allProjects.length).padStart(2, '0')}</span>
         </div>
@@ -683,11 +683,11 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
               <button
                 type="button"
                 onClick={handleSaveChanges}
-                className={`px-4 py-1.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-md ${
+                className={`px-4 py-1.5 rounded-xl text-xs sm:text-sm font-unisans-regular flex items-center gap-1.5 transition-all cursor-pointer shadow-md ${
                   hasUnsavedChanges
-                    ? 'bg-[#003663] text-white hover:bg-[#002647] ring-2 ring-[#38bdf8]/60 shadow-[#003663]/40'
+                    ? 'bg-white/20 text-white hover:bg-white/30 ring-1 ring-white/40'
                     : isSavedNotice
-                    ? 'bg-emerald-600 text-white shadow-emerald-600/30'
+                    ? 'bg-white/25 text-white'
                     : 'bg-white/10 text-white/80 hover:bg-white/20'
                 }`}
               >
@@ -714,7 +714,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
           <button
             type="button"
             onClick={() => setMobileActivePane('gallery_process')}
-            className={`flex-1 py-1.5 px-3 text-xs font-bold rounded-xl transition-colors relative z-10 text-center cursor-pointer ${
+            className={`flex-1 py-1.5 px-3 text-xs font-unisans-regular rounded-xl transition-colors relative z-10 text-center cursor-pointer ${
               mobileActivePane === 'gallery_process'
                 ? 'text-white'
                 : 'text-white/60 hover:text-white'
@@ -723,7 +723,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
             {mobileActivePane === 'gallery_process' && (
               <motion.div
                 layoutId="showroom-tablet-top-slider"
-                className="absolute inset-0 bg-[#003663] rounded-xl -z-10 shadow-sm border border-[#38bdf8]/40"
+                className="absolute inset-0 bg-white/20 rounded-xl -z-10 shadow-sm border border-white/25"
                 transition={{ type: 'spring', stiffness: 400, damping: 32 }}
               />
             )}
@@ -733,7 +733,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
           <button
             type="button"
             onClick={() => setMobileActivePane('other_details')}
-            className={`flex-1 py-1.5 px-3 text-xs font-bold rounded-xl transition-colors relative z-10 text-center cursor-pointer ${
+            className={`flex-1 py-1.5 px-3 text-xs font-unisans-regular rounded-xl transition-colors relative z-10 text-center cursor-pointer ${
               mobileActivePane === 'other_details'
                 ? 'text-white'
                 : 'text-white/60 hover:text-white'
@@ -742,7 +742,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
             {mobileActivePane === 'other_details' && (
               <motion.div
                 layoutId="showroom-tablet-top-slider"
-                className="absolute inset-0 bg-[#003663] rounded-xl -z-10 shadow-sm border border-[#38bdf8]/40"
+                className="absolute inset-0 bg-white/20 rounded-xl -z-10 shadow-sm border border-white/25"
                 transition={{ type: 'spring', stiffness: 400, damping: 32 }}
               />
             )}
@@ -785,12 +785,12 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
             }`}
           >
             
-            {/* SECTION 1: GALLERY (200% base size) */}
+            {/* SECTION 1: GALLERY */}
             <section aria-labelledby="gallery-title" className="min-w-0">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-5">
                 <h2
                   id="gallery-title"
-                  className="font-dense font-bold text-2xl sm:text-3xl md:text-4xl text-white tracking-tight leading-none"
+                  className="font-phenomena-bold text-2xl sm:text-3xl md:text-4xl text-white tracking-wide leading-none"
                 >
                   Gallery
                 </h2>
@@ -798,9 +798,9 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                 {/* Interactive Image Scale Slider (only in edit mode) */}
                 {isEditable && (
                   <div className="flex items-center gap-3 bg-white/5 px-3 py-1.5 rounded-xl border border-white/10 self-start sm:self-auto">
-                    <div className="flex items-center gap-1.5 text-[#38bdf8]">
+                    <div className="flex items-center gap-1.5 text-white/80">
                       <Sliders className="w-3.5 h-3.5" />
-                      <span className="text-[12px] font-semibold uppercase tracking-wider">
+                      <span className="text-[12px] font-unisans-regular uppercase tracking-wider">
                         Size: {imageScalePercent}%
                       </span>
                     </div>
@@ -823,7 +823,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                       step={5}
                       value={imageScalePercent}
                       onChange={e => handleScaleChange(Number(e.target.value))}
-                      className="w-24 sm:w-32 h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer accent-[#003663]"
+                      className="w-24 sm:w-32 h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer accent-white"
                       title={`Image scale: ${imageScalePercent}%`}
                     />
 
@@ -840,7 +840,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                     <button
                       type="button"
                       onClick={() => handleScaleChange(100)}
-                      className="text-[11px] font-semibold text-[#38bdf8] hover:text-white px-2 py-0.5 rounded bg-[#003663]/60 border border-[#003663] transition-colors cursor-pointer"
+                      className="text-[11px] font-unisans-regular text-white/80 hover:text-white px-2 py-0.5 rounded bg-white/10 border border-white/20 transition-colors cursor-pointer"
                       title="Reset to 100% default"
                     >
                       Default
@@ -849,7 +849,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                 )}
               </div>
 
-              {/* Gallery Pictures arranged horizontally (200% size, preserving aspect ratio) */}
+              {/* Gallery Pictures arranged horizontally */}
               <div className="flex flex-row items-start gap-4 sm:gap-5 overflow-x-auto pb-4 pt-1 no-scrollbar min-w-0">
                 {effectiveGallery.map((pic, idx) => {
                   const isAIGenerated = Boolean(pic.isAI);
@@ -873,7 +873,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                               });
                             }
                           }}
-                          className={`relative aspect-[16/10] rounded-2xl overflow-hidden bg-[#0d0a22] shadow-lg ${
+                          className={`relative aspect-[16/10] rounded-2xl overflow-hidden bg-[#0d0a22] shadow-lg transition-shadow duration-300 hover:shadow-[0_20px_45px_-10px_rgba(0,0,0,0.65)] ${
                             isEditable ? 'cursor-default' : 'cursor-pointer'
                           }`}
                         >
@@ -881,7 +881,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                             src={pic.url}
                             alt={pic.caption || `Gallery asset ${idx + 1}`}
                             referrerPolicy="no-referrer"
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            className="w-full h-full object-cover"
                           />
 
                           {/* AI / Asset Badge */}
@@ -893,27 +893,27 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                                   e.stopPropagation();
                                   handleToggleGalleryAI(idx);
                                 }}
-                                className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold tracking-wide transition-all cursor-pointer ${
+                                className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-unisans-regular tracking-wide transition-all cursor-pointer ${
                                   isAIGenerated
-                                    ? 'bg-[#003663] text-white border border-[#38bdf8]/50 shadow-md'
+                                    ? 'bg-black/80 text-white border border-white/40 shadow-md'
                                     : 'bg-black/70 text-white/70 border border-white/15 hover:text-white'
                                 }`}
                                 title="Click to toggle AI filter"
                               >
-                                <Sparkles className="w-2.5 h-2.5 text-[#38bdf8]" />
+                                <Sparkles className="w-2.5 h-2.5 text-white" />
                                 <span>{isAIGenerated ? 'AI ON' : 'AI OFF'}</span>
                               </button>
                             ) : (
                               isAIGenerated && (
-                                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold tracking-wide bg-[#003663]/90 text-white border border-[#38bdf8]/40 backdrop-blur-md shadow-sm">
-                                  <Sparkles className="w-2.5 h-2.5 text-[#38bdf8] animate-pulse" />
+                                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-unisans-regular tracking-wide bg-black/80 text-white border border-white/30 backdrop-blur-md shadow-sm">
+                                  <Sparkles className="w-2.5 h-2.5 text-white" />
                                   <span>AI Generated</span>
                                 </span>
                               )
                             )}
                           </div>
 
-                          {/* Big Prominent Delete Icon on top of every picture (Dashboard) */}
+                          {/* Delete Icon on top of every picture (Dashboard) */}
                           {isEditable && (
                             <button
                               type="button"
@@ -921,7 +921,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                                 e.stopPropagation();
                                 handleDeleteGalleryPicture(idx);
                               }}
-                              className="absolute top-2 right-2 z-20 w-8 h-8 rounded-xl bg-rose-600 hover:bg-rose-500 text-white shadow-xl flex items-center justify-center transition-transform hover:scale-110 cursor-pointer border border-rose-400/50"
+                              className="absolute top-2 right-2 z-20 w-8 h-8 rounded-xl bg-black/80 hover:bg-black text-white shadow-xl flex items-center justify-center transition-transform hover:scale-110 cursor-pointer border border-white/30"
                               title="Delete this image"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -934,7 +934,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                               <p className="text-xs sm:text-sm text-white/95 font-unisans-regular leading-snug line-clamp-2">
                                 {pic.caption || `${currentProject.title} — Visual Asset`}
                               </p>
-                              <span className="text-[10px] text-[#38bdf8] mt-1 inline-flex items-center gap-1">
+                              <span className="text-[10px] font-unisans-regular text-white/80 mt-1 inline-flex items-center gap-1">
                                 <Maximize2 className="w-2.5 h-2.5" /> Enlarge
                               </span>
                             </div>
@@ -955,7 +955,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                               updateProjectLocal({ galleryPictures: updated });
                             }}
                             placeholder="Image caption..."
-                            className="w-full px-2.5 py-1 text-xs text-white/90 bg-white/5 focus:bg-white/10 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#38bdf8] border border-white/10"
+                            className="w-full px-2.5 py-1 text-xs font-unisans-regular text-white/90 bg-white/5 focus:bg-white/10 rounded-xl focus:outline-none focus:ring-1 focus:ring-white/40 border border-white/10"
                           />
                         </div>
                       )}
@@ -972,7 +972,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                     <button
                       type="button"
                       onClick={() => setLinkModalTarget('gallery')}
-                      className="w-10 h-10 rounded-xl bg-[#003663]/60 hover:bg-[#003663] text-white flex items-center justify-center transition-all cursor-pointer shadow-md group border border-[#38bdf8]/40"
+                      className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all cursor-pointer shadow-md group border border-white/20"
                       title="Add image via Link"
                     >
                       <Link2 className="w-5 h-5 group-hover:scale-110 transition-transform" />
@@ -983,7 +983,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                     <button
                       type="button"
                       onClick={() => galleryFileInputRef.current?.click()}
-                      className="w-10 h-10 rounded-xl bg-sky-600/40 hover:bg-sky-600 text-sky-200 hover:text-white flex items-center justify-center transition-all cursor-pointer shadow-md group border border-sky-400/40"
+                      className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all cursor-pointer shadow-md group border border-white/20"
                       title="Upload image from device"
                     >
                       <Plus className="w-5 h-5 group-hover:scale-110 transition-transform" />
@@ -998,7 +998,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 sm:mb-6">
                 <h2
                   id="process-title"
-                  className="font-dense font-bold text-2xl sm:text-3xl md:text-4xl text-white tracking-tight leading-none"
+                  className="font-phenomena-bold text-2xl sm:text-3xl md:text-4xl text-white tracking-wide leading-none"
                 >
                   Process
                 </h2>
@@ -1006,9 +1006,9 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                 {/* Interactive Image Scale Slider also available in Process when in edit mode */}
                 {isEditable && (
                   <div className="flex items-center gap-3 bg-white/5 px-3 py-1.5 rounded-xl border border-white/10 self-start sm:self-auto">
-                    <div className="flex items-center gap-1.5 text-[#38bdf8]">
+                    <div className="flex items-center gap-1.5 text-white/80">
                       <Sliders className="w-3.5 h-3.5" />
-                      <span className="text-[12px] font-semibold uppercase tracking-wider">
+                      <span className="text-[12px] font-unisans-regular uppercase tracking-wider">
                         Size: {imageScalePercent}%
                       </span>
                     </div>
@@ -1029,7 +1029,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                       step={5}
                       value={imageScalePercent}
                       onChange={e => handleScaleChange(Number(e.target.value))}
-                      className="w-24 sm:w-32 h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer accent-[#003663]"
+                      className="w-24 sm:w-32 h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer accent-white"
                       title={`Image scale: ${imageScalePercent}%`}
                     />
 
@@ -1045,7 +1045,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                     <button
                       type="button"
                       onClick={() => handleScaleChange(100)}
-                      className="text-[11px] font-semibold text-[#38bdf8] hover:text-white px-2 py-0.5 rounded bg-[#003663]/60 border border-[#003663] transition-colors cursor-pointer"
+                      className="text-[11px] font-unisans-regular text-white/80 hover:text-white px-2 py-0.5 rounded bg-white/10 border border-white/20 transition-colors cursor-pointer"
                       title="Reset to 100% default"
                     >
                       Default
@@ -1058,7 +1058,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
               <div className="space-y-8 sm:space-y-10 min-w-0">
                 {effectiveProcessSteps.map((step, stepIdx) => (
                   <div key={step.id || stepIdx} className="space-y-4 min-w-0 pb-4 border-b border-white/5 last:border-0">
-                    {/* 1. Pictures Section (200% size) */}
+                    {/* 1. Pictures Section */}
                     <div className="flex flex-row items-start gap-4 overflow-x-auto pb-2 pt-1 no-scrollbar min-w-0">
                       {step.pictures.map((pic: ProcessPicture, picIdx: number) => {
                         const isAI = pic.type === 'AI';
@@ -1082,7 +1082,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                                     });
                                   }
                                 }}
-                                className={`relative aspect-[4/3] rounded-2xl overflow-hidden bg-[#0a071c] shadow-lg ${
+                                className={`relative aspect-[4/3] rounded-2xl overflow-hidden bg-[#0a071c] shadow-lg transition-shadow duration-300 hover:shadow-[0_20px_45px_-10px_rgba(0,0,0,0.65)] ${
                                   isEditable ? 'cursor-default' : 'cursor-pointer'
                                 }`}
                               >
@@ -1090,7 +1090,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                                   src={pic.url}
                                   alt={pic.caption || `${step.name} pic ${picIdx + 1}`}
                                   referrerPolicy="no-referrer"
-                                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                  className="w-full h-full object-cover"
                                 />
 
                                 {/* Tag: Marked as "Final" or "AI" */}
@@ -1099,46 +1099,42 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                                     <button
                                       type="button"
                                       onClick={() => handleToggleProcessPictureType(stepIdx, picIdx)}
-                                      className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-bold tracking-wider uppercase transition-all cursor-pointer ${
-                                        isAI
-                                          ? 'bg-[#003663] text-white border border-[#38bdf8]/50 shadow-md'
-                                          : 'bg-emerald-900/90 text-emerald-200 border border-emerald-400/40 shadow-md'
-                                      }`}
+                                      className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-unisans-regular tracking-wider uppercase transition-all cursor-pointer bg-black/80 text-white border border-white/30 shadow-md"
                                       title="Toggle between AI and Final"
                                     >
                                       {isAI ? (
                                         <>
-                                          <Sparkles className="w-2 h-2 text-[#38bdf8]" />
+                                          <Sparkles className="w-2 h-2 text-white" />
                                           AI
                                         </>
                                       ) : (
                                         <>
-                                          <CheckCircle2 className="w-2 h-2 text-emerald-300" />
+                                          <CheckCircle2 className="w-2 h-2 text-white" />
                                           Final
                                         </>
                                       )}
                                     </button>
                                   ) : (
                                     isAI ? (
-                                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-bold tracking-wider uppercase bg-[#003663] text-white border border-[#38bdf8]/50 backdrop-blur-md shadow-md">
-                                        <Sparkles className="w-2 h-2 text-[#38bdf8]" />
+                                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-unisans-regular tracking-wider uppercase bg-black/80 text-white border border-white/30 backdrop-blur-md shadow-md">
+                                        <Sparkles className="w-2 h-2 text-white" />
                                         AI
                                       </span>
                                     ) : (
-                                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-bold tracking-wider uppercase bg-emerald-900/90 text-emerald-200 border border-emerald-400/40 backdrop-blur-md shadow-md">
-                                        <CheckCircle2 className="w-2 h-2 text-emerald-300" />
+                                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-unisans-regular tracking-wider uppercase bg-black/80 text-white border border-white/30 backdrop-blur-md shadow-md">
+                                        <CheckCircle2 className="w-2 h-2 text-white" />
                                         Final
                                       </span>
                                     )
                                   )}
                                 </div>
 
-                                {/* Big Delete Icon on picture */}
+                                {/* Delete Icon on picture */}
                                 {isEditable && (
                                   <button
                                     type="button"
                                     onClick={() => handleDeleteProcessPicture(stepIdx, picIdx)}
-                                    className="absolute top-2 right-2 z-20 w-8 h-8 rounded-xl bg-rose-600 hover:bg-rose-500 text-white shadow-xl flex items-center justify-center transition-transform hover:scale-110 cursor-pointer border border-rose-400/50"
+                                    className="absolute top-2 right-2 z-20 w-8 h-8 rounded-xl bg-black/80 hover:bg-black text-white shadow-xl flex items-center justify-center transition-transform hover:scale-110 cursor-pointer border border-white/30"
                                     title="Delete picture"
                                   >
                                     <Trash2 className="w-4 h-4" />
@@ -1174,7 +1170,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                                     updateProjectLocal({ processSteps: updatedSteps });
                                   }}
                                   placeholder="Caption..."
-                                  className="w-full px-2 py-1 text-xs text-white/90 bg-white/5 focus:bg-white/10 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#38bdf8] border border-white/10"
+                                  className="w-full px-2 py-1 text-xs font-unisans-regular text-white/90 bg-white/5 focus:bg-white/10 rounded-xl focus:outline-none focus:ring-1 focus:ring-white/40 border border-white/10"
                                 />
                               </div>
                             )}
@@ -1191,7 +1187,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           <button
                             type="button"
                             onClick={() => setLinkModalTarget({ stepIndex: stepIdx })}
-                            className="w-9 h-9 rounded-xl bg-[#003663]/60 hover:bg-[#003663] text-white flex items-center justify-center transition-all cursor-pointer shadow-md group border border-[#38bdf8]/40"
+                            className="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all cursor-pointer shadow-md group border border-white/20"
                             title="Add image via link"
                           >
                             <Link2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
@@ -1205,7 +1201,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                               activeProcessStepIndexRef.current = stepIdx;
                               processFileInputRef.current?.click();
                             }}
-                            className="w-9 h-9 rounded-xl bg-sky-600/40 hover:bg-sky-600 text-sky-200 hover:text-white flex items-center justify-center transition-all cursor-pointer shadow-md group border border-sky-400/40"
+                            className="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all cursor-pointer shadow-md group border border-white/20"
                             title="Upload image from device"
                           >
                             <Plus className="w-4 h-4 group-hover:scale-110 transition-transform" />
@@ -1221,12 +1217,12 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           type="text"
                           value={step.name || ''}
                           onChange={e => handleUpdateStepName(stepIdx, e.target.value)}
-                          className="w-full bg-white/5 px-3 py-2 text-white font-dense text-lg sm:text-xl font-bold tracking-tight focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
+                          className="w-full bg-white/5 px-3 py-2 text-white font-phenomena-bold text-xl sm:text-2xl tracking-wide focus:outline-none focus:ring-2 focus:ring-white/40 rounded-xl border border-white/10"
                           placeholder="Process Phase Name"
                           title="Click to edit phase name"
                         />
                       ) : (
-                        <h3 className="font-dense text-lg sm:text-xl md:text-2xl font-bold text-white tracking-tight">
+                        <h3 className="font-phenomena-bold text-xl sm:text-2xl md:text-[26px] text-white tracking-wide">
                           {step.name}
                         </h3>
                       )}
@@ -1240,7 +1236,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                             rows={2}
                             value={step.description || ''}
                             onChange={e => handleUpdateStepDesc(stepIdx, e.target.value)}
-                            className="w-full bg-white/5 p-3 text-white/90 font-unisans-regular text-sm sm:text-base font-normal leading-relaxed focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl resize-y border border-white/10"
+                            className="w-full bg-white/5 p-3 text-white/90 font-unisans-regular text-sm sm:text-base font-normal leading-relaxed focus:outline-none focus:ring-2 focus:ring-white/40 rounded-xl resize-y border border-white/10"
                             placeholder="Detailed narrative of this process phase..."
                             title="Click to edit phase description"
                           />
@@ -1248,7 +1244,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                             <button
                               type="button"
                               onClick={() => handleDeleteStep(stepIdx)}
-                              className="px-3.5 py-1.5 text-xs font-bold text-rose-300 bg-rose-950/60 hover:bg-rose-900 border border-rose-500/40 rounded-xl flex items-center gap-1.5 cursor-pointer transition-colors"
+                              className="px-3.5 py-1.5 text-xs font-unisans-regular text-white/80 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl flex items-center gap-1.5 cursor-pointer transition-colors"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                               <span>Delete Phase</span>
@@ -1256,7 +1252,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           </div>
                         </div>
                       ) : (
-                        <p className="font-unisans-regular text-sm sm:text-base lg:text-[17px] text-white/80 font-normal leading-relaxed max-w-3xl">
+                        <p className="font-unisans-regular text-sm sm:text-base lg:text-[16px] text-white/85 font-normal leading-relaxed max-w-3xl">
                           {step.description}
                         </p>
                       )}
@@ -1271,15 +1267,15 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                       <button
                         type="button"
                         onClick={() => setIsAddingProcess(true)}
-                        className="w-full py-4 px-5 rounded-2xl bg-white/5 hover:bg-white/10 border border-dashed border-white/20 text-white font-dense text-base sm:text-lg font-bold flex items-center justify-center gap-2.5 transition-all cursor-pointer hover:border-[#38bdf8]/60"
+                        className="w-full py-4 px-5 rounded-2xl bg-white/5 hover:bg-white/10 border border-dashed border-white/20 text-white font-phenomena-bold text-lg sm:text-xl tracking-wide flex items-center justify-center gap-2.5 transition-all cursor-pointer hover:border-white/40"
                       >
-                        <Plus className="w-5 h-5 text-[#38bdf8]" />
+                        <Plus className="w-5 h-5 text-white" />
                         <span>Add Process Phase</span>
                       </button>
                     ) : (
-                      <div className="p-6 rounded-3xl bg-white/5 border border-[#003663] space-y-4">
+                      <div className="p-6 rounded-3xl bg-white/5 border border-white/20 space-y-4">
                         <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                          <span className="text-sm font-bold uppercase tracking-wider text-[#38bdf8]">
+                          <span className="font-unisans-thin-caps text-sm uppercase tracking-wider text-white">
                             New Process Phase
                           </span>
                           <button
@@ -1293,7 +1289,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
 
                         {/* Pictures list */}
                         <div className="space-y-2">
-                          <label className="text-xs uppercase tracking-wider text-white/60 font-semibold block">
+                          <label className="font-unisans-thin-caps text-xs uppercase tracking-wider text-white/60 block">
                             Pictures ({newProcessPictures.length})
                           </label>
                           <div className="flex flex-row items-center gap-3 overflow-x-auto pb-2">
@@ -1303,7 +1299,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                                 <button
                                   type="button"
                                   onClick={() => setNewProcessPictures(prev => prev.filter((_, i) => i !== pIdx))}
-                                  className="absolute top-1 right-1 p-1 rounded-full bg-rose-600 text-white"
+                                  className="absolute top-1 right-1 p-1 rounded-full bg-black/80 text-white"
                                 >
                                   <Trash2 className="w-3 h-3" />
                                 </button>
@@ -1314,7 +1310,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                               <button
                                 type="button"
                                 onClick={() => setLinkModalTarget('newProcess')}
-                                className="px-3.5 py-2 rounded-xl bg-[#003663]/60 hover:bg-[#003663] text-white text-xs font-semibold flex items-center gap-1.5"
+                                className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-unisans-regular flex items-center gap-1.5"
                               >
                                 <Link2 className="w-3.5 h-3.5" />
                                 <span>Link</span>
@@ -1322,7 +1318,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                               <button
                                 type="button"
                                 onClick={() => newProcessFileInputRef.current?.click()}
-                                className="px-3.5 py-2 rounded-xl bg-sky-600/40 hover:bg-sky-600 text-white text-xs font-semibold flex items-center gap-1.5"
+                                className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-unisans-regular flex items-center gap-1.5"
                               >
                                 <Plus className="w-3.5 h-3.5" />
                                 <span>Upload</span>
@@ -1332,7 +1328,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                         </div>
 
                         <div>
-                          <label className="text-xs uppercase tracking-wider text-white/60 font-semibold block mb-1">
+                          <label className="font-unisans-thin-caps text-xs uppercase tracking-wider text-white/60 block mb-1">
                             Phase Name
                           </label>
                           <input
@@ -1340,12 +1336,12 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                             value={newProcessName}
                             onChange={e => setNewProcessName(e.target.value)}
                             placeholder="e.g. Phase 02: Typography Matrix & Production Blueprint"
-                            className="w-full px-3.5 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm font-semibold focus:outline-none focus:border-[#38bdf8]"
+                            className="w-full px-3.5 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm font-unisans-regular focus:outline-none focus:border-white/40"
                           />
                         </div>
 
                         <div>
-                          <label className="text-xs uppercase tracking-wider text-white/60 font-semibold block mb-1">
+                          <label className="font-unisans-thin-caps text-xs uppercase tracking-wider text-white/60 block mb-1">
                             Phase Description
                           </label>
                           <textarea
@@ -1353,7 +1349,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                             value={newProcessDescription}
                             onChange={e => setNewProcessDescription(e.target.value)}
                             placeholder="Describe what occurred in this process phase..."
-                            className="w-full px-3.5 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-xs sm:text-sm font-light focus:outline-none focus:border-[#38bdf8] resize-y"
+                            className="w-full px-3.5 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-xs sm:text-sm font-unisans-regular focus:outline-none focus:border-white/40 resize-y"
                           />
                         </div>
 
@@ -1361,14 +1357,14 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           <button
                             type="button"
                             onClick={() => setIsAddingProcess(false)}
-                            className="px-4 py-2 text-xs sm:text-sm font-semibold text-white/60 hover:text-white"
+                            className="px-4 py-2 text-xs sm:text-sm font-unisans-regular text-white/60 hover:text-white"
                           >
                             Cancel
                           </button>
                           <button
                             type="button"
                             onClick={handleConfirmAddProcess}
-                            className="px-5 py-2.5 text-xs sm:text-sm font-bold text-white bg-[#003663] hover:bg-[#002647] rounded-xl shadow-lg cursor-pointer border border-[#38bdf8]/40"
+                            className="px-5 py-2.5 text-xs sm:text-sm font-unisans-regular text-white bg-white/15 hover:bg-white/25 rounded-xl shadow-lg cursor-pointer border border-white/25"
                           >
                             Add Process Phase
                           </button>
@@ -1398,7 +1394,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   type="text"
                   value={currentProject.title || ''}
                   onChange={e => updateProjectLocal({ title: e.target.value })}
-                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light tracking-wide focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
+                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light tracking-wide focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
                   placeholder="Project Name"
                 />
               ) : (
@@ -1411,7 +1407,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
             {/* 2. Date */}
             <div>
               <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
-                TIMELINE DATE
+                DATE
               </span>
               {isEditable ? (
                 <input
@@ -1419,14 +1415,42 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   value={currentProject.monthYear || (currentProject.year ? `${currentProject.year}` : '')}
                   onChange={e => updateProjectLocal({ monthYear: e.target.value })}
                   placeholder="e.g. October 2026"
-                  className="w-full bg-white/5 px-3 py-2 text-[#38bdf8] font-vapour text-base sm:text-lg lg:text-sm font-light focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
+                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
                 />
               ) : (
-                <div className="text-base sm:text-lg lg:text-sm text-[#38bdf8] font-vapour font-light">
+                <div className="font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light text-white">
                   {currentProject.monthYear || `${currentProject.year}`}
                 </div>
               )}
             </div>
+
+            {/* 2b. Live Website Link (for Website projects or when editable) */}
+            {(isEditable || currentProject.websiteUrl) && (
+              <div>
+                <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
+                  WEBSITE LINK
+                </span>
+                {isEditable ? (
+                  <input
+                    type="url"
+                    value={currentProject.websiteUrl || ''}
+                    onChange={e => updateProjectLocal({ websiteUrl: e.target.value })}
+                    placeholder="https://example.vercel.app/"
+                    className="w-full bg-white/5 px-3 py-2 text-white font-unisans-regular text-base sm:text-lg lg:text-[15px] font-normal focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
+                  />
+                ) : (
+                  <a
+                    href={currentProject.websiteUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 font-unisans-regular text-base sm:text-lg lg:text-[15px] text-white hover:text-white/80 underline underline-offset-4 decoration-white/30 hover:decoration-white break-all transition-colors"
+                  >
+                    <Link2 className="w-4 h-4 shrink-0 text-white/80" />
+                    <span>{currentProject.websiteUrl}</span>
+                  </a>
+                )}
+              </div>
+            )}
 
             {/* 3. CLIENT'S REMARK (Moon 2.0 Light headings, UniSans Thin AllCaps top label, UniSans Regular body) */}
             <div className="space-y-3.5 pt-2 border-t border-white/10">
@@ -1440,7 +1464,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   <button
                     type="button"
                     onClick={handleDeleteClientRemark}
-                    className="px-3 py-1 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-md border border-rose-400/50"
+                    className="px-3 py-1 rounded-lg bg-white/15 hover:bg-white/25 text-white text-xs font-unisans-regular flex items-center gap-1.5 transition-all cursor-pointer shadow-md border border-white/20"
                     title="Delete client remark"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -1458,9 +1482,9 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                       updateProjectLocal({ clientRemark: { ...remark, type: 'voice' } });
                       setActiveRemarkType('voice');
                     }}
-                    className={`py-1.5 px-2 text-[11px] font-bold rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                    className={`py-1.5 px-2 text-[11px] font-unisans-regular rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1 ${
                       activeRemarkType === 'voice'
-                        ? 'bg-[#003663] text-white shadow-xs'
+                        ? 'bg-white/20 text-white shadow-xs'
                         : 'text-white/60 hover:text-white'
                     }`}
                   >
@@ -1474,9 +1498,9 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                       updateProjectLocal({ clientRemark: { ...remark, type: 'comment' } });
                       setActiveRemarkType('comment');
                     }}
-                    className={`py-1.5 px-2 text-[11px] font-bold rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                    className={`py-1.5 px-2 text-[11px] font-unisans-regular rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1 ${
                       activeRemarkType === 'comment'
-                        ? 'bg-[#003663] text-white shadow-xs'
+                        ? 'bg-white/20 text-white shadow-xs'
                         : 'text-white/60 hover:text-white'
                     }`}
                   >
@@ -1490,9 +1514,9 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                       updateProjectLocal({ clientRemark: { ...remark, type: 'picture' } });
                       setActiveRemarkType('picture');
                     }}
-                    className={`py-1.5 px-2 text-[11px] font-bold rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                    className={`py-1.5 px-2 text-[11px] font-unisans-regular rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1 ${
                       activeRemarkType === 'picture'
-                        ? 'bg-[#003663] text-white shadow-xs'
+                        ? 'bg-white/20 text-white shadow-xs'
                         : 'text-white/60 hover:text-white'
                     }`}
                   >
@@ -1507,14 +1531,14 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                 <div className="space-y-3.5 p-4 rounded-2xl bg-white/5 border border-white/10">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="p-2.5 rounded-full bg-[#003663] text-[#38bdf8]">
+                      <div className="p-2.5 rounded-full bg-white/15 text-white">
                         <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />
                       </div>
                       <div>
                         <span className="text-sm sm:text-base lg:text-xs font-vapour text-white block">
                           Client Audio Memo
                         </span>
-                        <span className="text-xs sm:text-sm lg:text-[11px] text-white/50 block font-mono-numbers">
+                        <span className="text-xs sm:text-sm lg:text-[11px] text-white/50 block font-unisans-regular">
                           {remark.voiceDate || currentProject.monthYear || currentProject.year}
                         </span>
                       </div>
@@ -1525,11 +1549,11 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                         type="text"
                         value={remark.voiceDuration || '0:42'}
                         onChange={e => updateProjectLocal({ clientRemark: { ...remark, voiceDuration: e.target.value } })}
-                        className="w-16 text-right bg-white/5 text-[#38bdf8] font-mono-numbers text-xs sm:text-sm lg:text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#38bdf8] rounded px-1.5 py-0.5 border border-white/10"
+                        className="w-16 text-right bg-white/5 text-white/90 font-unisans-regular text-xs sm:text-sm lg:text-xs focus:outline-none focus:ring-1 focus:ring-white/30 rounded px-1.5 py-0.5 border border-white/10"
                         title="Edit duration"
                       />
                     ) : (
-                      <span className="text-xs sm:text-sm lg:text-xs font-mono-numbers text-[#38bdf8] font-semibold">
+                      <span className="text-xs sm:text-sm lg:text-xs font-unisans-regular text-white/90">
                         {remark.voiceDuration || '0:42'}
                       </span>
                     )}
@@ -1549,7 +1573,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           className="flex-1 rounded-full transition-all duration-150"
                           style={{
                             height: `${Math.max(15, dynamicHeight)}%`,
-                            backgroundColor: isActive ? '#38bdf8' : 'rgba(255, 255, 255, 0.18)',
+                            backgroundColor: isActive ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.18)',
                           }}
                         />
                       );
@@ -1560,7 +1584,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   <div className="flex items-center justify-between pt-1">
                     <button
                       onClick={toggleVoicePlayback}
-                      className="px-4 py-2 rounded-xl bg-[#003663] hover:bg-[#002647] text-white text-xs sm:text-sm lg:text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer shadow-md border border-[#38bdf8]/40"
+                      className="px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs sm:text-sm lg:text-xs font-unisans-regular flex items-center gap-2 transition-all cursor-pointer shadow-md border border-white/25"
                     >
                       {isPlayingVoice ? (
                         <>
@@ -1579,7 +1603,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                       <button
                         type="button"
                         onClick={() => remarkAudioFileInputRef.current?.click()}
-                        className="px-3 py-1.5 text-xs font-semibold text-[#38bdf8] bg-[#003663]/60 hover:bg-[#003663] border border-[#38bdf8]/40 rounded-xl cursor-pointer"
+                        className="px-3 py-1.5 text-xs font-unisans-regular text-white bg-white/10 hover:bg-white/20 border border-white/25 rounded-xl cursor-pointer"
                       >
                         Upload Audio
                       </button>
@@ -1597,7 +1621,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                       value={remark.comment || ''}
                       onChange={e => updateProjectLocal({ clientRemark: { ...remark, comment: e.target.value } })}
                       placeholder="Write the client's quote..."
-                      className="w-full bg-white/5 text-white italic font-unisans-regular text-base sm:text-lg lg:text-[15px] leading-relaxed lg:leading-normal focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl p-3 border border-white/10 resize-y"
+                      className="w-full bg-white/5 text-white italic font-unisans-regular text-base sm:text-lg lg:text-[15px] leading-relaxed lg:leading-normal focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl p-3 border border-white/10 resize-y"
                     />
                   ) : (
                     <p className="text-base sm:text-lg lg:text-[15px] text-white/95 italic font-unisans-regular leading-relaxed lg:leading-normal">
@@ -1605,7 +1629,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                     </p>
                   )}
                   <div className="flex items-center justify-between pt-1">
-                    <span className="text-xs sm:text-sm lg:text-xs text-[#38bdf8] font-vapour">
+                    <span className="text-xs sm:text-sm lg:text-xs text-white/80 font-vapour">
                       Author: {remark.clientAuthor || currentProject.client}
                     </span>
                     {isEditable && (
@@ -1614,7 +1638,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                         value={remark.clientAuthor || currentProject.client || ''}
                         onChange={e => updateProjectLocal({ clientRemark: { ...remark, clientAuthor: e.target.value } })}
                         placeholder="Author name"
-                        className="text-xs text-right bg-white/5 text-white/80 px-2 py-1 rounded-lg border border-white/10 focus:outline-none focus:border-[#38bdf8]"
+                        className="text-xs text-right bg-white/5 text-white/80 font-unisans-regular px-2 py-1 rounded-lg border border-white/10 focus:outline-none focus:border-white/40"
                       />
                     )}
                   </div>
@@ -1639,12 +1663,12 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                         value={remark.pictureCaption || ''}
                         onChange={e => updateProjectLocal({ clientRemark: { ...remark, pictureCaption: e.target.value } })}
                         placeholder="Document caption..."
-                        className="flex-1 text-xs text-white/80 bg-white/5 px-2.5 py-1.5 rounded-xl border border-white/10 focus:outline-none focus:border-[#38bdf8]"
+                        className="flex-1 text-xs font-unisans-regular text-white/80 bg-white/5 px-2.5 py-1.5 rounded-xl border border-white/10 focus:outline-none focus:border-white/40"
                       />
                       <button
                         type="button"
                         onClick={() => remarkPictureFileInputRef.current?.click()}
-                        className="px-3 py-1.5 text-xs font-semibold text-[#38bdf8] bg-[#003663]/60 hover:bg-[#003663] border border-[#38bdf8]/40 rounded-xl cursor-pointer"
+                        className="px-3 py-1.5 text-xs font-unisans-regular text-white bg-white/10 hover:bg-white/20 border border-white/25 rounded-xl cursor-pointer"
                       >
                         Upload Doc
                       </button>
@@ -1656,7 +1680,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
               {/* When Remark is None / Deleted */}
               {activeRemarkType === 'none' && isEditable && (
                 <div className="p-4 rounded-2xl bg-white/5 border border-dashed border-white/20 text-center space-y-2">
-                  <span className="text-xs text-white/50 block font-semibold">
+                  <span className="text-xs text-white/50 block font-unisans-regular">
                     No client remark attached.
                   </span>
                   <div className="flex items-center justify-center gap-2">
@@ -1666,7 +1690,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                         updateProjectLocal({ clientRemark: { ...remark, type: 'voice' } });
                         setActiveRemarkType('voice');
                       }}
-                      className="px-3.5 py-1.5 rounded-xl bg-[#003663] hover:bg-[#002647] text-white text-xs font-bold transition-all cursor-pointer border border-[#38bdf8]/40"
+                      className="px-3.5 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-unisans-regular transition-all cursor-pointer border border-white/25"
                     >
                       + Voice Memo
                     </button>
@@ -1676,7 +1700,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                         updateProjectLocal({ clientRemark: { ...remark, type: 'comment', comment: 'Exceptional creative design execution.' } });
                         setActiveRemarkType('comment');
                       }}
-                      className="px-3.5 py-1.5 rounded-xl bg-sky-700/60 hover:bg-sky-700 text-white text-xs font-bold transition-all cursor-pointer border border-sky-400/40"
+                      className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-unisans-regular transition-all cursor-pointer border border-white/20"
                     >
                       + Text Quote
                     </button>
@@ -1695,7 +1719,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   type="text"
                   value={currentProject.client || ''}
                   onChange={e => updateProjectLocal({ client: e.target.value })}
-                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
+                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
                   placeholder="Client Name"
                 />
               ) : (
@@ -1716,7 +1740,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   value={currentProject.clientDescription || ''}
                   onChange={e => updateProjectLocal({ clientDescription: e.target.value })}
                   placeholder="Description of the client organization..."
-                  className="w-full bg-white/5 p-3 text-white/90 font-unisans-regular text-base sm:text-lg lg:text-[15px] font-normal leading-relaxed lg:leading-normal focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10 resize-y"
+                  className="w-full bg-white/5 p-3 text-white/90 font-unisans-regular text-base sm:text-lg lg:text-[15px] font-normal leading-relaxed lg:leading-normal focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10 resize-y"
                 />
               ) : (
                 <p className="font-unisans-regular text-base sm:text-lg lg:text-[15px] text-white/85 font-normal leading-relaxed lg:leading-normal">
@@ -1737,7 +1761,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   value={currentProject.shortDescription || currentProject.description || ''}
                   onChange={e => updateProjectLocal({ shortDescription: e.target.value, description: e.target.value })}
                   placeholder="Short description of the project..."
-                  className="w-full bg-white/5 p-3 text-white/90 font-unisans-regular text-base sm:text-lg lg:text-[15px] font-normal leading-relaxed lg:leading-normal focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10 resize-y"
+                  className="w-full bg-white/5 p-3 text-white/90 font-unisans-regular text-base sm:text-lg lg:text-[15px] font-normal leading-relaxed lg:leading-normal focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10 resize-y"
                 />
               ) : (
                 <p className="font-unisans-regular text-base sm:text-lg lg:text-[15px] text-white/85 font-normal leading-relaxed lg:leading-normal">
@@ -1757,10 +1781,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   value={currentProject.price || ''}
                   onChange={e => updateProjectLocal({ price: e.target.value })}
                   placeholder="e.g. $24,500 USD"
-                  className="w-full bg-white/5 px-3 py-2 text-[#38bdf8] font-vapour text-2xl sm:text-3xl lg:text-[15px] font-light focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
+                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
                 />
               ) : (
-                <span className="font-vapour text-2xl sm:text-3xl lg:text-[15px] font-light text-[#38bdf8] block">
+                <span className="font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light text-white block">
                   {currentProject.price || 'Undisclosed'}
                 </span>
               )}
@@ -1777,7 +1801,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   value={currentProject.duration || ''}
                   onChange={e => updateProjectLocal({ duration: e.target.value })}
                   placeholder="e.g. 6 Weeks"
-                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
+                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
                 />
               ) : (
                 <span className="font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light text-white block">
@@ -1797,7 +1821,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   value={currentProject.threeWordDesc || currentProject.descriptors || ''}
                   onChange={e => updateProjectLocal({ threeWordDesc: e.target.value, descriptors: e.target.value })}
                   placeholder="e.g. Rational Swiss Architecture"
-                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-xl sm:text-2xl lg:text-[28px] font-light tracking-wide focus:outline-none focus:ring-2 focus:ring-[#38bdf8] rounded-xl border border-white/10"
+                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-xl sm:text-2xl lg:text-[28px] font-light tracking-wide focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
                 />
               ) : (
                 <span className="font-vapour text-xl sm:text-2xl lg:text-[28px] font-light text-white tracking-wide block">
@@ -1821,7 +1845,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                         onClick={() => updateProjectLocal({ category: cat })}
                         className={`px-3.5 py-1.5 text-sm lg:text-[15px] rounded-xl font-unisans-regular transition-all cursor-pointer border ${
                           currentProject.category === cat
-                            ? 'bg-[#003663] text-white border-[#38bdf8]/80 shadow-md shadow-[#003663]/30 ring-2 ring-[#38bdf8]/40'
+                            ? 'bg-white/20 text-white border-white/60 shadow-md ring-1 ring-white/30'
                             : 'bg-white/5 text-white/70 border-white/15 hover:bg-white/15 hover:text-white'
                         }`}
                       >
@@ -1850,13 +1874,13 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   onClick={() => updateProjectLocal({ isRealLife: !currentProject.isRealLife })}
                   className={`w-full flex items-center justify-between p-3.5 rounded-2xl border transition-all cursor-pointer ${
                     currentProject.isRealLife
-                      ? 'bg-[#003663]/80 border-[#38bdf8]/60 text-white ring-1 ring-[#38bdf8]/40'
+                      ? 'bg-white/20 border-white/50 text-white ring-1 ring-white/30'
                       : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10'
                   }`}
                 >
                   <span className="text-sm lg:text-[15px] font-unisans-regular font-normal text-white">Mark as &apos;Real-Life Project&apos;</span>
                   <div className={`w-5 h-5 rounded-lg flex items-center justify-center border transition-all ${
-                    currentProject.isRealLife ? 'bg-[#38bdf8] border-[#38bdf8] text-[#003663]' : 'border-white/30 bg-transparent'
+                    currentProject.isRealLife ? 'bg-white border-white text-black' : 'border-white/30 bg-transparent'
                   }`}>
                     {currentProject.isRealLife && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                   </div>
@@ -1885,7 +1909,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                             const updated = (currentProject.deliverables || []).filter((_, i) => i !== dIdx);
                             updateProjectLocal({ deliverables: updated });
                           }}
-                          className="p-1 rounded-md text-white/40 hover:text-white hover:bg-rose-600 transition-colors cursor-pointer -mr-1"
+                          className="p-1 rounded-md text-white/40 hover:text-white hover:bg-white/20 transition-colors cursor-pointer -mr-1"
                           title={`Remove ${deliv}`}
                         >
                           <X className="w-3.5 h-3.5" />
@@ -1913,7 +1937,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           }
                         }
                       }}
-                      className="flex-1 px-3.5 py-2.5 text-sm lg:text-[15px] text-white bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#38bdf8]"
+                      className="flex-1 px-3.5 py-2.5 text-sm lg:text-[15px] font-unisans-regular text-white bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/30"
                     />
                     <button
                       type="button"
@@ -1925,7 +1949,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           setNewDeliverableText('');
                         }
                       }}
-                      className="px-4 py-2.5 text-sm lg:text-[15px] font-bold bg-[#003663] text-white rounded-xl hover:bg-[#002647] transition-all cursor-pointer shadow-md border border-[#38bdf8]/40"
+                      className="px-4 py-2.5 text-sm lg:text-[15px] font-unisans-regular bg-white/15 text-white rounded-xl hover:bg-white/25 transition-all cursor-pointer shadow-md border border-white/25"
                     >
                       Add
                     </button>
@@ -1977,7 +2001,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
           <button
             type="button"
             onClick={() => setMobileActivePane('gallery_process')}
-            className={`flex-1 py-2 px-3 text-xs font-bold rounded-xl transition-colors relative z-10 text-center cursor-pointer ${
+            className={`flex-1 py-2 px-3 text-xs font-unisans-regular rounded-xl transition-colors relative z-10 text-center cursor-pointer ${
               mobileActivePane === 'gallery_process'
                 ? 'text-white'
                 : 'text-white/60 hover:text-white'
@@ -1986,7 +2010,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
             {mobileActivePane === 'gallery_process' && (
               <motion.div
                 layoutId="showroom-mobile-bottom-slider"
-                className="absolute inset-0 bg-[#003663] rounded-xl -z-10 shadow-sm border border-[#38bdf8]/40"
+                className="absolute inset-0 bg-white/20 rounded-xl -z-10 shadow-sm border border-white/25"
                 transition={{ type: 'spring', stiffness: 400, damping: 32 }}
               />
             )}
@@ -1996,7 +2020,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
           <button
             type="button"
             onClick={() => setMobileActivePane('other_details')}
-            className={`flex-1 py-2 px-3 text-xs font-bold rounded-xl transition-colors relative z-10 text-center cursor-pointer ${
+            className={`flex-1 py-2 px-3 text-xs font-unisans-regular rounded-xl transition-colors relative z-10 text-center cursor-pointer ${
               mobileActivePane === 'other_details'
                 ? 'text-white'
                 : 'text-white/60 hover:text-white'
@@ -2005,7 +2029,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
             {mobileActivePane === 'other_details' && (
               <motion.div
                 layoutId="showroom-mobile-bottom-slider"
-                className="absolute inset-0 bg-[#003663] rounded-xl -z-10 shadow-sm border border-[#38bdf8]/40"
+                className="absolute inset-0 bg-white/20 rounded-xl -z-10 shadow-sm border border-white/25"
                 transition={{ type: 'spring', stiffness: 400, damping: 32 }}
               />
             )}
@@ -2078,8 +2102,8 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
               className="relative max-w-md w-full bg-[#18133d] border border-white/15 rounded-3xl p-6 shadow-2xl z-10 space-y-4"
             >
               <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                  <Link2 className="w-4 h-4 text-[#38bdf8]" />
+                <h3 className="text-sm font-unisans-thin-caps text-white uppercase tracking-wider flex items-center gap-2">
+                  <Link2 className="w-4 h-4 text-white/80" />
                   <span>Add Image via Link</span>
                 </h3>
                 <button
@@ -2093,7 +2117,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
 
               <div className="space-y-3">
                 <div>
-                  <label className="text-xs font-semibold text-white/70 block mb-1">
+                  <label className="text-xs font-unisans-thin-caps uppercase tracking-wider text-white/70 block mb-1">
                     Image URL
                   </label>
                   <input
@@ -2102,12 +2126,12 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                     value={imageUrlInput || ''}
                     onChange={e => setImageUrlInput(e.target.value)}
                     placeholder="https://images.unsplash.com/..."
-                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white text-xs focus:outline-none focus:border-[#38bdf8]"
+                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white text-xs font-unisans-regular focus:outline-none focus:border-white/40"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-white/70 block mb-1">
+                  <label className="text-xs font-unisans-thin-caps uppercase tracking-wider text-white/70 block mb-1">
                     Caption
                   </label>
                   <input
@@ -2115,7 +2139,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                     value={imageCaptionInput || ''}
                     onChange={e => setImageCaptionInput(e.target.value)}
                     placeholder="Short description of the asset..."
-                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white text-xs focus:outline-none focus:border-[#38bdf8]"
+                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white text-xs font-unisans-regular focus:outline-none focus:border-white/40"
                   />
                 </div>
 
@@ -2125,24 +2149,24 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                       type="checkbox"
                       checked={imageIsAI}
                       onChange={e => setImageIsAI(e.target.checked)}
-                      className="rounded accent-[#003663]"
+                      className="rounded accent-white"
                     />
-                    <span className="text-xs text-white/80 font-medium">
+                    <span className="text-xs text-white/80 font-unisans-regular">
                       Tag as AI Generated
                     </span>
                   </label>
                 ) : (
                   <div>
-                    <label className="text-xs font-semibold text-white/70 block mb-1">
+                    <label className="text-xs font-unisans-thin-caps uppercase tracking-wider text-white/70 block mb-1">
                       Step Type
                     </label>
                     <div className="flex gap-2">
                       <button
                         type="button"
                         onClick={() => setImageType('Final')}
-                        className={`flex-1 py-1.5 text-xs font-semibold rounded-lg border ${
+                        className={`flex-1 py-1.5 text-xs font-unisans-regular rounded-lg border ${
                           imageType === 'Final'
-                            ? 'bg-emerald-600 text-white border-emerald-400'
+                            ? 'bg-white/20 text-white border-white/50'
                             : 'bg-white/5 text-white/60 border-white/10'
                         }`}
                       >
@@ -2151,9 +2175,9 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                       <button
                         type="button"
                         onClick={() => setImageType('AI')}
-                        className={`flex-1 py-1.5 text-xs font-semibold rounded-lg border ${
+                        className={`flex-1 py-1.5 text-xs font-unisans-regular rounded-lg border ${
                           imageType === 'AI'
-                            ? 'bg-[#003663] text-white border-[#38bdf8]'
+                            ? 'bg-white/20 text-white border-white/50'
                             : 'bg-white/5 text-white/60 border-white/10'
                         }`}
                       >
@@ -2168,7 +2192,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setLinkModalTarget(null)}
-                  className="px-4 py-2 text-xs font-semibold text-white/60 hover:text-white"
+                  className="px-4 py-2 text-xs font-unisans-regular text-white/60 hover:text-white"
                 >
                   Cancel
                 </button>
@@ -2176,7 +2200,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   type="button"
                   onClick={handleConfirmAddByLink}
                   disabled={!imageUrlInput.trim()}
-                  className="px-5 py-2 text-xs font-bold text-white bg-[#003663] hover:bg-[#002647] rounded-xl disabled:opacity-40 cursor-pointer shadow-lg border border-[#38bdf8]/40"
+                  className="px-5 py-2 text-xs font-unisans-regular text-white bg-white/15 hover:bg-white/25 rounded-xl disabled:opacity-40 cursor-pointer shadow-lg border border-white/25"
                 >
                   Add Picture
                 </button>

@@ -13,7 +13,6 @@ import { LoginPage } from './components/LoginPage';
 import { ProjectBlogView } from './components/ProjectBlogView';
 import { DashboardView } from './components/DashboardView';
 import { Project } from './types/portfolio';
-import { ArrowUp } from 'lucide-react';
 
 export default function App() {
   const {
@@ -32,31 +31,20 @@ export default function App() {
   const [currentView, setCurrentView] = useState<'portfolio' | 'dashboard' | 'login'>('portfolio');
   const [selectedCaseStudy, setSelectedCaseStudy] = useState<Project | null>(null);
   const [isEditingCaseStudy, setIsEditingCaseStudy] = useState<boolean>(false);
-  const [showScrollTop, setShowScrollTop] = useState(false);
   const [isMobileNavVisible, setIsMobileNavVisible] = useState(true);
   const lastScrollY = React.useRef(0);
 
   // Throttled scroll listener to avoid layout recalculation thrash and synchronize bottom bars
   useEffect(() => {
-    let ticking = false;
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
+      const delta = currentScrollY - lastScrollY.current;
 
       // Handle mobile navbar / gallery filter slide in / slide out synchronization
-      if (currentScrollY > lastScrollY.current && currentScrollY > 30) {
-        setIsMobileNavVisible(false);
-      } else {
-        setIsMobileNavVisible(true);
-      }
-      lastScrollY.current = currentScrollY;
-
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const shouldShow = currentScrollY > 400;
-          setShowScrollTop(prev => (prev !== shouldShow ? shouldShow : prev));
-          ticking = false;
-        });
-        ticking = true;
+      if (Math.abs(delta) > 4) {
+        const nextVisible = !(currentScrollY > lastScrollY.current && currentScrollY > 30);
+        setIsMobileNavVisible(prev => (prev !== nextVisible ? nextVisible : prev));
+        lastScrollY.current = currentScrollY;
       }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -143,6 +131,8 @@ export default function App() {
     setSelectedCaseStudy(newProj);
   };
 
+  const visibleProjects = projects.filter(p => !p.isHidden);
+
   return (
     <div
       className="relative min-h-screen text-slate-800 selection:bg-slate-300 selection:text-slate-900 flex flex-col bg-[#d9d9d9]"
@@ -170,9 +160,9 @@ export default function App() {
           />
         ) : currentView === 'portfolio' ? (
           <>
-            {/* 1. Gallery Section (4 curated projects) */}
+            {/* 1. Gallery Section (curated visible projects) */}
             <GallerySection
-              projects={projects}
+              projects={visibleProjects}
               onSelectProject={project => {
                 setSelectedCaseStudy(project);
                 setIsEditingCaseStudy(false);
@@ -217,7 +207,7 @@ export default function App() {
               <span className="font-vapour">VAPOUR</span><span className="font-dense">DENSE</span> <span className="font-virtual-cafe text-xs">VIRTUAL CAFE</span>
             </span>
             <span className="text-[11px] text-slate-500 font-light">
-              © {new Date().getFullYear()} All rights reserved
+              @2026
             </span>
           </div>
 
@@ -235,25 +225,12 @@ export default function App() {
               </span>
             </div>
 
-            <div className="flex items-center gap-4">
-              <span>{aboutData.footerLocation || 'Jos, Plateau State // UNIJOS'}</span>
-              <span aria-hidden="true">·</span>
-              <span>{aboutData.footerRights || 'All rights reserved'}</span>
+            <div className="flex items-center">
+              <span>@2026</span>
             </div>
           </div>
         </div>
       </footer>
-
-      {/* Floating Scroll to Top button (Positioned above mobile bottom bar) */}
-      {showScrollTop && currentView === 'portfolio' && (
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-16 right-4 sm:bottom-6 sm:right-6 z-40 p-2.5 rounded-full bg-white/90 hover:bg-white border border-slate-300 text-slate-800 backdrop-blur-xl shadow-lg transition-all cursor-pointer"
-          title="Scroll to Top"
-        >
-          <ArrowUp className="w-4 h-4" />
-        </button>
-      )}
 
       {/* Full-Screen Project Show (70/30 Dark Layout in #130f30 with Close Icons at top corners) */}
       {selectedCaseStudy && (
@@ -263,7 +240,7 @@ export default function App() {
             setSelectedCaseStudy(null);
             setIsEditingCaseStudy(false);
           }}
-          allProjects={projects}
+          allProjects={currentView === 'portfolio' ? visibleProjects : projects}
           onNavigateProject={proj => setSelectedCaseStudy(proj)}
           isEditable={isEditingCaseStudy && isAdmin && currentView === 'dashboard'}
           onUpdateProject={async (id, updated) => {

@@ -160,8 +160,8 @@ body {
 }
 
 .font-mono-numbers {
-  font-family: 'JetBrains Mono', monospace;
-  font-variant-numeric: tabular-nums;
+  font-family: inherit;
+  font-variant-numeric: normal;
 }
 
 /* Snowy Soft White Frosted Glassmorphism primitives */

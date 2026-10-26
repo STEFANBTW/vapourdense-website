@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   collection,
   doc,
@@ -12,15 +12,27 @@ import {
 import { db } from '../lib/firebase';
 import { Project } from '../types/portfolio';
 import { initialProjects } from '../data/initialProjects';
-import { AboutData, defaultAboutData } from '../components/AboutSection';
+import { AboutData, defaultAboutData, SocialLinkItem } from '../components/AboutSection';
 
-const STORAGE_KEY = 'vdvc_portfolio_projects_v8';
-const ABOUT_STORAGE_KEY = 'vdvc_portfolio_about_v1';
+const STORAGE_KEY = 'vdvc_portfolio_projects_v9';
+const SEEDED_WEB_KEY = 'vdvc_seeded_web_projects_v1';
+const ABOUT_STORAGE_KEY = 'vdvc_portfolio_about_v2';
 const AUTH_KEY = 'dive_portfolio_admin_auth';
 export const ADMIN_PASSWORD = 'memeh 23';
 
 const DELETED_PROJECT_IDS = new Set(['proj-5', 'proj-6', 'proj-7']);
+const LEGACY_SOCIAL_IDS = new Set(['soc-1', 'soc-2', 'soc-3']);
 const initialMap = new Map(initialProjects.map(p => [p.id, p]));
+
+function sanitizeSocialLinks(links?: SocialLinkItem[]): SocialLinkItem[] {
+  if (!Array.isArray(links)) return [];
+  return links.filter(item => {
+    if (!item) return false;
+    // Remove the old hardcoded placeholder links (soc-1, soc-2, soc-3)
+    if (LEGACY_SOCIAL_IDS.has(item.id)) return false;
+    return true;
+  });
+}
 
 export function usePortfolioStorage() {
   const [projects, setProjects] = useState<Project[]>(() => {
@@ -36,6 +48,7 @@ export function usePortfolioStorage() {
               return {
                 ...fallback,
                 ...p,
+                websiteUrl: p.websiteUrl || fallback?.websiteUrl,
                 galleryPictures: p.galleryPictures || fallback?.galleryPictures,
                 processSteps: p.processSteps || fallback?.processSteps,
                 clientRemark: p.clientRemark || fallback?.clientRemark,
@@ -44,14 +57,13 @@ export function usePortfolioStorage() {
                 shortDescription: p.shortDescription || fallback?.shortDescription,
                 imageScalePercent: p.imageScalePercent ?? fallback?.imageScalePercent ?? 100,
               };
-            })
-            .slice(0, 4);
+            });
         }
       }
     } catch {
       // fallback
     }
-    return initialProjects.slice(0, 4);
+    return [...initialProjects].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
   });
 
   const [aboutData, setAboutData] = useState<AboutData>(() => {
@@ -76,6 +88,7 @@ export function usePortfolioStorage() {
           if (!parsed.bio || parsed.bio.includes('Creative Direction')) {
             parsed.bio = 'a flexible system for your paper workloads';
           }
+          parsed.socialLinks = sanitizeSocialLinks(parsed.socialLinks);
           return parsed;
         }
       }
@@ -94,6 +107,9 @@ export function usePortfolioStorage() {
   });
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const lastProjectsJsonRef = useRef<string>('');
+  const lastAboutJsonRef = useRef<string>('');
+  const hasSeededWebRef = useRef<boolean>(false);
 
   // 1. Synchronize Projects with Firestore in Real-Time
   useEffect(() => {
@@ -102,30 +118,34 @@ export function usePortfolioStorage() {
       projectsCol,
       async snapshot => {
         if (snapshot.empty) {
-          // Seed the 4 initial projects if Firestore is completely empty
           try {
             const batch = writeBatch(db);
-            const targetProjects = initialProjects.slice(0, 4);
-            targetProjects.forEach(proj => {
+            initialProjects.forEach(proj => {
               const docRef = doc(db, 'projects', proj.id);
               batch.set(docRef, proj);
             });
             await batch.commit();
+            try {
+              localStorage.setItem(SEEDED_WEB_KEY, 'true');
+            } catch {
+              // ignore
+            }
           } catch (err) {
-            console.error('Failed to seed initial 4 projects to Firestore:', err);
+            console.error('Failed to seed initial projects to Firestore:', err);
           }
         } else {
           const loadedProjects: Project[] = [];
+          const existingIds = new Set<string>();
           snapshot.forEach(docSnap => {
             const data = docSnap.data() as Project;
-            if (DELETED_PROJECT_IDS.has(docSnap.id) || DELETED_PROJECT_IDS.has(data.id)) {
-              // Delete from Firestore
-              deleteDoc(docSnap.ref).catch(() => {});
-            } else {
+            const docId = data.id || docSnap.id;
+            existingIds.add(docId);
+            if (!DELETED_PROJECT_IDS.has(docSnap.id) && !DELETED_PROJECT_IDS.has(data.id)) {
               const fallback = initialMap.get(data.id);
               const merged: Project = {
                 ...fallback,
                 ...data,
+                websiteUrl: data.websiteUrl || fallback?.websiteUrl,
                 galleryPictures: data.galleryPictures || fallback?.galleryPictures,
                 processSteps: data.processSteps || fallback?.processSteps,
                 clientRemark: data.clientRemark || fallback?.clientRemark,
@@ -137,19 +157,52 @@ export function usePortfolioStorage() {
               loadedProjects.push(merged);
             }
           });
-          // Sort by createdAt descending
+
+          // Ensure the 8 new website projects are seeded if not already in Firestore
+          const alreadySeeded =
+            hasSeededWebRef.current ||
+            (() => {
+              try {
+                return localStorage.getItem(SEEDED_WEB_KEY) === 'true';
+              } catch {
+                return false;
+              }
+            })();
+
+          const missingWebProjects = initialProjects.filter(
+            p => p.id.startsWith('proj-web-') && !existingIds.has(p.id)
+          );
+
+          if (!alreadySeeded && missingWebProjects.length > 0) {
+            hasSeededWebRef.current = true;
+            missingWebProjects.forEach(p => loadedProjects.push(p));
+            try {
+              const batch = writeBatch(db);
+              missingWebProjects.forEach(proj => {
+                batch.set(doc(db, 'projects', proj.id), proj);
+              });
+              await batch.commit();
+              localStorage.setItem(SEEDED_WEB_KEY, 'true');
+            } catch (err) {
+              console.error('Failed to seed website projects to Firestore:', err);
+            }
+          }
+
           loadedProjects.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-          setProjects(loadedProjects);
-          try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(loadedProjects));
-          } catch {
-            // ignore
+          const serialized = JSON.stringify(loadedProjects);
+          if (serialized !== lastProjectsJsonRef.current) {
+            lastProjectsJsonRef.current = serialized;
+            setProjects(loadedProjects);
+            try {
+              localStorage.setItem(STORAGE_KEY, serialized);
+            } catch {
+              // ignore
+            }
           }
         }
         setIsLoading(false);
       },
-      error => {
-        // Handle offline / connection failures gracefully without raising unhandled errors
+      () => {
         setIsLoading(false);
       }
     );
@@ -164,7 +217,6 @@ export function usePortfolioStorage() {
       aboutDocRef,
       async docSnap => {
         if (!docSnap.exists()) {
-          // Seed default about data to Firestore
           try {
             await setDoc(aboutDocRef, defaultAboutData);
           } catch {
@@ -192,6 +244,11 @@ export function usePortfolioStorage() {
           if (!bio || bio.includes('Creative Direction')) {
             bio = 'a flexible system for your paper workloads';
           }
+          const sanitizedSocials = sanitizeSocialLinks(data.socialLinks);
+          const hadLegacySocials =
+            Array.isArray(data.socialLinks) &&
+            data.socialLinks.length !== sanitizedSocials.length;
+
           const upgraded: AboutData = {
             ...defaultAboutData,
             ...data,
@@ -199,18 +256,28 @@ export function usePortfolioStorage() {
             logoUrl,
             footerTagline,
             bio,
+            socialLinks: sanitizedSocials,
             studioName: data.studioName || defaultAboutData.studioName,
             websiteName: data.websiteName || defaultAboutData.websiteName,
           };
-          setAboutData(upgraded);
-          try {
-            localStorage.setItem(ABOUT_STORAGE_KEY, JSON.stringify(upgraded));
-          } catch {
-            // ignore
+
+          if (hadLegacySocials) {
+            setDoc(aboutDocRef, upgraded).catch(() => {});
+          }
+
+          const serialized = JSON.stringify(upgraded);
+          if (serialized !== lastAboutJsonRef.current) {
+            lastAboutJsonRef.current = serialized;
+            setAboutData(upgraded);
+            try {
+              localStorage.setItem(ABOUT_STORAGE_KEY, serialized);
+            } catch {
+              // ignore
+            }
           }
         }
       },
-      error => {
+      () => {
         // Handle offline fallback silently
       }
     );
@@ -289,12 +356,13 @@ export function usePortfolioStorage() {
     }
   }, []);
 
-  // Reset to the 4 default projects in Firestore
+  // Reset to the default projects in Firestore
   const resetToDefaults = useCallback(async () => {
-    const targetProjects = initialProjects.slice(0, 4);
+    const targetProjects = [...initialProjects].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     setProjects(targetProjects);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(targetProjects));
+      localStorage.setItem(SEEDED_WEB_KEY, 'true');
       // Delete existing in Firestore and reseed
       const existingSnap = await getDocs(collection(db, 'projects'));
       const batch = writeBatch(db);

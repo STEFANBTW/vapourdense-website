@@ -35,14 +35,12 @@ export const Navbar: React.FC<NavbarProps> = ({
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY.current && currentScrollY > 30) {
-        // Scrolling down -> hide mobile navbar
-        setIsVisible(false);
-      } else {
-        // Scrolling up or at top -> show mobile navbar
-        setIsVisible(true);
+      const delta = currentScrollY - lastScrollY.current;
+      if (Math.abs(delta) > 4) {
+        const nextVisible = !(currentScrollY > lastScrollY.current && currentScrollY > 30);
+        setIsVisible(prev => (prev !== nextVisible ? nextVisible : prev));
+        lastScrollY.current = currentScrollY;
       }
-      lastScrollY.current = currentScrollY;
 
       // Check if booking section reaches the top of viewport and until it leaves
       const bookingEl = document.getElementById('booking');
@@ -50,9 +48,9 @@ export const Navbar: React.FC<NavbarProps> = ({
         const rect = bookingEl.getBoundingClientRect();
         // Desktop navbar is 64px (h-16). When booking top reaches viewport top (<= 64px) and until it leaves (> 0px)
         const isAtTop = rect.top <= 64 && rect.bottom > 0;
-        setIsOverBooking(isAtTop);
+        setIsOverBooking(prev => (prev !== isAtTop ? isAtTop : prev));
       } else {
-        setIsOverBooking(false);
+        setIsOverBooking(prev => (prev !== false ? false : prev));
       }
     };
 

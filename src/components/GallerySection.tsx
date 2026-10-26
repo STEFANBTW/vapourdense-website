@@ -376,8 +376,8 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
                     onClick={() => onSelectProject(project)}
                     className="group cursor-pointer flex flex-col items-center sm:items-stretch"
                   >
-                    {/* Circle Card: Retains circular shape */}
-                    <div className={`w-[92%] sm:w-[90%] mx-auto aspect-square rounded-full overflow-hidden bg-white ${idx === 0 ? 'border-0' : 'border border-slate-200'} shadow-sm transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-[0_20px_45px_-10px_rgba(0,0,0,0.18)]`}>
+                    {/* Circle Card: Retains circular shape, only drop shadow on hover (no scale/grow) */}
+                    <div className={`w-[92%] sm:w-[90%] mx-auto aspect-square rounded-full overflow-hidden bg-white ${idx === 0 ? 'border-0' : 'border border-slate-200'} shadow-sm transition-shadow duration-300 ease-out hover:shadow-[0_20px_45px_-10px_rgba(0,0,0,0.18)]`}>
                       {heroImage ? (
                         <img
                           src={heroImage}
@@ -394,7 +394,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
 
                     {/* Outside under it: scaled down text on mobile */}
                     <div className="pt-2 sm:pt-4 px-0.5 sm:px-1 w-[95%] sm:w-[90%] mx-auto space-y-0.5 sm:space-y-1.5 text-left">
-                      <h3 className="font-phenomena text-[17px] sm:text-[22px] lg:text-[23px] font-bold text-slate-950 group-hover:text-sky-900 transition-colors line-clamp-2 leading-tight tracking-tight">
+                      <h3 className="font-phenomena text-[17px] sm:text-[22px] lg:text-[23px] font-bold text-slate-950 transition-colors line-clamp-2 leading-tight tracking-tight">
                         {project.title}
                       </h3>
 
