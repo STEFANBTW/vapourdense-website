@@ -63,6 +63,7 @@ import {
 } from './AboutSection';
 import { compressImage } from '../utils/imageCompressor';
 import { uploadToCloudinary } from '../utils/cloudinary';
+import { getProjectThumbnail, formatProjectValuation } from '../utils/projectMeta';
 
 interface DashboardViewProps {
   projects: Project[];
@@ -2722,7 +2723,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   </div>
                 ) : (
                   filteredProjects.map(proj => {
-                    const heroImg = proj.images && proj.images.length > 0 ? proj.images[0] : null;
+                    const heroImg = getProjectThumbnail(proj);
                     return (
                       <div
                         key={proj.id}
@@ -2769,7 +2770,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         </div>
                         <div>
                           <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Fee / Year</span>
-                          <span className="text-slate-800 font-mono-numbers">{proj.price || 'Undisclosed'} ({proj.year})</span>
+                          <span className="text-slate-800 font-mono-numbers">{formatProjectValuation(proj.price, proj.currency) || '—'} ({proj.year})</span>
                         </div>
                       </div>
 
@@ -2839,7 +2840,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     </tr>
                   ) : (
                     filteredProjects.map(proj => {
-                      const heroImg = proj.images && proj.images.length > 0 ? proj.images[0] : null;
+                      const heroImg = getProjectThumbnail(proj);
                       return (
                         <tr
                           key={proj.id}
@@ -2888,7 +2889,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                           </td>
 
                           <td className="py-4 px-4 font-mono-numbers text-slate-600">
-                            <div>{proj.price || 'Undisclosed'}</div>
+                            <div>{formatProjectValuation(proj.price, proj.currency) || '—'}</div>
                             <div className="text-[11px] text-slate-400">
                               {proj.year}
                               {proj.duration ? ` · ${proj.duration}` : ''}

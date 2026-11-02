@@ -25,6 +25,14 @@ import {
 } from 'lucide-react';
 import { Project, ProcessPicture, GalleryPicture, ClientRemarkType, ProcessStep } from '../types/portfolio';
 import { uploadToCloudinary } from '../utils/cloudinary';
+import {
+  getUploadedProjectMedia,
+  getProjectThumbnail,
+  CURRENCY_OPTIONS,
+  detectCurrencyCode,
+  extractPriceAmount,
+  formatProjectValuation,
+} from '../utils/projectMeta';
 
 interface ProjectBlogViewProps {
   project: Project | null;
@@ -62,6 +70,8 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
   const [imageScalePercent, setImageScalePercent] = useState<number>(() => initialProject?.imageScalePercent || 100);
   const [isProjectDropdownOpen, setIsProjectDropdownOpen] = useState<boolean>(false);
   const projectDropdownRef = useRef<HTMLDivElement | null>(null);
+  const [isCurrencyDropdownOpen, setIsCurrencyDropdownOpen] = useState<boolean>(false);
+  const currencyDropdownRef = useRef<HTMLDivElement | null>(null);
 
   // Modal for big picture expansion
   const [expandedImage, setExpandedImage] = useState<ExpandedImageState | null>(null);
@@ -102,20 +112,24 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
   // Deliverable input state
   const [newDeliverableText, setNewDeliverableText] = useState('');
 
-  // Close project switcher dropdown on click outside
+  // Close project switcher & currency dropdowns on click outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (projectDropdownRef.current && !projectDropdownRef.current.contains(e.target as Node)) {
         setIsProjectDropdownOpen(false);
+      setIsCurrencyDropdownOpen(false);
+      }
+      if (currencyDropdownRef.current && !currencyDropdownRef.current.contains(e.target as Node)) {
+        setIsCurrencyDropdownOpen(false);
       }
     };
-    if (isProjectDropdownOpen) {
+    if (isProjectDropdownOpen || isCurrencyDropdownOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isProjectDropdownOpen]);
+  }, [isProjectDropdownOpen, isCurrencyDropdownOpen]);
 
   // Synchronize internal project state when initialProject changes
   useEffect(() => {
@@ -151,6 +165,13 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
       if (isProjectDropdownOpen) {
         if (e.key === 'Escape') {
           setIsProjectDropdownOpen(false);
+        }
+        return;
+      }
+
+      if (isCurrencyDropdownOpen) {
+        if (e.key === 'Escape') {
+          setIsCurrencyDropdownOpen(false);
         }
         return;
       }
@@ -336,10 +357,30 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
   const designerRemarkText = currentProject.threeWordDesc ?? currentProject.descriptors ?? '';
   const authorText = remark.clientAuthor ?? currentProject.client ?? '';
 
-  // Local update handler (No auto-saving, marks as unsaved)
+  const uploadedMedia = getUploadedProjectMedia(currentProject);
+  const activeThumbnail = getProjectThumbnail(currentProject);
+  const activeCurrencyCode = detectCurrencyCode(currentProject.price, currentProject.currency);
+  const activeCurrency =
+    CURRENCY_OPTIONS.find(c => c.code === activeCurrencyCode) || CURRENCY_OPTIONS[0];
+  const priceAmountText = extractPriceAmount(currentProject.price);
+
+  // Local update handler (No auto-saving, marks as unsaved).
+  // Automatically keeps imageUrl / images synced with the available uploaded media.
   const updateProjectLocal = (updated: Partial<Project>) => {
-    setCurrentProject(prev => ({ ...prev, ...updated }));
+    setCurrentProject(prev => {
+      const next: Project = { ...prev, ...updated };
+      if ('galleryPictures' in updated || 'processSteps' in updated) {
+        const resolvedThumb = getProjectThumbnail(next);
+        next.imageUrl = resolvedThumb || '';
+        next.images = resolvedThumb ? [resolvedThumb] : [];
+      }
+      return next;
+    });
     setHasUnsavedChanges(true);
+  };
+
+  const handleSelectThumbnail = (url: string) => {
+    updateProjectLocal({ imageUrl: url, images: [url] });
   };
 
   const handleScaleChange = (scale: number) => {
@@ -352,8 +393,15 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
   const handleSaveChanges = async () => {
     if (onUpdateProject && currentProject) {
       setSaveError(null);
+      const resolvedThumb = getProjectThumbnail(currentProject);
+      const normalizedProject: Project = {
+        ...currentProject,
+        imageUrl: resolvedThumb || '',
+        images: resolvedThumb ? [resolvedThumb] : [],
+      };
+      setCurrentProject(normalizedProject);
       try {
-        await onUpdateProject(currentProject.id, currentProject);
+        await onUpdateProject(currentProject.id, normalizedProject);
         setHasUnsavedChanges(false);
         setIsSavedNotice(true);
         setTimeout(() => setIsSavedNotice(false), 2500);
@@ -724,7 +772,6 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                 }`}
                 title="Switch project"
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                 <span className="max-w-[140px] md:max-w-[200px] truncate">{currentProject.title}</span>
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 text-white/70 ${isProjectDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
@@ -758,33 +805,18 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                               onNavigateProject(p);
                               setIsProjectDropdownOpen(false);
                             }}
-                            className={`w-full text-left px-3 py-2 rounded-xl flex items-center justify-between gap-3 transition-all cursor-pointer group ${
+                            className={`w-full text-left px-3 py-2.5 rounded-xl flex items-center gap-2.5 transition-all cursor-pointer group ${
                               isSelected
                                 ? 'bg-white/20 text-white border border-white/30 shadow-xs'
                                 : 'text-white/70 hover:text-white hover:bg-white/10 border border-transparent'
                             }`}
                           >
-                            <div className="flex items-center gap-2.5 min-w-0">
-                              <span className="text-[11px] font-unisans-thin-caps text-white/40 w-5 shrink-0">
-                                {String(idx + 1).padStart(2, '0')}
-                              </span>
-                              <div className="min-w-0">
-                                <p className="text-xs font-unisans-regular truncate font-medium group-hover:text-white">
-                                  {p.title}
-                                </p>
-                                <p className="text-[10px] text-white/40 truncate font-unisans-regular">
-                                  {p.category} {p.client ? `· ${p.client}` : ''}
-                                </p>
-                              </div>
-                            </div>
-
-                            {isSelected ? (
-                              <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-                            ) : (
-                              <span className="text-[10px] text-white/30 group-hover:text-white/60 shrink-0 font-unisans-regular">
-                                Select
-                              </span>
-                            )}
+                            <span className="text-[11px] font-unisans-thin-caps text-white/40 w-5 shrink-0">
+                              {String(idx + 1).padStart(2, '0')}
+                            </span>
+                            <span className="text-xs font-unisans-regular truncate font-medium group-hover:text-white">
+                              {p.title}
+                            </span>
                           </button>
                         );
                       })}
@@ -1060,25 +1092,49 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                             className="w-full h-full object-cover"
                           />
 
-                          {/* AI / Asset Badge */}
-                          <div className="absolute top-2 left-2 z-10 flex items-center gap-1">
+                          {/* AI / Asset Badge + Thumbnail Selector */}
+                          <div className="absolute top-2 left-2 z-10 flex items-center gap-1.5 flex-wrap pr-10">
                             {isEditable ? (
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleToggleGalleryAI(idx);
-                                }}
-                                className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-unisans-regular tracking-wide transition-all cursor-pointer ${
-                                  isAIGenerated
-                                    ? 'bg-black/80 text-white border border-white/40 shadow-md'
-                                    : 'bg-black/70 text-white/70 border border-white/15 hover:text-white'
-                                }`}
-                                title="Click to toggle AI filter"
-                              >
-                                <Sparkles className="w-2.5 h-2.5 text-white" />
-                                <span>{isAIGenerated ? 'AI ON' : 'AI OFF'}</span>
-                              </button>
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleToggleGalleryAI(idx);
+                                  }}
+                                  className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-unisans-regular tracking-wide transition-all cursor-pointer ${
+                                    isAIGenerated
+                                      ? 'bg-black/80 text-white border border-white/40 shadow-md'
+                                      : 'bg-black/70 text-white/70 border border-white/15 hover:text-white'
+                                  }`}
+                                  title="Click to toggle AI filter"
+                                >
+                                  <Sparkles className="w-2.5 h-2.5 text-white" />
+                                  <span>{isAIGenerated ? 'AI ON' : 'AI OFF'}</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleSelectThumbnail(pic.url);
+                                  }}
+                                  className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-unisans-regular tracking-wide transition-all cursor-pointer border ${
+                                    activeThumbnail === pic.url
+                                      ? 'bg-white text-[#130f30] border-white font-semibold shadow-md'
+                                      : 'bg-black/75 text-white/75 border-white/20 hover:bg-black hover:text-white'
+                                  }`}
+                                  title="Use this picture as the project thumbnail"
+                                >
+                                  {activeThumbnail === pic.url ? (
+                                    <>
+                                      <Check className="w-2.5 h-2.5 stroke-[3]" />
+                                      <span>Thumbnail</span>
+                                    </>
+                                  ) : (
+                                    <span>Set Thumbnail</span>
+                                  )}
+                                </button>
+                              </>
                             ) : (
                               isAIGenerated && (
                                 <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-unisans-regular tracking-wide bg-black/80 text-white border border-white/30 backdrop-blur-md shadow-sm">
@@ -1288,27 +1344,51 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                                   className="w-full h-full object-cover"
                                 />
 
-                                {/* Tag: Marked as "Final" or "AI" */}
-                                <div className="absolute top-2 left-2 z-10">
+                                {/* Tag: Marked as "Final" or "AI" + Thumbnail selector */}
+                                <div className="absolute top-2 left-2 z-10 flex items-center gap-1.5 flex-wrap pr-10">
                                   {isEditable ? (
-                                    <button
-                                      type="button"
-                                      onClick={() => handleToggleProcessPictureType(stepIdx, picIdx)}
-                                      className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-unisans-regular tracking-wider uppercase transition-all cursor-pointer bg-black/80 text-white border border-white/30 shadow-md"
-                                      title="Toggle between AI and Final"
-                                    >
-                                      {isAI ? (
-                                        <>
-                                          <Sparkles className="w-2 h-2 text-white" />
-                                          AI
-                                        </>
-                                      ) : (
-                                        <>
-                                          <CheckCircle2 className="w-2 h-2 text-white" />
-                                          Final
-                                        </>
-                                      )}
-                                    </button>
+                                    <>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleToggleProcessPictureType(stepIdx, picIdx)}
+                                        className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-unisans-regular tracking-wider uppercase transition-all cursor-pointer bg-black/80 text-white border border-white/30 shadow-md"
+                                        title="Toggle between AI and Final"
+                                      >
+                                        {isAI ? (
+                                          <>
+                                            <Sparkles className="w-2 h-2 text-white" />
+                                            AI
+                                          </>
+                                        ) : (
+                                          <>
+                                            <CheckCircle2 className="w-2 h-2 text-white" />
+                                            Final
+                                          </>
+                                        )}
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleSelectThumbnail(pic.url);
+                                        }}
+                                        className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-unisans-regular tracking-wide transition-all cursor-pointer border ${
+                                          activeThumbnail === pic.url
+                                            ? 'bg-white text-[#130f30] border-white font-semibold shadow-md'
+                                            : 'bg-black/75 text-white/75 border-white/20 hover:bg-black hover:text-white'
+                                        }`}
+                                        title="Use this picture as the project thumbnail"
+                                      >
+                                        {activeThumbnail === pic.url ? (
+                                          <>
+                                            <Check className="w-2.5 h-2.5 stroke-[3]" />
+                                            <span>Thumbnail</span>
+                                          </>
+                                        ) : (
+                                          <span>Set Thumbnail</span>
+                                        )}
+                                      </button>
+                                    </>
                                   ) : (
                                     isAI ? (
                                       <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-unisans-regular tracking-wider uppercase bg-black/80 text-white border border-white/30 backdrop-blur-md shadow-md">
@@ -1604,6 +1684,58 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   <h1 className="font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light text-white tracking-wide leading-tight">
                     {currentProject.title}
                   </h1>
+                )}
+              </div>
+            )}
+
+            {/* 1b. Project Thumbnail Picker (choose from uploaded media; none if no media uploaded) */}
+            {isEditable && (
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-1.5">
+                  <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal">
+                    PROJECT THUMBNAIL
+                  </span>
+                  <span className="text-[11px] font-unisans-regular text-white/40">
+                    {uploadedMedia.length > 0
+                      ? `Choose from ${uploadedMedia.length} uploaded`
+                      : 'No media uploaded'}
+                  </span>
+                </div>
+                {uploadedMedia.length === 0 ? (
+                  <div className="px-3.5 py-3 rounded-xl bg-white/5 border border-dashed border-white/15 text-xs font-unisans-regular text-white/45">
+                    No media uploaded yet — this project will have no thumbnail until you add an image to Gallery or Process.
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2.5 overflow-x-auto pb-1.5 pt-0.5 no-scrollbar">
+                    {uploadedMedia.map((item, mIdx) => {
+                      const isCurrentThumb = activeThumbnail === item.url;
+                      return (
+                        <button
+                          key={item.url + mIdx}
+                          type="button"
+                          onClick={() => handleSelectThumbnail(item.url)}
+                          className={`relative w-16 h-16 rounded-xl overflow-hidden shrink-0 transition-all cursor-pointer border-2 ${
+                            isCurrentThumb
+                              ? 'border-white ring-2 ring-white/40 shadow-lg scale-[1.03]'
+                              : 'border-white/15 opacity-65 hover:opacity-100 hover:border-white/50'
+                          }`}
+                          title={`Set as thumbnail (${item.label})`}
+                        >
+                          <img
+                            src={item.url}
+                            alt={item.label}
+                            referrerPolicy="no-referrer"
+                            className="w-full h-full object-cover"
+                          />
+                          {isCurrentThumb && (
+                            <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-white text-[#130f30] flex items-center justify-center shadow">
+                              <Check className="w-2.5 h-2.5 stroke-[3]" />
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
                 )}
               </div>
             )}
@@ -1985,23 +2117,97 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
               </div>
             )}
 
-            {/* 7. Valuation / Investment (Moon 2.0 Light) */}
-            {(isEditable || Boolean(currentProject.price && currentProject.price.trim())) && (
+            {/* 7. Valuation / Investment (Moon 2.0 Light) with Currency Dropdown */}
+            {(isEditable || Boolean(priceAmountText.trim())) && (
               <div>
                 <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
                   VALUATION / INVESTMENT
                 </span>
                 {isEditable ? (
-                  <input
-                    type="text"
-                    value={currentProject.price || ''}
-                    onChange={e => updateProjectLocal({ price: e.target.value })}
-                    placeholder="e.g. $24,500 USD"
-                    className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
-                  />
+                  <div className="flex items-stretch gap-2">
+                    {/* Styled Glassmorphism Currency Dropdown */}
+                    <div ref={currencyDropdownRef} className="relative shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => setIsCurrencyDropdownOpen(prev => !prev)}
+                        className={`h-full px-3.5 py-2 rounded-xl border font-unisans-regular text-sm sm:text-base flex items-center gap-2 transition-all cursor-pointer ${
+                          isCurrencyDropdownOpen
+                            ? 'bg-white/20 text-white border-white/40 ring-2 ring-white/25 shadow-lg'
+                            : 'bg-white/10 hover:bg-white/15 text-white border-white/15'
+                        }`}
+                        title="Select currency"
+                      >
+                        <span className="font-semibold">{activeCurrency.symbol.trim()}</span>
+                        <span className="text-xs text-white/75">{activeCurrency.code}</span>
+                        <ChevronDown
+                          className={`w-3.5 h-3.5 text-white/70 transition-transform duration-200 ${
+                            isCurrencyDropdownOpen ? 'rotate-180' : ''
+                          }`}
+                        />
+                      </button>
+
+                      <AnimatePresence>
+                        {isCurrencyDropdownOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 6, scale: 0.96 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                            transition={{ duration: 0.15, ease: 'easeOut' }}
+                            className="absolute left-0 mt-2 w-56 rounded-2xl bg-[#18133d]/95 backdrop-blur-2xl border border-white/20 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.85)] p-1.5 z-50 max-h-64 overflow-y-auto no-scrollbar space-y-0.5"
+                          >
+                            {CURRENCY_OPTIONS.map(opt => {
+                              const isSelected = opt.code === activeCurrency.code;
+                              return (
+                                <button
+                                  key={opt.code}
+                                  type="button"
+                                  onClick={() => {
+                                    updateProjectLocal({
+                                      currency: opt.code,
+                                      price: extractPriceAmount(currentProject.price),
+                                    });
+                                    setIsCurrencyDropdownOpen(false);
+                                  }}
+                                  className={`w-full text-left px-3 py-2 rounded-xl flex items-center justify-between gap-2 text-xs font-unisans-regular transition-all cursor-pointer ${
+                                    isSelected
+                                      ? 'bg-white/20 text-white border border-white/30'
+                                      : 'text-white/75 hover:text-white hover:bg-white/10 border border-transparent'
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-2.5 min-w-0">
+                                    <span className="w-7 font-semibold text-white shrink-0">
+                                      {opt.symbol.trim()}
+                                    </span>
+                                    <span className="truncate">{opt.name}</span>
+                                  </div>
+                                  <span className="text-[11px] font-unisans-thin-caps text-white/45 shrink-0">
+                                    {opt.code}
+                                  </span>
+                                </button>
+                              );
+                            })}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+
+                    {/* Valuation Amount Input */}
+                    <input
+                      type="text"
+                      value={priceAmountText}
+                      onChange={e =>
+                        updateProjectLocal({
+                          price: e.target.value,
+                          currency: activeCurrency.code,
+                        })
+                      }
+                      placeholder="e.g. 250,000"
+                      className="flex-1 min-w-0 bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
+                    />
+                  </div>
                 ) : (
                   <span className="font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light text-white block">
-                    {currentProject.price}
+                    {formatProjectValuation(currentProject.price, currentProject.currency)}
                   </span>
                 )}
               </div>

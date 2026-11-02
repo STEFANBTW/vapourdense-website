@@ -2,6 +2,7 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Search, UploadCloud, ChevronDown, Check, Palette, Globe, Briefcase } from 'lucide-react';
 import { Project } from '../types/portfolio';
+import { getProjectThumbnail } from '../utils/projectMeta';
 
 interface GallerySectionProps {
   projects: Project[];
@@ -357,8 +358,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
           >
             <AnimatePresence mode="popLayout">
               {filteredProjects.map((project, idx) => {
-                const heroImage =
-                  project.images && project.images.length > 0 ? project.images[0] : null;
+                const heroImage = getProjectThumbnail(project);
                 const descriptorsText = getDescriptorsText(project);
 
                 return (
@@ -386,9 +386,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-slate-100 text-slate-400 font-mono-numbers text-xs">
-                          NO ASSET
-                        </div>
+                        <div className="w-full h-full bg-slate-200/50" />
                       )}
                     </div>
 
