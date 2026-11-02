@@ -22,7 +22,6 @@ import {
   UploadCloud,
   Sliders,
   Minus,
-  Loader2,
 } from 'lucide-react';
 import { Project, ProcessPicture, GalleryPicture, ClientRemarkType, ProcessStep } from '../types/portfolio';
 import { uploadToCloudinary } from '../utils/cloudinary';
@@ -800,9 +799,23 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
         {/* Center Indicator or Upload Status */}
         <div className="flex items-center gap-2 text-sm sm:text-base font-unisans-regular text-white/60 tracking-wider">
           {isUploadingMedia && (
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 text-white text-xs border border-white/20 animate-pulse mr-2">
-              <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
-              <span>Uploading to Cloudinary...</span>
+            <div
+              role="status"
+              aria-label="Uploading"
+              className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-white text-xs border border-white/20 mr-2"
+            >
+              <span aria-hidden="true" className="flex items-center gap-1">
+                <span className="upl-blob" style={{ animationDelay: '0s, 0s' }} />
+                <span className="upl-blob" style={{ animationDelay: '-0.6s, -0.8s' }} />
+                <span className="upl-blob" style={{ animationDelay: '-1.2s, -1.6s' }} />
+              </span>
+              <span aria-hidden="true" className="tracking-wider">
+                {'Uploading'.split('').map((ch, i) => (
+                  <span key={i} className="upl-letter" style={{ animationDelay: `${i * 0.09}s` }}>
+                    {ch}
+                  </span>
+                ))}
+              </span>
             </div>
           )}
           <span className="text-white font-normal">{String(currentIndex + 1).padStart(2, '0')}</span>
