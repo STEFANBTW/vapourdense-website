@@ -111,7 +111,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
       setVoicePlaybackProgress(0);
       setExpandedImage(null);
       setIsAddingProcess(false);
-      setMobileActivePane('gallery_process');
+      // Keep mobileActivePane unchanged so user remains in whatever view they are in on mobile/tablet
     }
   }, [initialProject]);
 
@@ -287,6 +287,17 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
     voiceDuration: '0:42',
     voiceDate: currentProject.monthYear || `${currentProject.year}`,
   };
+
+  // Check if a client remark actually has real user-supplied content to display on the frontend
+  const hasClientRemarkContent = Boolean(
+    currentProject.clientRemark &&
+    currentProject.clientRemark.type !== 'none' &&
+    (
+      (currentProject.clientRemark.type === 'voice' && (currentProject.clientRemark.voiceAudioUrl || (currentProject.clientRemark.comment && currentProject.clientRemark.comment.trim()))) ||
+      (currentProject.clientRemark.type === 'comment' && currentProject.clientRemark.comment && currentProject.clientRemark.comment.trim()) ||
+      (currentProject.clientRemark.type === 'picture' && (currentProject.clientRemark.pictureUrl || (currentProject.clientRemark.pictureCaption && currentProject.clientRemark.pictureCaption.trim())))
+    )
+  );
 
   // Local update handler (No auto-saving, marks as unsaved)
   const updateProjectLocal = (updated: Partial<Project>) => {
@@ -645,9 +656,9 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
 
       {/* Top Utility Bar (Always Sticky at top) */}
       <header className="sticky top-0 z-40 h-[52px] shrink-0 w-full bg-[#130f30] px-4 sm:px-6 flex items-center justify-between text-white/70 border-b border-white/5">
-        <div className="flex items-center gap-3 sm:gap-4">
-          <span className="font-unisans-thin-caps text-sm sm:text-base uppercase tracking-wider text-white/90">
-            Project Details
+        <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+          <span className="font-unisans-thin-caps text-sm sm:text-base uppercase tracking-wider text-white/90 truncate max-w-[200px] sm:max-w-[420px]">
+            {currentProject.title}
           </span>
 
           {/* Project switcher dropdown when in editable mode */}
@@ -1385,47 +1396,51 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
           >
             
             {/* 1. Name of the project */}
-            <div>
-              <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
-                PROJECT TITLE
-              </span>
-              {isEditable ? (
-                <input
-                  type="text"
-                  value={currentProject.title || ''}
-                  onChange={e => updateProjectLocal({ title: e.target.value })}
-                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light tracking-wide focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
-                  placeholder="Project Name"
-                />
-              ) : (
-                <h1 className="font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light text-white tracking-wide leading-tight">
-                  {currentProject.title}
-                </h1>
-              )}
-            </div>
+            {(isEditable || Boolean(currentProject.title && currentProject.title.trim())) && (
+              <div>
+                <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
+                  PROJECT TITLE
+                </span>
+                {isEditable ? (
+                  <input
+                    type="text"
+                    value={currentProject.title || ''}
+                    onChange={e => updateProjectLocal({ title: e.target.value })}
+                    className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light tracking-wide focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
+                    placeholder="Project Name"
+                  />
+                ) : (
+                  <h1 className="font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light text-white tracking-wide leading-tight">
+                    {currentProject.title}
+                  </h1>
+                )}
+              </div>
+            )}
 
             {/* 2. Date */}
-            <div>
-              <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
-                DATE
-              </span>
-              {isEditable ? (
-                <input
-                  type="text"
-                  value={currentProject.monthYear || (currentProject.year ? `${currentProject.year}` : '')}
-                  onChange={e => updateProjectLocal({ monthYear: e.target.value })}
-                  placeholder="e.g. October 2026"
-                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
-                />
-              ) : (
-                <div className="font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light text-white">
-                  {currentProject.monthYear || `${currentProject.year}`}
-                </div>
-              )}
-            </div>
+            {(isEditable || Boolean((currentProject.monthYear && currentProject.monthYear.trim()) || currentProject.year)) && (
+              <div>
+                <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
+                  DATE
+                </span>
+                {isEditable ? (
+                  <input
+                    type="text"
+                    value={currentProject.monthYear || (currentProject.year ? `${currentProject.year}` : '')}
+                    onChange={e => updateProjectLocal({ monthYear: e.target.value })}
+                    placeholder="e.g. October 2026"
+                    className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
+                  />
+                ) : (
+                  <div className="font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light text-white">
+                    {currentProject.monthYear || `${currentProject.year}`}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* 2b. Live Website Link (for Website projects or when editable) */}
-            {(isEditable || currentProject.websiteUrl) && (
+            {(isEditable || Boolean(currentProject.websiteUrl && currentProject.websiteUrl.trim())) && (
               <div>
                 <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
                   WEBSITE LINK
@@ -1453,443 +1468,460 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
             )}
 
             {/* 3. CLIENT'S REMARK (Moon 2.0 Light headings, UniSans Thin AllCaps top label, UniSans Regular body) */}
-            <div className="space-y-3.5 pt-2 border-t border-white/10">
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal">
-                  CLIENT&apos;S REMARK
-                </span>
-
-                {/* Delete Remark Button in Edit Mode */}
-                {isEditable && (
-                  <button
-                    type="button"
-                    onClick={handleDeleteClientRemark}
-                    className="px-3 py-1 rounded-lg bg-white/15 hover:bg-white/25 text-white text-xs font-unisans-regular flex items-center gap-1.5 transition-all cursor-pointer shadow-md border border-white/20"
-                    title="Delete client remark"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                    <span>Delete Remark</span>
-                  </button>
-                )}
-              </div>
-
-              {/* Editable Remark Type Selector */}
-              {isEditable && (
-                <div className="grid grid-cols-3 gap-1.5 p-1 bg-white/5 rounded-xl border border-white/10">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      updateProjectLocal({ clientRemark: { ...remark, type: 'voice' } });
-                      setActiveRemarkType('voice');
-                    }}
-                    className={`py-1.5 px-2 text-[11px] font-unisans-regular rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                      activeRemarkType === 'voice'
-                        ? 'bg-white/20 text-white shadow-xs'
-                        : 'text-white/60 hover:text-white'
-                    }`}
-                  >
-                    <Mic className="w-3.5 h-3.5" />
-                    <span>Voice Memo</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      updateProjectLocal({ clientRemark: { ...remark, type: 'comment' } });
-                      setActiveRemarkType('comment');
-                    }}
-                    className={`py-1.5 px-2 text-[11px] font-unisans-regular rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                      activeRemarkType === 'comment'
-                        ? 'bg-white/20 text-white shadow-xs'
-                        : 'text-white/60 hover:text-white'
-                    }`}
-                  >
-                    <MessageSquare className="w-3.5 h-3.5" />
-                    <span>Text Quote</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      updateProjectLocal({ clientRemark: { ...remark, type: 'picture' } });
-                      setActiveRemarkType('picture');
-                    }}
-                    className={`py-1.5 px-2 text-[11px] font-unisans-regular rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                      activeRemarkType === 'picture'
-                        ? 'bg-white/20 text-white shadow-xs'
-                        : 'text-white/60 hover:text-white'
-                    }`}
-                  >
-                    <ImageIcon className="w-3.5 h-3.5" />
-                    <span>Document</span>
-                  </button>
-                </div>
-              )}
-
-              {/* Active Remark: Voice */}
-              {activeRemarkType === 'voice' && (
-                <div className="space-y-3.5 p-4 rounded-2xl bg-white/5 border border-white/10">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2.5 rounded-full bg-white/15 text-white">
-                        <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />
-                      </div>
-                      <div>
-                        <span className="text-sm sm:text-base lg:text-xs font-vapour text-white block">
-                          Client Audio Memo
-                        </span>
-                        <span className="text-xs sm:text-sm lg:text-[11px] text-white/50 block font-unisans-regular">
-                          {remark.voiceDate || currentProject.monthYear || currentProject.year}
-                        </span>
-                      </div>
-                    </div>
-
-                    {isEditable ? (
-                      <input
-                        type="text"
-                        value={remark.voiceDuration || '0:42'}
-                        onChange={e => updateProjectLocal({ clientRemark: { ...remark, voiceDuration: e.target.value } })}
-                        className="w-16 text-right bg-white/5 text-white/90 font-unisans-regular text-xs sm:text-sm lg:text-xs focus:outline-none focus:ring-1 focus:ring-white/30 rounded px-1.5 py-0.5 border border-white/10"
-                        title="Edit duration"
-                      />
-                    ) : (
-                      <span className="text-xs sm:text-sm lg:text-xs font-unisans-regular text-white/90">
-                        {remark.voiceDuration || '0:42'}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Waveform Visualizer */}
-                  <div className="flex items-center gap-0.5 h-7 px-2 py-0.5 rounded bg-black/30">
-                    {Array.from({ length: 24 }).map((_, barIdx) => {
-                      const isActive = (barIdx / 24) * 100 <= voicePlaybackProgress;
-                      const dynamicHeight = isPlayingVoice
-                        ? Math.sin(barIdx * 0.8 + voicePlaybackProgress * 0.1) * 40 + 50
-                        : (barIdx % 5) * 15 + 25;
-
-                      return (
-                        <div
-                          key={barIdx}
-                          className="flex-1 rounded-full transition-all duration-150"
-                          style={{
-                            height: `${Math.max(15, dynamicHeight)}%`,
-                            backgroundColor: isActive ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.18)',
-                          }}
-                        />
-                      );
-                    })}
-                  </div>
-
-                  {/* Audio Controls */}
-                  <div className="flex items-center justify-between pt-1">
-                    <button
-                      onClick={toggleVoicePlayback}
-                      className="px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs sm:text-sm lg:text-xs font-unisans-regular flex items-center gap-2 transition-all cursor-pointer shadow-md border border-white/25"
-                    >
-                      {isPlayingVoice ? (
-                        <>
-                          <Pause className="w-4 h-4" />
-                          <span>Pause</span>
-                        </>
-                      ) : (
-                        <>
-                          <Play className="w-4 h-4" />
-                          <span>Play Audio</span>
-                        </>
-                      )}
-                    </button>
-
-                    {isEditable && (
-                      <button
-                        type="button"
-                        onClick={() => remarkAudioFileInputRef.current?.click()}
-                        className="px-3 py-1.5 text-xs font-unisans-regular text-white bg-white/10 hover:bg-white/20 border border-white/25 rounded-xl cursor-pointer"
-                      >
-                        Upload Audio
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Active Remark: Text Quote */}
-              {activeRemarkType === 'comment' && (
-                <div className="space-y-2.5 p-4 rounded-2xl bg-white/5 border border-white/10">
-                  {isEditable ? (
-                    <textarea
-                      rows={3}
-                      value={remark.comment || ''}
-                      onChange={e => updateProjectLocal({ clientRemark: { ...remark, comment: e.target.value } })}
-                      placeholder="Write the client's quote..."
-                      className="w-full bg-white/5 text-white italic font-unisans-regular text-base sm:text-lg lg:text-[15px] leading-relaxed lg:leading-normal focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl p-3 border border-white/10 resize-y"
-                    />
-                  ) : (
-                    <p className="text-base sm:text-lg lg:text-[15px] text-white/95 italic font-unisans-regular leading-relaxed lg:leading-normal">
-                      {remark.comment || `“Working with VDVC completely transformed our digital positioning.”`}
-                    </p>
-                  )}
-                  <div className="flex items-center justify-between pt-1">
-                    <span className="text-xs sm:text-sm lg:text-xs text-white/80 font-vapour">
-                      Author: {remark.clientAuthor || currentProject.client}
-                    </span>
-                    {isEditable && (
-                      <input
-                        type="text"
-                        value={remark.clientAuthor || currentProject.client || ''}
-                        onChange={e => updateProjectLocal({ clientRemark: { ...remark, clientAuthor: e.target.value } })}
-                        placeholder="Author name"
-                        className="text-xs text-right bg-white/5 text-white/80 font-unisans-regular px-2 py-1 rounded-lg border border-white/10 focus:outline-none focus:border-white/40"
-                      />
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Active Remark: Picture Document */}
-              {activeRemarkType === 'picture' && (
-                <div className="space-y-2.5 p-4 rounded-2xl bg-white/5 border border-white/10">
-                  <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-black/40">
-                    <img
-                      src={remark.pictureUrl || currentProject.images[0]}
-                      alt="Client endorsement document"
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  {isEditable && (
-                    <div className="flex items-center justify-between gap-2 pt-1">
-                      <input
-                        type="text"
-                        value={remark.pictureCaption || ''}
-                        onChange={e => updateProjectLocal({ clientRemark: { ...remark, pictureCaption: e.target.value } })}
-                        placeholder="Document caption..."
-                        className="flex-1 text-xs font-unisans-regular text-white/80 bg-white/5 px-2.5 py-1.5 rounded-xl border border-white/10 focus:outline-none focus:border-white/40"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => remarkPictureFileInputRef.current?.click()}
-                        className="px-3 py-1.5 text-xs font-unisans-regular text-white bg-white/10 hover:bg-white/20 border border-white/25 rounded-xl cursor-pointer"
-                      >
-                        Upload Doc
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* When Remark is None / Deleted */}
-              {activeRemarkType === 'none' && isEditable && (
-                <div className="p-4 rounded-2xl bg-white/5 border border-dashed border-white/20 text-center space-y-2">
-                  <span className="text-xs text-white/50 block font-unisans-regular">
-                    No client remark attached.
+            {(isEditable || hasClientRemarkContent) && (
+              <div className="space-y-3.5 pt-2 border-t border-white/10">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal">
+                    CLIENT&apos;S REMARK
                   </span>
-                  <div className="flex items-center justify-center gap-2">
+
+                  {/* Delete Remark Button in Edit Mode */}
+                  {isEditable && (
+                    <button
+                      type="button"
+                      onClick={handleDeleteClientRemark}
+                      className="px-3 py-1 rounded-lg bg-white/15 hover:bg-white/25 text-white text-xs font-unisans-regular flex items-center gap-1.5 transition-all cursor-pointer shadow-md border border-white/20"
+                      title="Delete client remark"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Delete Remark</span>
+                    </button>
+                  )}
+                </div>
+
+                {/* Editable Remark Type Selector */}
+                {isEditable && (
+                  <div className="grid grid-cols-3 gap-1.5 p-1 bg-white/5 rounded-xl border border-white/10">
                     <button
                       type="button"
                       onClick={() => {
                         updateProjectLocal({ clientRemark: { ...remark, type: 'voice' } });
                         setActiveRemarkType('voice');
                       }}
-                      className="px-3.5 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-unisans-regular transition-all cursor-pointer border border-white/25"
+                      className={`py-1.5 px-2 text-[11px] font-unisans-regular rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                        activeRemarkType === 'voice'
+                          ? 'bg-white/20 text-white shadow-xs'
+                          : 'text-white/60 hover:text-white'
+                      }`}
                     >
-                      + Voice Memo
+                      <Mic className="w-3.5 h-3.5" />
+                      <span>Voice Memo</span>
                     </button>
+
                     <button
                       type="button"
                       onClick={() => {
-                        updateProjectLocal({ clientRemark: { ...remark, type: 'comment', comment: 'Exceptional creative design execution.' } });
+                        updateProjectLocal({ clientRemark: { ...remark, type: 'comment' } });
                         setActiveRemarkType('comment');
                       }}
-                      className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-unisans-regular transition-all cursor-pointer border border-white/20"
+                      className={`py-1.5 px-2 text-[11px] font-unisans-regular rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                        activeRemarkType === 'comment'
+                          ? 'bg-white/20 text-white shadow-xs'
+                          : 'text-white/60 hover:text-white'
+                      }`}
                     >
-                      + Text Quote
+                      <MessageSquare className="w-3.5 h-3.5" />
+                      <span>Text Quote</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateProjectLocal({ clientRemark: { ...remark, type: 'picture' } });
+                        setActiveRemarkType('picture');
+                      }}
+                      className={`py-1.5 px-2 text-[11px] font-unisans-regular rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                        activeRemarkType === 'picture'
+                          ? 'bg-white/20 text-white shadow-xs'
+                          : 'text-white/60 hover:text-white'
+                      }`}
+                    >
+                      <ImageIcon className="w-3.5 h-3.5" />
+                      <span>Document</span>
                     </button>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
 
-            {/* 4. Client Name (Moon 2.0 Light) */}
-            <div>
-              <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
-                CLIENT NAME
-              </span>
-              {isEditable ? (
-                <input
-                  type="text"
-                  value={currentProject.client || ''}
-                  onChange={e => updateProjectLocal({ client: e.target.value })}
-                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
-                  placeholder="Client Name"
-                />
-              ) : (
-                <span className="font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light text-white block">
-                  {currentProject.client}
-                </span>
-              )}
-            </div>
+                {/* Active Remark: Voice */}
+                {activeRemarkType === 'voice' && (
+                  <div className="space-y-3.5 p-4 rounded-2xl bg-white/5 border border-white/10">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2.5 rounded-full bg-white/15 text-white">
+                          <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                        </div>
+                        <div>
+                          <span className="text-sm sm:text-base lg:text-xs font-vapour text-white block">
+                            Client Audio Memo
+                          </span>
+                          <span className="text-xs sm:text-sm lg:text-[11px] text-white/50 block font-unisans-regular">
+                            {remark.voiceDate || currentProject.monthYear || currentProject.year}
+                          </span>
+                        </div>
+                      </div>
 
-            {/* 5. Client Profile (Moon 2.0 Light heading, UniSans Regular body) */}
-            <div>
-              <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
-                CLIENT PROFILE
-              </span>
-              {isEditable ? (
-                <textarea
-                  rows={3}
-                  value={currentProject.clientDescription || ''}
-                  onChange={e => updateProjectLocal({ clientDescription: e.target.value })}
-                  placeholder="Description of the client organization..."
-                  className="w-full bg-white/5 p-3 text-white/90 font-unisans-regular text-base sm:text-lg lg:text-[15px] font-normal leading-relaxed lg:leading-normal focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10 resize-y"
-                />
-              ) : (
-                <p className="font-unisans-regular text-base sm:text-lg lg:text-[15px] text-white/85 font-normal leading-relaxed lg:leading-normal">
-                  {currentProject.clientDescription ||
-                    `${currentProject.client} is a premier international partner collaborating on bespoke identity and interactive digital experiences.`}
-                </p>
-              )}
-            </div>
+                      {isEditable ? (
+                        <input
+                          type="text"
+                          value={remark.voiceDuration || '0:42'}
+                          onChange={e => updateProjectLocal({ clientRemark: { ...remark, voiceDuration: e.target.value } })}
+                          className="w-16 text-right bg-white/5 text-white/90 font-unisans-regular text-xs sm:text-sm lg:text-xs focus:outline-none focus:ring-1 focus:ring-white/30 rounded px-1.5 py-0.5 border border-white/10"
+                          title="Edit duration"
+                        />
+                      ) : (
+                        <span className="text-xs sm:text-sm lg:text-xs font-unisans-regular text-white/90">
+                          {remark.voiceDuration || '0:42'}
+                        </span>
+                      )}
+                    </div>
 
-            {/* 6. Project Scope & Description (Moon 2.0 Light heading, UniSans Regular body) */}
-            <div>
-              <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
-                PROJECT SCOPE &amp; DESCRIPTION
-              </span>
-              {isEditable ? (
-                <textarea
-                  rows={4}
-                  value={currentProject.shortDescription || currentProject.description || ''}
-                  onChange={e => updateProjectLocal({ shortDescription: e.target.value, description: e.target.value })}
-                  placeholder="Short description of the project..."
-                  className="w-full bg-white/5 p-3 text-white/90 font-unisans-regular text-base sm:text-lg lg:text-[15px] font-normal leading-relaxed lg:leading-normal focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10 resize-y"
-                />
-              ) : (
-                <p className="font-unisans-regular text-base sm:text-lg lg:text-[15px] text-white/85 font-normal leading-relaxed lg:leading-normal">
-                  {currentProject.shortDescription || currentProject.description}
-                </p>
-              )}
-            </div>
+                    {/* Waveform Visualizer */}
+                    <div className="flex items-center gap-0.5 h-7 px-2 py-0.5 rounded bg-black/30">
+                      {Array.from({ length: 24 }).map((_, barIdx) => {
+                        const isActive = (barIdx / 24) * 100 <= voicePlaybackProgress;
+                        const dynamicHeight = isPlayingVoice
+                          ? Math.sin(barIdx * 0.8 + voicePlaybackProgress * 0.1) * 40 + 50
+                          : (barIdx % 5) * 15 + 25;
 
-            {/* 7. Valuation / Investment (Moon 2.0 Light) */}
-            <div>
-              <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
-                VALUATION / INVESTMENT
-              </span>
-              {isEditable ? (
-                <input
-                  type="text"
-                  value={currentProject.price || ''}
-                  onChange={e => updateProjectLocal({ price: e.target.value })}
-                  placeholder="e.g. $24,500 USD"
-                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
-                />
-              ) : (
-                <span className="font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light text-white block">
-                  {currentProject.price || 'Undisclosed'}
-                </span>
-              )}
-            </div>
+                        return (
+                          <div
+                            key={barIdx}
+                            className="flex-1 rounded-full transition-all duration-150"
+                            style={{
+                              height: `${Math.max(15, dynamicHeight)}%`,
+                              backgroundColor: isActive ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.18)',
+                            }}
+                          />
+                        );
+                      })}
+                    </div>
 
-            {/* 8. Build Duration (Moon 2.0 Light) */}
-            <div>
-              <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
-                BUILD DURATION
-              </span>
-              {isEditable ? (
-                <input
-                  type="text"
-                  value={currentProject.duration || ''}
-                  onChange={e => updateProjectLocal({ duration: e.target.value })}
-                  placeholder="e.g. 6 Weeks"
-                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
-                />
-              ) : (
-                <span className="font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light text-white block">
-                  {currentProject.duration || '6 Weeks'}
-                </span>
-              )}
-            </div>
-
-            {/* 9. Designer's Remark (Moon 2.0 Light) */}
-            <div>
-              <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
-                DESIGNER&apos;S REMARK
-              </span>
-              {isEditable ? (
-                <input
-                  type="text"
-                  value={currentProject.threeWordDesc || currentProject.descriptors || ''}
-                  onChange={e => updateProjectLocal({ threeWordDesc: e.target.value, descriptors: e.target.value })}
-                  placeholder="e.g. Rational Swiss Architecture"
-                  className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-xl sm:text-2xl lg:text-[28px] font-light tracking-wide focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
-                />
-              ) : (
-                <span className="font-vapour text-xl sm:text-2xl lg:text-[28px] font-light text-white tracking-wide block">
-                  {currentProject.threeWordDesc || currentProject.descriptors || 'Minimal Swiss Direction'}
-                </span>
-              )}
-            </div>
-
-            {/* 10. Category & "Real-Life Project" (Styled identically) */}
-            <div className="pt-2 border-t border-white/10 space-y-3.5">
-              <div>
-                <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-2.5">
-                  CATEGORY
-                </span>
-                {isEditable ? (
-                  <div className="flex flex-wrap gap-2.5">
-                    {(['Graphic Design', 'Web Design', 'Other'] as const).map(cat => (
+                    {/* Audio Controls */}
+                    <div className="flex items-center justify-between pt-1">
                       <button
-                        key={cat}
-                        type="button"
-                        onClick={() => updateProjectLocal({ category: cat })}
-                        className={`px-3.5 py-1.5 text-sm lg:text-[15px] rounded-xl font-unisans-regular transition-all cursor-pointer border ${
-                          currentProject.category === cat
-                            ? 'bg-white/20 text-white border-white/60 shadow-md ring-1 ring-white/30'
-                            : 'bg-white/5 text-white/70 border-white/15 hover:bg-white/15 hover:text-white'
-                        }`}
+                        onClick={toggleVoicePlayback}
+                        className="px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs sm:text-sm lg:text-xs font-unisans-regular flex items-center gap-2 transition-all cursor-pointer shadow-md border border-white/25"
                       >
-                        {cat}
+                        {isPlayingVoice ? (
+                          <>
+                            <Pause className="w-4 h-4" />
+                            <span>Pause</span>
+                          </>
+                        ) : (
+                          <>
+                            <Play className="w-4 h-4" />
+                            <span>Play Audio</span>
+                          </>
+                        )}
                       </button>
-                    ))}
+
+                      {isEditable && (
+                        <button
+                          type="button"
+                          onClick={() => remarkAudioFileInputRef.current?.click()}
+                          className="px-3 py-1.5 text-xs font-unisans-regular text-white bg-white/10 hover:bg-white/20 border border-white/25 rounded-xl cursor-pointer"
+                        >
+                          Upload Audio
+                        </button>
+                      )}
+                    </div>
                   </div>
-                ) : (
-                  <div className="flex flex-wrap items-center gap-2.5">
-                    <span className="inline-block px-3.5 py-1.5 lg:px-3 lg:py-1 rounded-xl text-sm sm:text-base lg:text-[15px] font-unisans-regular font-normal bg-white/5 text-white/90 border border-white/10">
-                      {currentProject.category}
-                    </span>
-                    {currentProject.isRealLife && (
-                      <span className="inline-block px-3.5 py-1.5 lg:px-3 lg:py-1 rounded-xl text-sm sm:text-base lg:text-[15px] font-unisans-regular font-normal bg-white/5 text-white/90 border border-white/10">
-                        Real-Life Project
-                      </span>
+                )}
+
+                {/* Active Remark: Text Quote */}
+                {activeRemarkType === 'comment' && (
+                  <div className="space-y-2.5 p-4 rounded-2xl bg-white/5 border border-white/10">
+                    {isEditable ? (
+                      <textarea
+                        rows={3}
+                        value={remark.comment || ''}
+                        onChange={e => updateProjectLocal({ clientRemark: { ...remark, comment: e.target.value } })}
+                        placeholder="Write the client's quote..."
+                        className="w-full bg-white/5 text-white italic font-unisans-regular text-base sm:text-lg lg:text-[15px] leading-relaxed lg:leading-normal focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl p-3 border border-white/10 resize-y"
+                      />
+                    ) : (
+                      <p className="text-base sm:text-lg lg:text-[15px] text-white/95 italic font-unisans-regular leading-relaxed lg:leading-normal">
+                        {remark.comment}
+                      </p>
+                    )}
+                    {(isEditable || Boolean(remark.clientAuthor?.trim() || currentProject.client?.trim())) && (
+                      <div className="flex items-center justify-between pt-1">
+                        <span className="text-xs sm:text-sm lg:text-xs text-white/80 font-vapour">
+                          Author: {remark.clientAuthor || currentProject.client}
+                        </span>
+                        {isEditable && (
+                          <input
+                            type="text"
+                            value={remark.clientAuthor || currentProject.client || ''}
+                            onChange={e => updateProjectLocal({ clientRemark: { ...remark, clientAuthor: e.target.value } })}
+                            placeholder="Author name"
+                            className="text-xs text-right bg-white/5 text-white/80 font-unisans-regular px-2 py-1 rounded-lg border border-white/10 focus:outline-none focus:border-white/40"
+                          />
+                        )}
+                      </div>
                     )}
                   </div>
                 )}
-              </div>
 
-              {/* Real-Life Project Toggle in Edit Mode */}
-              {isEditable && (
-                <button
-                  type="button"
-                  onClick={() => updateProjectLocal({ isRealLife: !currentProject.isRealLife })}
-                  className={`w-full flex items-center justify-between p-3.5 rounded-2xl border transition-all cursor-pointer ${
-                    currentProject.isRealLife
-                      ? 'bg-white/20 border-white/50 text-white ring-1 ring-white/30'
-                      : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10'
-                  }`}
-                >
-                  <span className="text-sm lg:text-[15px] font-unisans-regular font-normal text-white">Mark as &apos;Real-Life Project&apos;</span>
-                  <div className={`w-5 h-5 rounded-lg flex items-center justify-center border transition-all ${
-                    currentProject.isRealLife ? 'bg-white border-white text-black' : 'border-white/30 bg-transparent'
-                  }`}>
-                    {currentProject.isRealLife && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                {/* Active Remark: Picture Document */}
+                {activeRemarkType === 'picture' && (
+                  <div className="space-y-2.5 p-4 rounded-2xl bg-white/5 border border-white/10">
+                    <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-black/40">
+                      <img
+                        src={remark.pictureUrl || currentProject.images[0]}
+                        alt="Client endorsement document"
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    {isEditable && (
+                      <div className="flex items-center justify-between gap-2 pt-1">
+                        <input
+                          type="text"
+                          value={remark.pictureCaption || ''}
+                          onChange={e => updateProjectLocal({ clientRemark: { ...remark, pictureCaption: e.target.value } })}
+                          placeholder="Document caption..."
+                          className="flex-1 text-xs font-unisans-regular text-white/80 bg-white/5 px-2.5 py-1.5 rounded-xl border border-white/10 focus:outline-none focus:border-white/40"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => remarkPictureFileInputRef.current?.click()}
+                          className="px-3 py-1.5 text-xs font-unisans-regular text-white bg-white/10 hover:bg-white/20 border border-white/25 rounded-xl cursor-pointer"
+                        >
+                          Upload Doc
+                        </button>
+                      </div>
+                    )}
                   </div>
-                </button>
-              )}
-            </div>
+                )}
+
+                {/* When Remark is None / Deleted */}
+                {activeRemarkType === 'none' && isEditable && (
+                  <div className="p-4 rounded-2xl bg-white/5 border border-dashed border-white/20 text-center space-y-2">
+                    <span className="text-xs text-white/50 block font-unisans-regular">
+                      No client remark attached.
+                    </span>
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          updateProjectLocal({ clientRemark: { ...remark, type: 'voice' } });
+                          setActiveRemarkType('voice');
+                        }}
+                        className="px-3.5 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-unisans-regular transition-all cursor-pointer border border-white/25"
+                      >
+                        + Voice Memo
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          updateProjectLocal({ clientRemark: { ...remark, type: 'comment', comment: 'Exceptional creative design execution.' } });
+                          setActiveRemarkType('comment');
+                        }}
+                        className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-unisans-regular transition-all cursor-pointer border border-white/20"
+                      >
+                        + Text Quote
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* 4. Client Name (Moon 2.0 Light) */}
+            {(isEditable || Boolean(currentProject.client && currentProject.client.trim())) && (
+              <div>
+                <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
+                  CLIENT NAME
+                </span>
+                {isEditable ? (
+                  <input
+                    type="text"
+                    value={currentProject.client || ''}
+                    onChange={e => updateProjectLocal({ client: e.target.value })}
+                    className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
+                    placeholder="Client Name"
+                  />
+                ) : (
+                  <span className="font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light text-white block">
+                    {currentProject.client}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {/* 5. Client Profile (Moon 2.0 Light heading, UniSans Regular body) */}
+            {(isEditable || Boolean(currentProject.clientDescription && currentProject.clientDescription.trim())) && (
+              <div>
+                <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
+                  CLIENT PROFILE
+                </span>
+                {isEditable ? (
+                  <textarea
+                    rows={3}
+                    value={currentProject.clientDescription || ''}
+                    onChange={e => updateProjectLocal({ clientDescription: e.target.value })}
+                    placeholder="Description of the client organization..."
+                    className="w-full bg-white/5 p-3 text-white/90 font-unisans-regular text-base sm:text-lg lg:text-[15px] font-normal leading-relaxed lg:leading-normal focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10 resize-y"
+                  />
+                ) : (
+                  <p className="font-unisans-regular text-base sm:text-lg lg:text-[15px] text-white/85 font-normal leading-relaxed lg:leading-normal">
+                    {currentProject.clientDescription}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* 6. Project Scope & Description (Moon 2.0 Light heading, UniSans Regular body) */}
+            {(isEditable || Boolean((currentProject.shortDescription && currentProject.shortDescription.trim()) || (currentProject.description && currentProject.description.trim()))) && (
+              <div>
+                <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
+                  PROJECT SCOPE &amp; DESCRIPTION
+                </span>
+                {isEditable ? (
+                  <textarea
+                    rows={4}
+                    value={currentProject.shortDescription || currentProject.description || ''}
+                    onChange={e => updateProjectLocal({ shortDescription: e.target.value, description: e.target.value })}
+                    placeholder="Short description of the project..."
+                    className="w-full bg-white/5 p-3 text-white/90 font-unisans-regular text-base sm:text-lg lg:text-[15px] font-normal leading-relaxed lg:leading-normal focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10 resize-y"
+                  />
+                ) : (
+                  <p className="font-unisans-regular text-base sm:text-lg lg:text-[15px] text-white/85 font-normal leading-relaxed lg:leading-normal">
+                    {currentProject.shortDescription || currentProject.description}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* 7. Valuation / Investment (Moon 2.0 Light) */}
+            {(isEditable || Boolean(currentProject.price && currentProject.price.trim())) && (
+              <div>
+                <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
+                  VALUATION / INVESTMENT
+                </span>
+                {isEditable ? (
+                  <input
+                    type="text"
+                    value={currentProject.price || ''}
+                    onChange={e => updateProjectLocal({ price: e.target.value })}
+                    placeholder="e.g. $24,500 USD"
+                    className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
+                  />
+                ) : (
+                  <span className="font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light text-white block">
+                    {currentProject.price}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {/* 8. Build Duration (Moon 2.0 Light) */}
+            {(isEditable || Boolean(currentProject.duration && currentProject.duration.trim())) && (
+              <div>
+                <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
+                  BUILD DURATION
+                </span>
+                {isEditable ? (
+                  <input
+                    type="text"
+                    value={currentProject.duration || ''}
+                    onChange={e => updateProjectLocal({ duration: e.target.value })}
+                    placeholder="e.g. 6 Weeks"
+                    className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
+                  />
+                ) : (
+                  <span className="font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light text-white block">
+                    {currentProject.duration}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {/* 9. Designer's Remark (Moon 2.0 Light) */}
+            {(isEditable || Boolean((currentProject.threeWordDesc && currentProject.threeWordDesc.trim()) || (currentProject.descriptors && currentProject.descriptors.trim()))) && (
+              <div>
+                <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
+                  DESIGNER&apos;S REMARK
+                </span>
+                {isEditable ? (
+                  <input
+                    type="text"
+                    value={currentProject.threeWordDesc || currentProject.descriptors || ''}
+                    onChange={e => updateProjectLocal({ threeWordDesc: e.target.value, descriptors: e.target.value })}
+                    placeholder="e.g. Rational Swiss Architecture"
+                    className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-xl sm:text-2xl lg:text-[28px] font-light tracking-wide focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
+                  />
+                ) : (
+                  <span className="font-vapour text-xl sm:text-2xl lg:text-[28px] font-light text-white tracking-wide block">
+                    {currentProject.threeWordDesc || currentProject.descriptors}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {/* 10. Category & "Real-Life Project" (Styled identically) */}
+            {(isEditable || Boolean(currentProject.category && currentProject.category.trim())) && (
+              <div className="pt-2 border-t border-white/10 space-y-3.5">
+                <div>
+                  <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-2.5">
+                    CATEGORY
+                  </span>
+                  {isEditable ? (
+                    <div className="flex flex-wrap gap-2.5">
+                      {(['Graphic Design', 'Web Design', 'Other'] as const).map(cat => (
+                        <button
+                          key={cat}
+                          type="button"
+                          onClick={() => updateProjectLocal({ category: cat })}
+                          className={`px-3.5 py-1.5 text-sm lg:text-[15px] rounded-xl font-unisans-regular transition-all cursor-pointer border ${
+                            currentProject.category === cat
+                              ? 'bg-white/20 text-white border-white/60 shadow-md ring-1 ring-white/30'
+                              : 'bg-white/5 text-white/70 border-white/15 hover:bg-white/15 hover:text-white'
+                          }`}
+                        >
+                          {cat}
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <span className="inline-block px-3.5 py-1.5 lg:px-3 lg:py-1 rounded-xl text-sm sm:text-base lg:text-[15px] font-unisans-regular font-normal bg-white/5 text-white/90 border border-white/10">
+                        {currentProject.category}
+                      </span>
+                      {currentProject.isRealLife && (
+                        <span className="inline-block px-3.5 py-1.5 lg:px-3 lg:py-1 rounded-xl text-sm sm:text-base lg:text-[15px] font-unisans-regular font-normal bg-white/5 text-white/90 border border-white/10">
+                          Real-Life Project
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Real-Life Project Toggle in Edit Mode */}
+                {isEditable && (
+                  <button
+                    type="button"
+                    onClick={() => updateProjectLocal({ isRealLife: !currentProject.isRealLife })}
+                    className={`w-full flex items-center justify-between p-3.5 rounded-2xl border transition-all cursor-pointer ${
+                      currentProject.isRealLife
+                        ? 'bg-white/20 border-white/50 text-white ring-1 ring-white/30'
+                        : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10'
+                    }`}
+                  >
+                    <span className="text-sm lg:text-[15px] font-unisans-regular font-normal text-white">Mark as &apos;Real-Life Project&apos;</span>
+                    <div className={`w-5 h-5 rounded-lg flex items-center justify-center border transition-all ${
+                      currentProject.isRealLife ? 'bg-white border-white text-black' : 'border-white/30 bg-transparent'
+                    }`}>
+                      {currentProject.isRealLife && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                    </div>
+                  </button>
+                )}
+              </div>
+            )}
 
             {/* 11. Deliverables (UniSans Regular) */}
-            {(isEditable || (currentProject.deliverables && currentProject.deliverables.length > 0)) && (
+            {(isEditable || (currentProject.deliverables && currentProject.deliverables.filter(d => Boolean(d && d.trim())).length > 0)) && (
               <div className="pt-2 border-t border-white/10 space-y-3">
                 <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal">
                   DELIVERABLES ({currentProject.deliverables?.length || 0})

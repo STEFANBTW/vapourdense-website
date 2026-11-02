@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { collection, onSnapshot, doc, deleteDoc, updateDoc } from 'firebase/firestore';
@@ -47,7 +47,7 @@ import {
   MessageCircle,
   Menu,
 } from 'lucide-react';
-import { Project, FilterCategory } from '../types/portfolio';
+import { Project, FilterCategory, FilterMode } from '../types/portfolio';
 import {
   AboutData,
   SocialLinks,
@@ -76,7 +76,7 @@ interface DashboardViewProps {
   onUpdateProject?: (id: string, updated: Partial<Project>) => Promise<void> | void;
 }
 
-const CATEGORIES: FilterCategory[] = [
+const MAIN_CATEGORIES: FilterMode[] = [
   'All',
   'Graphic Design',
   'Web Design',
@@ -108,10 +108,23 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   // 2. About
   // 3. Navigation on footer
   const [activeTab, setActiveTab] = useState<'projects' | 'about' | 'nav_footer' | 'briefs'>('projects');
-  const [selectedCategory, setSelectedCategory] = useState<FilterCategory>('All');
+  const [selectedCategory, setSelectedCategory] = useState<FilterMode>('All');
+  const [isRealLifeDropdownOpen, setIsRealLifeDropdownOpen] = useState(false);
+  const realLifeDropdownRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isDragOver, setIsDragOver] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+
+  // Close real life dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (realLifeDropdownRef.current && !realLifeDropdownRef.current.contains(e.target as Node)) {
+        setIsRealLifeDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Submitted briefs list & details modal state
   const [submittedBriefs, setSubmittedBriefs] = useState<any[]>([]);
@@ -121,25 +134,24 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [isProjectCategoryDropdownOpen, setIsProjectCategoryDropdownOpen] = useState(false);
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [activeBriefMenuId, setActiveBriefMenuId] = useState<string | null>(null);
+  const [deleteBriefConfirmId, setDeleteBriefConfirmId] = useState<string | null>(null);
 
-  // Load Submitted Client Briefs in Real-time from Firestore & localStorage
+  // Load Submitted Client Briefs in Real-time from Firestore database as the single source of truth
   useEffect(() => {
     const briefsCol = collection(db, 'briefs');
     const unsubscribe = onSnapshot(briefsCol, (snapshot) => {
-      if (!snapshot.empty) {
-        const loaded = snapshot.docs.map(d => d.data());
-        loaded.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-        setSubmittedBriefs(loaded);
-      } else {
-        try {
-          const local = localStorage.getItem('vdvc_briefs_submitted');
-          if (local) setSubmittedBriefs(JSON.parse(local));
-        } catch {
-          // ignore
-        }
-      }
+      const loaded = snapshot.docs.map(d => {
+        const data = d.data() as Record<string, any>;
+        return {
+          ...data,
+          id: d.id,
+          referenceId: data.referenceId || d.id,
+        };
+      });
+      loaded.sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0));
+      setSubmittedBriefs(loaded);
     }, (err) => {
-      console.warn('Briefs snapshot error:', err);
+      console.warn('Briefs Firestore snapshot error, checking local cache:', err);
       try {
         const local = localStorage.getItem('vdvc_briefs_submitted');
         if (local) setSubmittedBriefs(JSON.parse(local));
@@ -171,21 +183,47 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     if (e) e.stopPropagation();
     const currentIsUnread = brief.status === 'new' || brief.status === 'unread' || !brief.status;
     const newStatus = currentIsUnread ? 'read' : 'unread';
+    const targetDocId = brief.referenceId || brief.id;
 
     try {
-      if (brief.referenceId) {
-        await updateDoc(doc(db, 'briefs', brief.referenceId), { status: newStatus });
+      if (targetDocId) {
+        await updateDoc(doc(db, 'briefs', targetDocId), { status: newStatus });
       }
-    } catch {
-      // fallback
+    } catch (err) {
+      console.warn('Firestore brief status update error:', err);
     }
 
     setSubmittedBriefs(prev =>
-      prev.map(b => (b.referenceId === brief.referenceId ? { ...b, status: newStatus } : b))
+      prev.map(b => ((b.referenceId || b.id) === targetDocId ? { ...b, status: newStatus } : b))
     );
 
-    if (selectedBriefModal && selectedBriefModal.referenceId === brief.referenceId) {
+    if (selectedBriefModal && (selectedBriefModal.referenceId === targetDocId || selectedBriefModal.id === targetDocId)) {
       setSelectedBriefModal((prev: any) => (prev ? { ...prev, status: newStatus } : null));
+    }
+  };
+
+  const handleDeleteBrief = async (briefId: string) => {
+    try {
+      await deleteDoc(doc(db, 'briefs', briefId));
+      console.log('Brief deleted from Firestore:', briefId);
+    } catch (err) {
+      console.warn('Firestore brief delete error:', err);
+    }
+
+    setSubmittedBriefs(prev => prev.filter(b => (b.referenceId || b.id) !== briefId));
+
+    try {
+      const local = localStorage.getItem('vdvc_briefs_submitted');
+      if (local) {
+        const parsed = JSON.parse(local).filter((b: any) => (b.referenceId || b.id) !== briefId);
+        localStorage.setItem('vdvc_briefs_submitted', JSON.stringify(parsed));
+      }
+    } catch {
+      // ignore
+    }
+
+    if (selectedBriefModal && (selectedBriefModal.referenceId === briefId || selectedBriefModal.id === briefId)) {
+      setSelectedBriefModal(null);
     }
   };
 
@@ -579,18 +617,34 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   };
 
   const filteredProjects = useMemo(() => {
-    return projects.filter(p => {
-      const matchCat = selectedCategory === 'All' || p.category === selectedCategory;
+    return projects.filter(project => {
+      let matchesFilter = false;
+
+      if (selectedCategory === 'All') {
+        matchesFilter = true;
+      } else if (selectedCategory === 'Graphic Design') {
+        matchesFilter = project.category === 'Graphic Design';
+      } else if (selectedCategory === 'Web Design') {
+        matchesFilter = project.category === 'Web Design';
+      } else if (selectedCategory === 'Real Life: All') {
+        matchesFilter = Boolean(project.isRealLife);
+      } else if (selectedCategory === 'Real Life: Graphic Design') {
+        matchesFilter = Boolean(project.isRealLife) && project.category === 'Graphic Design';
+      } else if (selectedCategory === 'Real Life: Web Design') {
+        matchesFilter = Boolean(project.isRealLife) && project.category === 'Web Design';
+      }
+
       const q = searchQuery.toLowerCase().trim();
-      const matchSearch =
+      const matchesSearch =
         !q ||
-        p.title.toLowerCase().includes(q) ||
-        p.client.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q) ||
-        (p.threeWordDesc && p.threeWordDesc.toLowerCase().includes(q)) ||
-        (p.descriptors && p.descriptors.toLowerCase().includes(q)) ||
-        (p.deliverables && p.deliverables.some(d => d.toLowerCase().includes(q)));
-      return matchCat && matchSearch;
+        project.title.toLowerCase().includes(q) ||
+        project.client.toLowerCase().includes(q) ||
+        project.description.toLowerCase().includes(q) ||
+        (project.threeWordDesc && project.threeWordDesc.toLowerCase().includes(q)) ||
+        (project.descriptors && project.descriptors.toLowerCase().includes(q)) ||
+        (project.deliverables && project.deliverables.some(d => d.toLowerCase().includes(q)));
+
+      return matchesFilter && matchesSearch;
     });
   }, [projects, selectedCategory, searchQuery]);
 
@@ -729,9 +783,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
          ===================================================================== */}
       {activeTab === 'briefs' ? (
         <div className="w-full space-y-0 divide-y divide-black sm:space-y-8 sm:divide-y-0">
-          <div className="w-full bg-[#f7f7f7] rounded-none sm:rounded-3xl border-0 p-6 sm:p-10 lg:p-12 shadow-none sm:shadow-sm">
+          <div className="w-full bg-[#d9d9d9] sm:bg-[#f7f7f7] rounded-none sm:rounded-3xl border-0 p-4 sm:p-10 lg:p-12 shadow-none sm:shadow-sm">
             {/* Header & Sticky Filter */}
-            <div className="sticky top-12 sm:top-28 z-20 bg-[#f7f7f7]/95 backdrop-blur-md pb-4 pt-1 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-0">
+            <div className="sticky top-12 sm:top-28 z-20 bg-[#d9d9d9]/95 sm:bg-[#f7f7f7]/95 backdrop-blur-md pb-4 pt-1 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-0">
               <div>
                 <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-900">
                   Client Briefs &amp; Direct Leads
@@ -786,7 +840,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       className="fixed inset-0 z-40"
                       onClick={() => setIsBriefFilterDropdownOpen(false)}
                     />
-                    <div className="absolute left-0 top-full mt-1.5 w-44 bg-[#f7f7f7]/95 backdrop-blur-md rounded-2xl border-0 shadow-xl p-1.5 z-50 space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
+                    <div className="absolute left-0 top-full mt-1.5 w-44 bg-[#ededed]/95 sm:bg-[#f7f7f7]/95 backdrop-blur-md rounded-2xl border border-slate-300 sm:border-0 shadow-xl p-1.5 z-50 space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
                       {[
                         { id: 'all', label: `All (${submittedBriefs.length})` },
                         { id: 'unread', label: `Unread (${unreadBriefsCount})` },
@@ -941,21 +995,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                                 {/* 4. Delete: Highlighted with a red icon and red border */}
                                 <button
                                   type="button"
-                                  onClick={async e => {
+                                  onClick={e => {
                                     setActiveBriefMenuId(null);
                                     e.stopPropagation();
-                                    if (window.confirm(`Delete brief REF ${brief.referenceId || brief.id}?`)) {
-                                      try {
-                                        if (brief.referenceId) {
-                                          await deleteDoc(doc(db, 'briefs', brief.referenceId));
-                                        }
-                                      } catch {
-                                        // fallback local
-                                      }
-                                      setSubmittedBriefs(prev =>
-                                        prev.filter(b => (b.referenceId || b.id) !== briefKey)
-                                      );
-                                    }
+                                    setDeleteBriefConfirmId(brief.referenceId || brief.id || briefKey);
                                   }}
                                   className="w-full px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 border border-rose-300 rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer text-left"
                                 >
@@ -1004,20 +1047,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
                           <button
                             type="button"
-                            onClick={async e => {
+                            onClick={e => {
                               e.stopPropagation();
-                              if (window.confirm(`Delete brief REF ${brief.referenceId || brief.id}?`)) {
-                                try {
-                                  if (brief.referenceId) {
-                                    await deleteDoc(doc(db, 'briefs', brief.referenceId));
-                                  }
-                                } catch {
-                                  // fallback local
-                                }
-                                setSubmittedBriefs(prev =>
-                                  prev.filter(b => (b.referenceId || b.id) !== briefKey)
-                                );
-                              }
+                              setDeleteBriefConfirmId(brief.referenceId || brief.id || briefKey);
                             }}
                             className="p-1.5 rounded-xl text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-300 transition-all cursor-pointer"
                             title="Delete brief"
@@ -1059,7 +1091,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
       ) : activeTab === 'nav_footer' ? (
         <form onSubmit={handleSaveAbout} className="w-full space-y-0 divide-y divide-black sm:space-y-8 sm:divide-y-0">
-          <div className="w-full bg-[#f7f7f7] rounded-none sm:rounded-3xl border-0 p-6 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
+          <div className="w-full bg-[#d9d9d9] sm:bg-[#f7f7f7] rounded-none sm:rounded-3xl border-0 p-4 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div>
                 <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-900">
@@ -1189,7 +1221,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
            =================================================================== */
         <form onSubmit={handleSaveAbout} className="w-full space-y-0 divide-y divide-black sm:space-y-8 sm:divide-y-0">
           {/* SECTION 1: ABOUT PICTURE */}
-          <div className="w-full bg-[#f7f7f7] rounded-none sm:rounded-3xl border-0 p-6 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
+          <div className="w-full bg-[#d9d9d9] sm:bg-[#f7f7f7] rounded-none sm:rounded-3xl border-0 p-4 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div>
                 <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-900">
@@ -1260,7 +1292,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           {/* SECTION 2: TEAM MEMBERS */}
-          <div className="w-full bg-[#f7f7f7] rounded-none sm:rounded-3xl border-0 p-6 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
+          <div className="w-full bg-[#d9d9d9] sm:bg-[#f7f7f7] rounded-none sm:rounded-3xl border-0 p-4 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div>
                 <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-900">
@@ -1476,7 +1508,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           {/* SECTION 3: CONTACT & SOCIAL CHANNELS */}
-          <div className="w-full bg-[#f7f7f7] rounded-none sm:rounded-3xl border-0 p-6 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
+          <div className="w-full bg-[#d9d9d9] sm:bg-[#f7f7f7] rounded-none sm:rounded-3xl border-0 p-4 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div>
                 <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-900">
@@ -1862,7 +1894,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           {/* DYNAMIC ABOUT ACCORDION SECTIONS (Full Reordering, Table Drawer with Colors, Software, Lists) */}
-          <div className="w-full bg-[#f7f7f7] rounded-none sm:rounded-3xl border-0 p-6 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
+          <div className="w-full bg-[#d9d9d9] sm:bg-[#f7f7f7] rounded-none sm:rounded-3xl border-0 p-4 sm:p-10 lg:p-12 space-y-6 shadow-none sm:shadow-sm">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
               <div>
                 <h2 className="font-display text-xl font-bold text-slate-900">
@@ -2418,11 +2450,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
            =================================================================== */
         <>
           {/* Single Unified Container for Filter, Drag & Drop, and Projects Table/Cards */}
-          <div className="w-full bg-[#f7f7f7] rounded-none sm:rounded-3xl border-0 p-4 sm:p-8 lg:p-10 shadow-none sm:shadow-sm space-y-6 sm:space-y-0 sm:flex sm:flex-col sm:max-h-[calc(100vh-14rem)] sm:overflow-hidden">
-            <div className="sticky top-12 sm:static z-20 bg-[#f7f7f7] pb-4 pt-1 flex flex-row items-center justify-between gap-2 sm:gap-4 border-0 shrink-0">
+          <div className="w-full bg-[#d9d9d9] sm:bg-[#f7f7f7] rounded-none sm:rounded-3xl border-0 p-4 sm:p-8 lg:p-10 shadow-none sm:shadow-sm space-y-6 sm:space-y-0 sm:flex sm:flex-col sm:max-h-[calc(100vh-14rem)] sm:overflow-hidden">
+            <div className="sticky top-12 sm:static z-20 bg-[#d9d9d9] sm:bg-[#f7f7f7] pb-4 pt-1 flex flex-row items-center justify-between gap-2 sm:gap-4 border-0 shrink-0">
               {/* Desktop View: Horizontal Category Tabs */}
-              <div className="hidden sm:flex items-center gap-1.5 p-1 bg-[#ededed] rounded-2xl border-0">
-                {CATEGORIES.map(category => {
+              <div className="hidden sm:flex items-center gap-1.5 p-1 bg-[#ededed] rounded-2xl border-0 overflow-visible">
+                {MAIN_CATEGORIES.map(category => {
                   const isSel = selectedCategory === category;
                   const getCatIcon = () => {
                     if (category === 'Graphic Design') return <Palette className="w-3.5 h-3.5" />;
@@ -2445,6 +2477,93 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     </button>
                   );
                 })}
+
+                {/* Filter 3: Real Life Projects Dropdown beside Web Design */}
+                <div className="relative shrink-0" ref={realLifeDropdownRef}>
+                  <button
+                    type="button"
+                    onClick={() => setIsRealLifeDropdownOpen(prev => !prev)}
+                    className={`px-3.5 py-1.5 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer ${
+                      selectedCategory.startsWith('Real Life')
+                        ? 'bg-slate-900 text-white shadow-xs font-bold'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                    title="Real Life Projects"
+                  >
+                    <Briefcase className="w-3.5 h-3.5" />
+                    <span>
+                      {selectedCategory.startsWith('Real Life')
+                        ? selectedCategory.replace('Real Life: ', 'Real Life: ')
+                        : 'Real Life Projects'}
+                    </span>
+                    <ChevronDown
+                      className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                        isRealLifeDropdownOpen ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  <AnimatePresence>
+                    {isRealLifeDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 6, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 4, scale: 0.98 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute left-0 top-full mt-1.5 w-52 bg-white/95 backdrop-blur-2xl rounded-2xl border border-slate-300 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] py-1.5 z-50 overflow-hidden"
+                      >
+                        <div className="px-3 py-1.5 text-[10px] uppercase tracking-wider text-slate-800 font-bold border-b border-slate-200">
+                          Real Life Categories
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedCategory('Real Life: Graphic Design');
+                            setIsRealLifeDropdownOpen(false);
+                          }}
+                          className="w-full px-3.5 py-2 text-left text-xs text-slate-900 hover:bg-black/5 hover:text-black flex items-center justify-between cursor-pointer transition-colors"
+                        >
+                          <span>Graphic Design</span>
+                          {selectedCategory === 'Real Life: Graphic Design' && (
+                            <Check className="w-3.5 h-3.5 text-slate-900" />
+                          )}
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedCategory('Real Life: Web Design');
+                            setIsRealLifeDropdownOpen(false);
+                          }}
+                          className="w-full px-3.5 py-2 text-left text-xs text-slate-900 hover:bg-black/5 hover:text-black flex items-center justify-between cursor-pointer transition-colors"
+                        >
+                          <span>Web Design</span>
+                          {selectedCategory === 'Real Life: Web Design' && (
+                            <Check className="w-3.5 h-3.5 text-slate-900" />
+                          )}
+                        </button>
+
+                        <div className="border-t border-slate-200 my-1" />
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedCategory('Real Life: All');
+                            setIsRealLifeDropdownOpen(false);
+                          }}
+                          className="w-full px-3.5 py-2 text-left text-xs text-slate-900 hover:bg-black/5 hover:text-black flex items-center justify-between cursor-pointer transition-colors"
+                        >
+                          <span>All Real Life Projects</span>
+                          {selectedCategory === 'Real Life: All' && (
+                            <Check className="w-3.5 h-3.5 text-slate-900" />
+                          )}
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
 
               {/* Mobile View: Compressed Category Dropdown (Sticky & Only active filter shows) */}
@@ -2458,10 +2577,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     <Palette className="w-3.5 h-3.5" />
                   ) : selectedCategory === 'Web Design' ? (
                     <Globe className="w-3.5 h-3.5" />
+                  ) : selectedCategory.startsWith('Real Life') ? (
+                    <Briefcase className="w-3.5 h-3.5" />
                   ) : (
                     <FolderGit2 className="w-3.5 h-3.5" />
                   )}
-                  <span>{selectedCategory === 'All' ? 'All Projects' : selectedCategory}</span>
+                  <span>
+                    {selectedCategory === 'All'
+                      ? 'All Projects'
+                      : selectedCategory.startsWith('Real Life')
+                      ? selectedCategory.replace('Real Life: ', 'Real Life: ')
+                      : selectedCategory}
+                  </span>
                   <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isProjectCategoryDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
 
@@ -2471,20 +2598,22 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       className="fixed inset-0 z-40"
                       onClick={() => setIsProjectCategoryDropdownOpen(false)}
                     />
-                    <div className="absolute left-0 top-full mt-1.5 w-48 bg-[#f7f7f7]/95 backdrop-blur-md rounded-2xl border-0 shadow-xl p-1.5 z-50 space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
-                      {CATEGORIES.map(category => {
-                        const isSel = selectedCategory === category;
-                        const getCatIcon = () => {
-                          if (category === 'Graphic Design') return <Palette className="w-3.5 h-3.5" />;
-                          if (category === 'Web Design') return <Globe className="w-3.5 h-3.5" />;
-                          return <FolderGit2 className="w-3.5 h-3.5" />;
-                        };
+                    <div className="absolute left-0 top-full mt-1.5 w-52 bg-[#ededed]/95 sm:bg-[#f7f7f7]/95 backdrop-blur-md rounded-2xl border border-slate-300 sm:border-0 shadow-xl p-1.5 z-50 space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
+                      {[
+                        { id: 'All', label: 'All Projects', icon: <FolderGit2 className="w-3.5 h-3.5" /> },
+                        { id: 'Graphic Design', label: 'Graphic Design', icon: <Palette className="w-3.5 h-3.5" /> },
+                        { id: 'Web Design', label: 'Web Design', icon: <Globe className="w-3.5 h-3.5" /> },
+                        { id: 'Real Life: Graphic Design', label: 'Real Life: Graphic Design', icon: <Briefcase className="w-3.5 h-3.5" /> },
+                        { id: 'Real Life: Web Design', label: 'Real Life: Web Design', icon: <Briefcase className="w-3.5 h-3.5" /> },
+                        { id: 'Real Life: All', label: 'All Real Life Projects', icon: <Briefcase className="w-3.5 h-3.5" /> },
+                      ].map(item => {
+                        const isSel = selectedCategory === item.id;
                         return (
                           <button
-                            key={category}
+                            key={item.id}
                             type="button"
                             onClick={() => {
-                              setSelectedCategory(category);
+                              setSelectedCategory(item.id as FilterMode);
                               setIsProjectCategoryDropdownOpen(false);
                             }}
                             className={`w-full px-3 py-2 text-xs font-semibold rounded-xl flex items-center justify-between gap-2 transition-all cursor-pointer ${
@@ -2494,8 +2623,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             }`}
                           >
                             <div className="flex items-center gap-2">
-                              {getCatIcon()}
-                              <span>{category === 'All' ? 'All Projects' : category}</span>
+                              {item.icon}
+                              <span>{item.label}</span>
                             </div>
                             {isSel && <Check className="w-3.5 h-3.5 text-emerald-400" />}
                           </button>
@@ -2506,8 +2635,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 )}
               </div>
 
-              {/* Right Aligned Controls: Search Icon (expandable) and Add Project Button (icon only) */}
-              <div className="flex items-center gap-2 shrink-0 ml-auto">
+              {/* Right Aligned Controls: Count Badge, Search Icon (expandable) and Add Project Button */}
+              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 ml-auto">
+                <span className={`text-[11px] sm:text-xs font-mono-numbers text-slate-700 font-medium px-2 sm:px-2.5 py-1 sm:py-1.5 bg-[#ededed] rounded-xl shrink-0 ${isSearchExpanded ? 'hidden sm:inline-block' : 'inline-block'}`}>
+                  {filteredProjects.length} {filteredProjects.length === 1 ? 'project' : 'projects'}
+                </span>
                 {isSearchExpanded || searchQuery ? (
                   <div className="relative flex items-center animate-in fade-in zoom-in-95 duration-150">
                     <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -2647,23 +2779,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         <button
                           type="button"
                           onClick={() => onUpdateProject?.(proj.id, { isHidden: !proj.isHidden })}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer ${
+                          className={`p-2 rounded-xl transition-colors cursor-pointer ${
                             proj.isHidden
                               ? 'text-amber-700 bg-amber-100 hover:bg-amber-200'
                               : 'text-slate-600 bg-slate-100 hover:bg-slate-200'
                           }`}
                           title={proj.isHidden ? 'Hidden on frontend — click to show' : 'Visible on frontend — click to hide'}
+                          aria-label={proj.isHidden ? 'Hidden on frontend — click to show' : 'Visible on frontend — click to hide'}
                         >
                           {proj.isHidden ? (
-                            <>
-                              <EyeOff className="w-3.5 h-3.5" />
-                              <span>Hidden</span>
-                            </>
+                            <EyeOff className="w-4 h-4" />
                           ) : (
-                            <>
-                              <Eye className="w-3.5 h-3.5" />
-                              <span>Visible</span>
-                            </>
+                            <Eye className="w-4 h-4" />
                           )}
                         </button>
 
@@ -2800,7 +2927,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
         </div>
 
-        {/* Delete Confirmation Modal */}
+        {/* Delete Confirmation Modal for Projects */}
           <AnimatePresence>
             {deleteConfirmId && (
               <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -2837,6 +2964,54 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       onClick={() => {
                         onDelete(deleteConfirmId);
                         setDeleteConfirmId(null);
+                      }}
+                      className="px-6 py-2.5 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-lg transition-colors cursor-pointer"
+                    >
+                      Delete Forever
+                    </button>
+                  </div>
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>
+
+          {/* Delete Confirmation Modal for Client Briefs */}
+          <AnimatePresence>
+            {deleteBriefConfirmId && (
+              <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setDeleteBriefConfirmId(null)}
+                  className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs"
+                />
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="relative bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 max-w-sm w-full shadow-2xl z-10 text-center space-y-4"
+                >
+                  <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 mx-auto flex items-center justify-center">
+                    <Trash2 className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-display text-xl font-bold text-slate-900">
+                    Delete Client Brief?
+                  </h3>
+                  <p className="text-xs text-slate-500 leading-relaxed">
+                    This will permanently delete this client brief and inquiry from Firestore database.
+                  </p>
+                  <div className="flex items-center justify-center gap-3 pt-3">
+                    <button
+                      onClick={() => setDeleteBriefConfirmId(null)}
+                      className="px-5 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleDeleteBrief(deleteBriefConfirmId);
+                        setDeleteBriefConfirmId(null);
                       }}
                       className="px-6 py-2.5 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-lg transition-colors cursor-pointer"
                     >
@@ -2924,6 +3099,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     className="px-3 py-1.5 bg-white/10 hover:bg-[#f7f7f7]/20 text-white text-xs font-semibold rounded-xl transition-all cursor-pointer"
                   >
                     {selectedBriefModal.status === 'read' ? 'Mark Unread' : 'Mark Read'}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const docId = selectedBriefModal.referenceId || selectedBriefModal.id;
+                      if (docId) setDeleteBriefConfirmId(docId);
+                    }}
+                    className="p-1.5 text-rose-400 hover:text-white bg-rose-500/20 hover:bg-rose-600 rounded-xl transition-colors cursor-pointer"
+                    aria-label="Delete brief"
+                    title="Delete brief"
+                  >
+                    <Trash2 className="w-4 h-4" />
                   </button>
 
                   <button

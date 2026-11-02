@@ -66,6 +66,43 @@
         "updatedAt": { "type": "number" }
       },
       "required": ["studioName", "founderName", "bio", "phone", "email"]
+    },
+    "Brief": {
+      "title": "Client Brief",
+      "description": "Client intake project brief submitted via booking flow",
+      "type": "object",
+      "properties": {
+        "referenceId": { "type": "string" },
+        "fullName": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "preferredContact": { "type": "string" },
+        "businessName": { "type": "string" },
+        "industry": { "type": "string" },
+        "service": { "type": "string" },
+        "profileType": { "type": "string" },
+        "projectType": { "type": "string" },
+        "goals": { "type": "array", "items": { "type": "string" } },
+        "customGoal": { "type": "string" },
+        "feelMood": { "type": "string" },
+        "feelDescription": { "type": "string" },
+        "referenceWebsiteLink": { "type": "string" },
+        "scopePages": { "type": "string" },
+        "graphicQuantity": { "type": "string" },
+        "brandAssets": { "type": "string" },
+        "existingAssets": { "type": "string" },
+        "techStackPreference": { "type": "string" },
+        "systemCurrentState": { "type": "string" },
+        "timelineType": { "type": "string" },
+        "timelineWeeks": { "type": "number" },
+        "budgetType": { "type": "string" },
+        "exactBudgetAmount": { "type": "number" },
+        "budgetBand": { "type": "string" },
+        "status": { "type": "string", "enum": ["new", "unread", "read"] },
+        "submittedAt": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["referenceId", "fullName", "email", "service", "createdAt"]
     }
   },
   "firestore": {
@@ -76,6 +113,10 @@
     "/settings/about": {
       "entity": "About",
       "description": "Studio about information"
+    },
+    "/briefs/{briefId}": {
+      "entity": "Brief",
+      "description": "Collection of client intake project briefs"
     }
   }
 }

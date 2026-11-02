@@ -368,15 +368,22 @@ export const BookingSection: React.FC = () => {
 
     setBriefSummary(briefData);
 
-    // 1. Save brief to Firestore and local backup so studio owner has full record in Dashboard
+    // 1. Save brief directly to Firestore database as source of truth
+    const firestorePayload: Record<string, any> = {
+      createdAt: Date.now(),
+      status: 'unread',
+    };
+    Object.entries(briefData).forEach(([key, val]) => {
+      if (val !== undefined) {
+        firestorePayload[key] = val;
+      }
+    });
+
     try {
-      await setDoc(doc(db, 'briefs', briefData.referenceId), {
-        ...briefData,
-        createdAt: Date.now(),
-        status: 'new',
-      });
+      await setDoc(doc(db, 'briefs', briefData.referenceId), firestorePayload);
+      console.log('Brief successfully stored in Firestore:', briefData.referenceId);
     } catch (err) {
-      console.warn('Firestore brief save fallback:', err);
+      console.error('Firestore brief save error:', err);
     }
 
     try {

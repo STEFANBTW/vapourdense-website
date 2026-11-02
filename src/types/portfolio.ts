@@ -73,3 +73,10 @@ export interface Project {
 
 export type FilterCategory = 'All' | ProjectCategory;
 
+export type FilterMode =
+  | 'All'
+  | 'Graphic Design'
+  | 'Web Design'
+  | 'Real Life: All'
+  | 'Real Life: Graphic Design'
+  | 'Real Life: Web Design';

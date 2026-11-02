@@ -12,5 +12,13 @@ service cloud.firestore {
       allow read: if true;
       allow write: if true;
     }
+
+    // Client briefs: readable by anyone (for dashboard management), writeable/creatable for client bookings
+    match /briefs/{briefId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;
+      allow delete: if true;
+    }
   }
 }
