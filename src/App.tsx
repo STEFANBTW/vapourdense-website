@@ -13,6 +13,7 @@ import { LoginPage } from './components/LoginPage';
 import { ProjectBlogView } from './components/ProjectBlogView';
 import { DashboardView } from './components/DashboardView';
 import { Project } from './types/portfolio';
+import { uploadToCloudinary } from './utils/cloudinary';
 
 export default function App() {
   const {
@@ -26,7 +27,19 @@ export default function App() {
     deleteProject,
     resetToDefaults,
     updateAboutData,
+    dbError,
+    clearDbError,
   } = usePortfolioStorage();
+
+  // The hook already reports failures through dbError (shown in the banner below) and rolls back
+  // the optimistic change, so these wrappers only keep the rejection from going unhandled.
+  const swallow = <A extends unknown[], R>(fn: (...args: A) => Promise<R>) => async (...args: A) => {
+    try {
+      return await fn(...args);
+    } catch {
+      return undefined;
+    }
+  };
 
   const [currentView, setCurrentView] = useState<'portfolio' | 'dashboard' | 'login'>('portfolio');
   const [selectedCaseStudy, setSelectedCaseStudy] = useState<Project | null>(null);
@@ -75,16 +88,20 @@ export default function App() {
     };
   }, [isAdmin, projects]);
 
+  const safeAddProject = swallow(addProject);
+  const safeDeleteProject = swallow(deleteProject);
+  const safeResetToDefaults = swallow(resetToDefaults);
+  const safeUpdateProject = swallow(updateProject);
+
   const handleInitiateImageUpload = async (file: File) => {
     if (!isAdmin) {
       setCurrentView('login');
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const dataUrl = reader.result as string;
-      const created = await addProject({
+    try {
+      const cdnUrl = await uploadToCloudinary(file);
+      const created = await safeAddProject({
         title: file.name.replace(/\.[^/.]+$/, ''),
         category: 'Graphic Design',
         client: 'Bespoke Client',
@@ -93,17 +110,19 @@ export default function App() {
         description: 'New creative project portfolio entry.',
         shortDescription: 'New creative project portfolio entry.',
         fullDescription: 'Comprehensive design process and artifact showcase.',
-        imageUrl: dataUrl,
-        images: [dataUrl],
+        imageUrl: cdnUrl,
+        images: [cdnUrl],
         tags: ['Design', 'Direction'],
         deliverables: ['Creative Concept', 'Visual Identity'],
         price: '$18,500 USD',
         duration: '4 Weeks',
         isRealLife: false,
       });
-      setSelectedCaseStudy(created);
-    };
-    reader.readAsDataURL(file);
+      if (created) setSelectedCaseStudy(created);
+    } catch (err) {
+      console.error('Failed to upload image to Cloudinary:', err);
+      alert('Image upload failed: ' + (err instanceof Error ? err.message : String(err)));
+    }
   };
 
   const handleLoginSuccess = () => {
@@ -111,7 +130,7 @@ export default function App() {
   };
 
   const handleAddNewProject = async () => {
-    const newProj = await addProject({
+    const newProj = await safeAddProject({
       title: 'New Untitled Project',
       category: 'Graphic Design',
       client: 'Bespoke Client',
@@ -128,7 +147,7 @@ export default function App() {
       duration: '6 Weeks',
       isRealLife: false,
     });
-    setSelectedCaseStudy(newProj);
+    if (newProj) setSelectedCaseStudy(newProj);
   };
 
   const visibleProjects = projects.filter(p => !p.isHidden);
@@ -149,6 +168,19 @@ export default function App() {
         logoUrl={aboutData.logoUrl}
         isMobileNavVisible={isMobileNavVisible}
       />
+
+      {/* Database error banner (admins only): writes/reads are being rejected */}
+      {isAdmin && dbError && (
+        <div
+          role="alert"
+          className="fixed top-20 left-1/2 -translate-x-1/2 z-[60] w-[calc(100%-2rem)] max-w-3xl px-4 py-3 rounded-xl bg-red-600 text-white text-sm flex items-start justify-between gap-4 shadow-lg"
+        >
+          <span>{dbError}</span>
+          <button type="button" onClick={clearDbError} className="font-bold cursor-pointer" aria-label="Dismiss">
+            ×
+          </button>
+        </div>
+      )}
 
       {/* Main Content Area */}
       <main className="relative z-10 flex-1 bg-[#d9d9d9]">
@@ -186,14 +218,14 @@ export default function App() {
               setSelectedCaseStudy(project);
               setIsEditingCaseStudy(true);
             }}
-            onDelete={deleteProject}
+            onDelete={safeDeleteProject}
             onPreview={project => {
               setSelectedCaseStudy(project);
               setIsEditingCaseStudy(false);
             }}
             onDropImage={handleInitiateImageUpload}
-            onResetDefaults={resetToDefaults}
-            onUpdateProject={updateProject}
+            onResetDefaults={safeResetToDefaults}
+            onUpdateProject={safeUpdateProject}
           />
         )}
       </main>

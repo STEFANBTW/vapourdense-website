@@ -62,11 +62,12 @@ import {
   defaultSocialLinks,
 } from './AboutSection';
 import { compressImage } from '../utils/imageCompressor';
+import { uploadToCloudinary } from '../utils/cloudinary';
 
 interface DashboardViewProps {
   projects: Project[];
   aboutData: AboutData;
-  onUpdateAbout: (data: AboutData) => void;
+  onUpdateAbout: (data: AboutData) => Promise<void> | void;
   onAddNew: () => void;
   onEdit: (project: Project) => void;
   onDelete: (id: string) => void;
@@ -328,10 +329,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const handlePhoneIconUpload = async (index: number, file: File) => {
     if (!file.type.startsWith('image/')) return;
     try {
-      const compressed = await compressImage(file, 200, 200, 0.9);
-      handleUpdatePhoneItem(index, 'iconUrl', compressed);
-    } catch {
-      // fallback
+      const cdnUrl = await uploadToCloudinary(file);
+      handleUpdatePhoneItem(index, 'iconUrl', cdnUrl);
+    } catch (err) {
+      console.error('Phone icon upload error:', err);
     }
   };
 
@@ -375,30 +376,32 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const handleEmailIconUpload = async (index: number, file: File) => {
     if (!file.type.startsWith('image/')) return;
     try {
-      const compressed = await compressImage(file, 200, 200, 0.9);
-      handleUpdateEmailItem(index, 'iconUrl', compressed);
-    } catch {
-      // fallback
+      const cdnUrl = await uploadToCloudinary(file);
+      handleUpdateEmailItem(index, 'iconUrl', cdnUrl);
+    } catch (err) {
+      console.error('Email icon upload error:', err);
     }
   };
 
   const handleFounderImageUpload = async (file: File) => {
     if (!file.type.startsWith('image/')) return;
     try {
-      const compressed = await compressImage(file, 1200, 1200, 0.85);
-      setEditingAbout(prev => ({ ...prev, founderImage: compressed }));
-    } catch {
-      // fallback
+      const cdnUrl = await uploadToCloudinary(file);
+      setEditingAbout(prev => ({ ...prev, founderImage: cdnUrl }));
+    } catch (err) {
+      console.error('Founder image upload error:', err);
+      alert('Failed to upload image: ' + (err instanceof Error ? err.message : String(err)));
     }
   };
 
   const handleNavbarLogoUpload = async (file: File) => {
     if (!file.type.startsWith('image/')) return;
     try {
-      const compressed = await compressImage(file, 600, 600, 0.9);
-      setEditingAbout(prev => ({ ...prev, logoUrl: compressed }));
-    } catch {
-      // fallback
+      const cdnUrl = await uploadToCloudinary(file);
+      setEditingAbout(prev => ({ ...prev, logoUrl: cdnUrl }));
+    } catch (err) {
+      console.error('Navbar logo upload error:', err);
+      alert('Failed to upload logo: ' + (err instanceof Error ? err.message : String(err)));
     }
   };
 
@@ -431,10 +434,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const handleSocialIconUpload = async (index: number, file: File) => {
     if (!file.type.startsWith('image/')) return;
     try {
-      const compressed = await compressImage(file, 200, 200, 0.9);
-      handleUpdateSocialLink(index, 'iconUrl', compressed);
-    } catch {
-      // fallback
+      const cdnUrl = await uploadToCloudinary(file);
+      handleUpdateSocialLink(index, 'iconUrl', cdnUrl);
+    } catch (err) {
+      console.error('Social icon upload error:', err);
     }
   };
 
@@ -481,10 +484,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const handleMemberAvatarUpload = async (index: number, file: File) => {
     if (!file.type.startsWith('image/')) return;
     try {
-      const compressed = await compressImage(file, 400, 400, 0.85);
-      handleUpdateTeamMember(index, 'avatarUrl', compressed);
-    } catch {
-      // fallback
+      const cdnUrl = await uploadToCloudinary(file);
+      handleUpdateTeamMember(index, 'avatarUrl', cdnUrl);
+    } catch (err) {
+      console.error('Member avatar upload error:', err);
     }
   };
 
@@ -669,11 +672,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     }
   };
 
-  const handleSaveAbout = (e: React.FormEvent) => {
+  const handleSaveAbout = async (e: React.FormEvent) => {
     e.preventDefault();
-    onUpdateAbout(editingAbout);
-    setIsSavedNotice(true);
-    setTimeout(() => setIsSavedNotice(false), 2500);
+    try {
+      await onUpdateAbout(editingAbout);
+      setIsSavedNotice(true);
+      setTimeout(() => setIsSavedNotice(false), 2500);
+    } catch {
+      // The error banner at the top of the app explains why the save was rejected.
+      setIsSavedNotice(false);
+    }
   };
 
   return (

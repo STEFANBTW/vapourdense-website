@@ -4,6 +4,7 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Play,
   Pause,
   Volume2,
@@ -21,8 +22,10 @@ import {
   UploadCloud,
   Sliders,
   Minus,
+  Loader2,
 } from 'lucide-react';
 import { Project, ProcessPicture, GalleryPicture, ClientRemarkType, ProcessStep } from '../types/portfolio';
+import { uploadToCloudinary } from '../utils/cloudinary';
 
 interface ProjectBlogViewProps {
   project: Project | null;
@@ -53,9 +56,13 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
   const [currentProject, setCurrentProject] = useState<Project>(() => initialProject || allProjects[0]);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false);
   const [isSavedNotice, setIsSavedNotice] = useState<boolean>(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [isUploadingMedia, setIsUploadingMedia] = useState<boolean>(false);
 
   // Image size slider state (initialized from project's saved scale)
   const [imageScalePercent, setImageScalePercent] = useState<number>(() => initialProject?.imageScalePercent || 100);
+  const [isProjectDropdownOpen, setIsProjectDropdownOpen] = useState<boolean>(false);
+  const projectDropdownRef = useRef<HTMLDivElement | null>(null);
 
   // Modal for big picture expansion
   const [expandedImage, setExpandedImage] = useState<ExpandedImageState | null>(null);
@@ -96,12 +103,29 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
   // Deliverable input state
   const [newDeliverableText, setNewDeliverableText] = useState('');
 
+  // Close project switcher dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (projectDropdownRef.current && !projectDropdownRef.current.contains(e.target as Node)) {
+        setIsProjectDropdownOpen(false);
+      }
+    };
+    if (isProjectDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isProjectDropdownOpen]);
+
   // Synchronize internal project state when initialProject changes
   useEffect(() => {
     if (initialProject) {
       setCurrentProject(initialProject);
+      setIsProjectDropdownOpen(false);
       setImageScalePercent(initialProject.imageScalePercent || 100);
       setHasUnsavedChanges(false);
+      setSaveError(null);
       if (initialProject.clientRemark?.type) {
         setActiveRemarkType(initialProject.clientRemark.type);
       } else {
@@ -121,6 +145,13 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
       if (expandedImage) {
         if (e.key === 'Escape') {
           setExpandedImage(null);
+        }
+        return;
+      }
+
+      if (isProjectDropdownOpen) {
+        if (e.key === 'Escape') {
+          setIsProjectDropdownOpen(false);
         }
         return;
       }
@@ -245,20 +276,20 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
   const prevProject = currentIndex > 0 ? allProjects[currentIndex - 1] : null;
   const nextProject = currentIndex < allProjects.length - 1 ? allProjects[currentIndex + 1] : null;
 
-  // Fallback gallery pictures
-  const effectiveGallery: GalleryPicture[] = currentProject.galleryPictures && currentProject.galleryPictures.length > 0
+  // Fallback gallery pictures (respects empty array if user cleared it)
+  const effectiveGallery: GalleryPicture[] = currentProject.galleryPictures !== undefined
     ? currentProject.galleryPictures
-    : currentProject.images.map((img, idx) => ({
+    : (currentProject.images || []).map((img, idx) => ({
         id: `gal-${idx}`,
         url: img,
-        caption: `${currentProject.title} — Visual Asset ${idx + 1}`,
+        caption: '',
         isAI: idx % 2 === 1,
       }));
 
-  // Fallback process steps
-  const effectiveProcessSteps: ProcessStep[] = currentProject.processSteps && currentProject.processSteps.length > 0
+  // Fallback process steps (respects empty array if user cleared it)
+  const effectiveProcessSteps: ProcessStep[] = currentProject.processSteps !== undefined
     ? currentProject.processSteps
-    : [
+    : (currentProject.images && currentProject.images.length > 0 ? [
         {
           id: 'step-auto-1',
           name: 'Phase 01: Concept Exploration & Generative Prototyping',
@@ -267,18 +298,18 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
             {
               id: 'pic-proc-1',
               url: currentProject.images[0] || '',
-              caption: 'AI generative visual exploration assessing spatial hierarchy and palette mood.',
+              caption: '',
               type: 'AI',
             },
             {
               id: 'pic-proc-2',
               url: currentProject.images[1] || currentProject.images[0] || '',
-              caption: 'Refined composition and component matrix engineered for production.',
+              caption: '',
               type: 'Final',
             },
           ],
         },
-      ];
+      ] : []);
 
   const remark = currentProject.clientRemark || {
     type: 'voice',
@@ -299,6 +330,13 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
     )
   );
 
+  // Display values. `??` (not `||`) so a field the user deliberately emptied stays empty
+  // instead of snapping back to a fallback value.
+  const dateText = currentProject.monthYear ?? (currentProject.year ? `${currentProject.year}` : '');
+  const scopeText = currentProject.shortDescription ?? currentProject.description ?? '';
+  const designerRemarkText = currentProject.threeWordDesc ?? currentProject.descriptors ?? '';
+  const authorText = remark.clientAuthor ?? currentProject.client ?? '';
+
   // Local update handler (No auto-saving, marks as unsaved)
   const updateProjectLocal = (updated: Partial<Project>) => {
     setCurrentProject(prev => ({ ...prev, ...updated }));
@@ -314,10 +352,16 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
   // Explicit Save Changes button click
   const handleSaveChanges = async () => {
     if (onUpdateProject && currentProject) {
-      await onUpdateProject(currentProject.id, currentProject);
-      setHasUnsavedChanges(false);
-      setIsSavedNotice(true);
-      setTimeout(() => setIsSavedNotice(false), 2500);
+      setSaveError(null);
+      try {
+        await onUpdateProject(currentProject.id, currentProject);
+        setHasUnsavedChanges(false);
+        setIsSavedNotice(true);
+        setTimeout(() => setIsSavedNotice(false), 2500);
+      } catch (err) {
+        // Keep the unsaved state so nothing is lost; tell the user it did not persist.
+        setSaveError(err instanceof Error ? err.message : 'Could not save to the database.');
+      }
     }
   };
 
@@ -336,23 +380,27 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
     updateProjectLocal({ galleryPictures: updated });
   };
 
-  const handleGalleryFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleGalleryFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onload = () => {
-        const resultUrl = reader.result as string;
+      try {
+        setIsUploadingMedia(true);
+        const resultUrl = await uploadToCloudinary(file);
         const newPic: GalleryPicture = {
           id: `gal-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
           url: resultUrl,
-          caption: `${currentProject.title} — New Asset`,
+          caption: '',
           isAI: false,
         };
         const updated = [...effectiveGallery, newPic];
         updateProjectLocal({ galleryPictures: updated });
-      };
-      reader.readAsDataURL(file);
-      e.target.value = '';
+      } catch (err) {
+        console.error('Gallery image upload failed:', err);
+        alert('Failed to upload gallery image: ' + (err instanceof Error ? err.message : String(err)));
+      } finally {
+        setIsUploadingMedia(false);
+        e.target.value = '';
+      }
     }
   };
 
@@ -387,17 +435,17 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
     updateProjectLocal({ processSteps: updatedSteps });
   };
 
-  const handleProcessFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleProcessFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const stepIdx = activeProcessStepIndexRef.current;
-      const reader = new FileReader();
-      reader.onload = () => {
-        const resultUrl = reader.result as string;
+      try {
+        setIsUploadingMedia(true);
+        const resultUrl = await uploadToCloudinary(file);
         const newPic: ProcessPicture = {
           id: `proc-pic-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
           url: resultUrl,
-          caption: 'Process visual artifact.',
+          caption: '',
           type: 'Final',
         };
         const updatedSteps = effectiveProcessSteps.map((step, sIdx) => {
@@ -408,9 +456,13 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
           };
         });
         updateProjectLocal({ processSteps: updatedSteps });
-      };
-      reader.readAsDataURL(file);
-      e.target.value = '';
+      } catch (err) {
+        console.error('Process image upload failed:', err);
+        alert('Failed to upload process image: ' + (err instanceof Error ? err.message : String(err)));
+      } finally {
+        setIsUploadingMedia(false);
+        e.target.value = '';
+      }
     }
   };
 
@@ -438,12 +490,12 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
   // ---------------------------------------------------------------------------
   // Remark Audio & Picture Upload Handlers
   // ---------------------------------------------------------------------------
-  const handleRemarkAudioUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRemarkAudioUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onload = () => {
-        const resultUrl = reader.result as string;
+      try {
+        setIsUploadingMedia(true);
+        const resultUrl = await uploadToCloudinary(file, { resourceType: 'auto' });
         updateProjectLocal({
           clientRemark: {
             ...remark,
@@ -452,18 +504,22 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
           },
         });
         setActiveRemarkType('voice');
-      };
-      reader.readAsDataURL(file);
-      e.target.value = '';
+      } catch (err) {
+        console.error('Audio upload failed:', err);
+        alert('Failed to upload audio: ' + (err instanceof Error ? err.message : String(err)));
+      } finally {
+        setIsUploadingMedia(false);
+        e.target.value = '';
+      }
     }
   };
 
-  const handleRemarkPictureUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRemarkPictureUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onload = () => {
-        const resultUrl = reader.result as string;
+      try {
+        setIsUploadingMedia(true);
+        const resultUrl = await uploadToCloudinary(file);
         updateProjectLocal({
           clientRemark: {
             ...remark,
@@ -472,9 +528,13 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
           },
         });
         setActiveRemarkType('picture');
-      };
-      reader.readAsDataURL(file);
-      e.target.value = '';
+      } catch (err) {
+        console.error('Document picture upload failed:', err);
+        alert('Failed to upload picture: ' + (err instanceof Error ? err.message : String(err)));
+      } finally {
+        setIsUploadingMedia(false);
+        e.target.value = '';
+      }
     }
   };
 
@@ -515,20 +575,11 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
   };
 
   const handleConfirmAddProcess = () => {
-    if (!newProcessName.trim()) {
-      alert('Please enter a process step name');
-      return;
-    }
     const newStep: ProcessStep = {
       id: `step-${Date.now()}`,
-      name: newProcessName.trim(),
-      description: newProcessDescription.trim() || 'Comprehensive design & development documentation.',
-      pictures: newProcessPictures.length > 0 ? newProcessPictures : (currentProject.images[0] ? [{
-        id: `np-pic-${Date.now()}`,
-        url: currentProject.images[0],
-        caption: 'Design process documentation.',
-        type: 'Final',
-      }] : []),
+      name: newProcessName.trim() || 'Untitled Phase',
+      description: newProcessDescription.trim(),
+      pictures: newProcessPictures,
     };
 
     const updatedSteps = [...effectiveProcessSteps, newStep];
@@ -551,7 +602,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
       const newPic: GalleryPicture = {
         id: `gal-${Date.now()}`,
         url: imageUrlInput.trim(),
-        caption: imageCaptionInput.trim() || `${currentProject.title} — Visual Asset`,
+        caption: imageCaptionInput.trim(),
         isAI: imageIsAI,
       };
       const updated = [...effectiveGallery, newPic];
@@ -561,7 +612,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
       const newPic: ProcessPicture = {
         id: `proc-pic-${Date.now()}`,
         url: imageUrlInput.trim(),
-        caption: imageCaptionInput.trim() || 'Process artifact.',
+        caption: imageCaptionInput.trim(),
         type: imageType,
       };
       const updatedSteps = effectiveProcessSteps.map((step, sIdx) => {
@@ -576,7 +627,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
       const newPic: ProcessPicture = {
         id: `np-pic-${Date.now()}`,
         url: imageUrlInput.trim(),
-        caption: imageCaptionInput.trim() || 'Process step artifact.',
+        caption: imageCaptionInput.trim(),
         type: imageType,
       };
       setNewProcessPictures(prev => [...prev, newPic]);
@@ -661,27 +712,99 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
             {currentProject.title}
           </span>
 
-          {/* Project switcher dropdown when in editable mode */}
-          {isEditable && allProjects.length > 1 && (
-            <select
-              value={currentProject.id || ''}
-              onChange={e => {
-                const target = allProjects.find(p => p.id === e.target.value);
-                if (target) onNavigateProject(target);
-              }}
-              className="px-3 py-1.5 text-xs sm:text-sm font-unisans-regular rounded-xl bg-white/10 border-0 text-white focus:outline-none focus:ring-1 focus:ring-white/40 cursor-pointer hidden md:block"
-            >
-              {allProjects.map(p => (
-                <option key={p.id} value={p.id} className="bg-[#130f30] text-white">
-                  {p.title}
-                </option>
-              ))}
-            </select>
+          {/* Sleek Glassmorphism Project Switcher Dropdown */}
+          {allProjects.length > 1 && (
+            <div ref={projectDropdownRef} className="relative hidden sm:block">
+              <button
+                type="button"
+                onClick={() => setIsProjectDropdownOpen(prev => !prev)}
+                className={`inline-flex items-center gap-2 px-3 py-1.5 text-xs font-unisans-regular rounded-xl transition-all cursor-pointer border backdrop-blur-md ${
+                  isProjectDropdownOpen
+                    ? 'bg-white/20 text-white border-white/40 ring-2 ring-white/20 shadow-lg'
+                    : 'bg-white/10 hover:bg-white/15 text-white/90 border-white/15'
+                }`}
+                title="Switch project"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <span className="max-w-[140px] md:max-w-[200px] truncate">{currentProject.title}</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 text-white/70 ${isProjectDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              <AnimatePresence>
+                {isProjectDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 6, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                    transition={{ duration: 0.15, ease: 'easeOut' }}
+                    className="absolute left-0 mt-2 w-72 sm:w-80 rounded-2xl bg-[#18133d]/95 backdrop-blur-2xl border border-white/20 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.85)] p-2 z-50 flex flex-col max-h-[380px] overflow-hidden"
+                  >
+                    <div className="px-3 py-2 border-b border-white/10 flex items-center justify-between shrink-0">
+                      <span className="font-unisans-thin-caps text-[11px] uppercase tracking-wider text-white/50">
+                        Switch Project ({allProjects.length})
+                      </span>
+                      <span className="text-[10px] text-white/40 font-unisans-regular">
+                        {currentIndex + 1} of {allProjects.length}
+                      </span>
+                    </div>
+
+                    <div className="overflow-y-auto no-scrollbar py-1 space-y-1">
+                      {allProjects.map((p, idx) => {
+                        const isSelected = p.id === currentProject.id;
+                        return (
+                          <button
+                            key={p.id}
+                            type="button"
+                            onClick={() => {
+                              onNavigateProject(p);
+                              setIsProjectDropdownOpen(false);
+                            }}
+                            className={`w-full text-left px-3 py-2 rounded-xl flex items-center justify-between gap-3 transition-all cursor-pointer group ${
+                              isSelected
+                                ? 'bg-white/20 text-white border border-white/30 shadow-xs'
+                                : 'text-white/70 hover:text-white hover:bg-white/10 border border-transparent'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <span className="text-[11px] font-unisans-thin-caps text-white/40 w-5 shrink-0">
+                                {String(idx + 1).padStart(2, '0')}
+                              </span>
+                              <div className="min-w-0">
+                                <p className="text-xs font-unisans-regular truncate font-medium group-hover:text-white">
+                                  {p.title}
+                                </p>
+                                <p className="text-[10px] text-white/40 truncate font-unisans-regular">
+                                  {p.category} {p.client ? `· ${p.client}` : ''}
+                                </p>
+                              </div>
+                            </div>
+
+                            {isSelected ? (
+                              <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                            ) : (
+                              <span className="text-[10px] text-white/30 group-hover:text-white/60 shrink-0 font-unisans-regular">
+                                Select
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           )}
         </div>
 
-        {/* Center Indicator */}
+        {/* Center Indicator or Upload Status */}
         <div className="flex items-center gap-2 text-sm sm:text-base font-unisans-regular text-white/60 tracking-wider">
+          {isUploadingMedia && (
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 text-white text-xs border border-white/20 animate-pulse mr-2">
+              <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
+              <span>Uploading to Cloudinary...</span>
+            </div>
+          )}
           <span className="text-white font-normal">{String(currentIndex + 1).padStart(2, '0')}</span>
           <span>/</span>
           <span>{String(allProjects.length).padStart(2, '0')}</span>
@@ -705,6 +828,11 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                 <Save className="w-3.5 h-3.5" />
                 <span>{isSavedNotice ? 'Saved!' : hasUnsavedChanges ? 'Save Changes' : 'Saved'}</span>
               </button>
+              {saveError && (
+                <span role="alert" className="max-w-[260px] text-[11px] leading-tight text-red-300" title={saveError}>
+                  Not saved: {saveError}
+                </span>
+              )}
             </div>
           )}
 
@@ -796,7 +924,8 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
             }`}
           >
             
-            {/* SECTION 1: GALLERY */}
+            {/* SECTION 1: GALLERY (hidden in view mode if completely empty) */}
+            {(isEditable || effectiveGallery.length > 0) && (
             <section aria-labelledby="gallery-title" className="min-w-0">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-5">
                 <h2
@@ -860,7 +989,30 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                 )}
               </div>
 
-              {/* Gallery Pictures arranged horizontally */}
+              {/* Empty state when no gallery pictures are attached */}
+              {effectiveGallery.length === 0 && isEditable ? (
+                <div className="p-8 rounded-2xl bg-white/5 border border-dashed border-white/20 text-center flex flex-col items-center justify-center gap-3">
+                  <p className="text-xs text-white/50 font-unisans-regular">No gallery pictures attached.</p>
+                  <div className="flex items-center gap-2.5">
+                    <button
+                      type="button"
+                      onClick={() => setLinkModalTarget('gallery')}
+                      className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-unisans-regular flex items-center gap-1.5 border border-white/20 cursor-pointer"
+                    >
+                      <Link2 className="w-3.5 h-3.5" />
+                      <span>Add via Link</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => galleryFileInputRef.current?.click()}
+                      className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-unisans-regular flex items-center gap-1.5 border border-white/20 cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Upload Image</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
               <div className="flex flex-row items-start gap-4 sm:gap-5 overflow-x-auto pb-4 pt-1 no-scrollbar min-w-0">
                 {effectiveGallery.map((pic, idx) => {
                   const isAIGenerated = Boolean(pic.isAI);
@@ -942,9 +1094,11 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           {/* Hover Overlay for viewing */}
                           {!isEditable && (
                             <div className="absolute inset-x-0 bottom-0 pt-10 pb-2 px-3 bg-gradient-to-t from-black/95 via-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none flex flex-col justify-end">
-                              <p className="text-xs sm:text-sm text-white/95 font-unisans-regular leading-snug line-clamp-2">
-                                {pic.caption || `${currentProject.title} — Visual Asset`}
-                              </p>
+                              {pic.caption && pic.caption.trim() ? (
+                                <p className="text-xs sm:text-sm text-white/95 font-unisans-regular leading-snug line-clamp-2">
+                                  {pic.caption}
+                                </p>
+                              ) : null}
                               <span className="text-[10px] font-unisans-regular text-white/80 mt-1 inline-flex items-center gap-1">
                                 <Maximize2 className="w-2.5 h-2.5" /> Enlarge
                               </span>
@@ -1002,9 +1156,12 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   </div>
                 )}
               </div>
+              )}
             </section>
+            )}
 
-            {/* SECTION 2: PROCESS */}
+            {/* SECTION 2: PROCESS (hidden in view mode if completely empty) */}
+            {(isEditable || effectiveProcessSteps.length > 0) && (
             <section aria-labelledby="process-title" className="pt-2 min-w-0">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 sm:mb-6">
                 <h2
@@ -1064,6 +1221,20 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   </div>
                 )}
               </div>
+
+              {effectiveProcessSteps.length === 0 && isEditable && !isAddingProcess && (
+                <div className="p-8 rounded-2xl bg-white/5 border border-dashed border-white/20 text-center flex flex-col items-center justify-center gap-3 mb-4">
+                  <p className="text-xs text-white/50 font-unisans-regular">No process phases attached.</p>
+                  <button
+                    type="button"
+                    onClick={() => setIsAddingProcess(true)}
+                    className="px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-unisans-regular flex items-center gap-1.5 border border-white/25 cursor-pointer shadow-md"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Add Process Phase</span>
+                  </button>
+                </div>
+              )}
 
               {/* Process Steps List */}
               <div className="space-y-8 sm:space-y-10 min-w-0">
@@ -1154,9 +1325,11 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
 
                                 {!isEditable && (
                                   <div className="absolute inset-x-0 bottom-0 pt-10 pb-2 px-3 bg-gradient-to-t from-black/95 via-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none flex flex-col justify-end">
-                                    <p className="text-xs sm:text-sm text-white/95 font-unisans-regular leading-snug line-clamp-2">
-                                      {pic.caption || 'Process documentation artifact.'}
-                                    </p>
+                                    {pic.caption && pic.caption.trim() ? (
+                                      <p className="text-xs sm:text-sm text-white/95 font-unisans-regular leading-snug line-clamp-2">
+                                        {pic.caption}
+                                      </p>
+                                    ) : null}
                                   </div>
                                 )}
                               </div>
@@ -1222,6 +1395,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                     </div>
 
                     {/* 2. Name Section */}
+                    {(isEditable || Boolean(step.name && step.name.trim())) && (
                     <div>
                       {isEditable ? (
                         <input
@@ -1229,7 +1403,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           value={step.name || ''}
                           onChange={e => handleUpdateStepName(stepIdx, e.target.value)}
                           className="w-full bg-white/5 px-3 py-2 text-white font-phenomena-bold text-xl sm:text-2xl tracking-wide focus:outline-none focus:ring-2 focus:ring-white/40 rounded-xl border border-white/10"
-                          placeholder="Process Phase Name"
+                          placeholder="Process Phase Name (can be left empty)"
                           title="Click to edit phase name"
                         />
                       ) : (
@@ -1238,8 +1412,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                         </h3>
                       )}
                     </div>
+                    )}
 
                     {/* 3. Description Section */}
+                    {(isEditable || Boolean(step.description && step.description.trim())) && (
                     <div>
                       {isEditable ? (
                         <div className="space-y-2">
@@ -1248,7 +1424,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                             value={step.description || ''}
                             onChange={e => handleUpdateStepDesc(stepIdx, e.target.value)}
                             className="w-full bg-white/5 p-3 text-white/90 font-unisans-regular text-sm sm:text-base font-normal leading-relaxed focus:outline-none focus:ring-2 focus:ring-white/40 rounded-xl resize-y border border-white/10"
-                            placeholder="Detailed narrative of this process phase..."
+                            placeholder="Detailed narrative of this process phase (can be left empty)..."
                             title="Click to edit phase description"
                           />
                           <div className="flex justify-end">
@@ -1268,6 +1444,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                         </p>
                       )}
                     </div>
+                    )}
                   </div>
                 ))}
 
@@ -1386,6 +1563,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                 )}
               </div>
             </section>
+            )}
           </div>
 
           {/* RIGHT PANEL (30%): PROJECT DETAILS & METADATA ("Other Details") */}
@@ -1418,7 +1596,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
             )}
 
             {/* 2. Date */}
-            {(isEditable || Boolean((currentProject.monthYear && currentProject.monthYear.trim()) || currentProject.year)) && (
+            {(isEditable || Boolean(dateText.trim())) && (
               <div>
                 <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
                   DATE
@@ -1426,14 +1604,14 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                 {isEditable ? (
                   <input
                     type="text"
-                    value={currentProject.monthYear || (currentProject.year ? `${currentProject.year}` : '')}
+                    value={dateText}
                     onChange={e => updateProjectLocal({ monthYear: e.target.value })}
                     placeholder="e.g. October 2026"
                     className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
                   />
                 ) : (
                   <div className="font-vapour text-2xl sm:text-3xl lg:text-[28px] font-light text-white">
-                    {currentProject.monthYear || `${currentProject.year}`}
+                    {dateText}
                   </div>
                 )}
               </div>
@@ -1563,14 +1741,14 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                       {isEditable ? (
                         <input
                           type="text"
-                          value={remark.voiceDuration || '0:42'}
+                          value={remark.voiceDuration ?? '0:42'}
                           onChange={e => updateProjectLocal({ clientRemark: { ...remark, voiceDuration: e.target.value } })}
                           className="w-16 text-right bg-white/5 text-white/90 font-unisans-regular text-xs sm:text-sm lg:text-xs focus:outline-none focus:ring-1 focus:ring-white/30 rounded px-1.5 py-0.5 border border-white/10"
                           title="Edit duration"
                         />
                       ) : (
                         <span className="text-xs sm:text-sm lg:text-xs font-unisans-regular text-white/90">
-                          {remark.voiceDuration || '0:42'}
+                          {remark.voiceDuration ?? '0:42'}
                         </span>
                       )}
                     </div>
@@ -1644,15 +1822,15 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                         {remark.comment}
                       </p>
                     )}
-                    {(isEditable || Boolean(remark.clientAuthor?.trim() || currentProject.client?.trim())) && (
+                    {(isEditable || Boolean(authorText.trim())) && (
                       <div className="flex items-center justify-between pt-1">
                         <span className="text-xs sm:text-sm lg:text-xs text-white/80 font-vapour">
-                          Author: {remark.clientAuthor || currentProject.client}
+                          Author: {authorText}
                         </span>
                         {isEditable && (
                           <input
                             type="text"
-                            value={remark.clientAuthor || currentProject.client || ''}
+                            value={authorText}
                             onChange={e => updateProjectLocal({ clientRemark: { ...remark, clientAuthor: e.target.value } })}
                             placeholder="Author name"
                             className="text-xs text-right bg-white/5 text-white/80 font-unisans-regular px-2 py-1 rounded-lg border border-white/10 focus:outline-none focus:border-white/40"
@@ -1773,7 +1951,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
             )}
 
             {/* 6. Project Scope & Description (Moon 2.0 Light heading, UniSans Regular body) */}
-            {(isEditable || Boolean((currentProject.shortDescription && currentProject.shortDescription.trim()) || (currentProject.description && currentProject.description.trim()))) && (
+            {(isEditable || Boolean(scopeText.trim())) && (
               <div>
                 <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
                   PROJECT SCOPE &amp; DESCRIPTION
@@ -1781,14 +1959,14 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                 {isEditable ? (
                   <textarea
                     rows={4}
-                    value={currentProject.shortDescription || currentProject.description || ''}
+                    value={scopeText}
                     onChange={e => updateProjectLocal({ shortDescription: e.target.value, description: e.target.value })}
                     placeholder="Short description of the project..."
                     className="w-full bg-white/5 p-3 text-white/90 font-unisans-regular text-base sm:text-lg lg:text-[15px] font-normal leading-relaxed lg:leading-normal focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10 resize-y"
                   />
                 ) : (
                   <p className="font-unisans-regular text-base sm:text-lg lg:text-[15px] text-white/85 font-normal leading-relaxed lg:leading-normal">
-                    {currentProject.shortDescription || currentProject.description}
+                    {scopeText}
                   </p>
                 )}
               </div>
@@ -1839,7 +2017,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
             )}
 
             {/* 9. Designer's Remark (Moon 2.0 Light) */}
-            {(isEditable || Boolean((currentProject.threeWordDesc && currentProject.threeWordDesc.trim()) || (currentProject.descriptors && currentProject.descriptors.trim()))) && (
+            {(isEditable || Boolean(designerRemarkText.trim())) && (
               <div>
                 <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal mb-1.5">
                   DESIGNER&apos;S REMARK
@@ -1847,14 +2025,14 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                 {isEditable ? (
                   <input
                     type="text"
-                    value={currentProject.threeWordDesc || currentProject.descriptors || ''}
+                    value={designerRemarkText}
                     onChange={e => updateProjectLocal({ threeWordDesc: e.target.value, descriptors: e.target.value })}
                     placeholder="e.g. Rational Swiss Architecture"
                     className="w-full bg-white/5 px-3 py-2 text-white font-vapour text-xl sm:text-2xl lg:text-[28px] font-light tracking-wide focus:outline-none focus:ring-2 focus:ring-white/30 rounded-xl border border-white/10"
                   />
                 ) : (
                   <span className="font-vapour text-xl sm:text-2xl lg:text-[28px] font-light text-white tracking-wide block">
-                    {currentProject.threeWordDesc || currentProject.descriptors}
+                    {designerRemarkText}
                   </span>
                 )}
               </div>
@@ -1873,7 +2051,11 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                         <button
                           key={cat}
                           type="button"
-                          onClick={() => updateProjectLocal({ category: cat })}
+                          onClick={() =>
+                            updateProjectLocal({
+                              category: currentProject.category === cat ? ('' as Project['category']) : cat,
+                            })
+                          }
                           className={`px-3.5 py-1.5 text-sm lg:text-[15px] rounded-xl font-unisans-regular transition-all cursor-pointer border ${
                             currentProject.category === cat
                               ? 'bg-white/20 text-white border-white/60 shadow-md ring-1 ring-white/30'
