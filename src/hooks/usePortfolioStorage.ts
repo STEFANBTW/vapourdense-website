@@ -13,8 +13,8 @@ import { Project } from '../types/portfolio';
 import { initialProjects } from '../data/initialProjects';
 import { AboutData, defaultAboutData, SocialLinkItem } from '../components/AboutSection';
 
-const STORAGE_KEY = 'vdvc_portfolio_projects_v9';
-const SEEDED_WEB_KEY = 'vdvc_seeded_web_projects_v1';
+const STORAGE_KEY = 'vdvc_portfolio_projects_v11';
+const SEEDED_WEB_KEY = 'vdvc_seeded_projects_v3';
 const ABOUT_STORAGE_KEY = 'vdvc_portfolio_about_v2';
 const AUTH_KEY = 'dive_portfolio_admin_auth';
 export const ADMIN_PASSWORD = 'memeh 23';
@@ -30,11 +30,22 @@ const initialMap = new Map(initialProjects.map(p => [p.id, p]));
  */
 function mergeWithDefaults(data: Project): Project {
   const fallback = initialMap.get(data.id);
-  return {
+  const merged: Project = {
     ...fallback,
     ...data,
     imageScalePercent: data.imageScalePercent ?? fallback?.imageScalePercent ?? 100,
   };
+  if (
+    fallback &&
+    data.id?.startsWith('proj-web-') &&
+    (!data.images?.length || data.images[0]?.startsWith('data:image/svg+xml'))
+  ) {
+    merged.imageUrl = fallback.imageUrl;
+    merged.images = fallback.images;
+    merged.galleryPictures = fallback.galleryPictures;
+    merged.websiteUrl = fallback.websiteUrl;
+  }
+  return merged;
 }
 
 /** Firestore rejects documents above 1 MiB; keep a safety margin. */
@@ -187,7 +198,7 @@ export function usePortfolioStorage() {
             })();
 
           const missingWebProjects = initialProjects.filter(
-            p => p.id.startsWith('proj-web-') && !existingIds.has(p.id)
+            p => (p.id.startsWith('proj-web-') || p.id.startsWith('proj-gd-')) && !existingIds.has(p.id)
           );
 
           if (!alreadySeeded && missingWebProjects.length > 0) {

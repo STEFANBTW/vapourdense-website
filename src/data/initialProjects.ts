@@ -534,24 +534,59 @@ export const initialProjects: Project[] = [
     duration: '6 Weeks',
     featured: true,
     description: 'Design itself. Cinematic Videography, Immersive Web Design, Editorial Book Design. A bespoke digital showcase and interactive agency flagship built for Merona Media.',
+    imageUrl: 'https://res.cloudinary.com/dwo7oemds/image/upload/v1793810814/vdvc-portfolio/merona-media/tcpvtf9dmokbkefarf32.jpg',
     images: [
-      createSnowyDesignSvg('Merona Media', 'merona-media.vercel.app', '#0284c7', 'web'),
-      createSnowyDesignSvg('Merona Media', 'Specialists For Every Design', '#38bdf8', 'ui'),
-      createSnowyDesignSvg('Merona Media', 'Editorial & Web Systems', '#0ea5e9', 'editorial'),
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810814/vdvc-portfolio/merona-media/tcpvtf9dmokbkefarf32.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810815/vdvc-portfolio/merona-media/v4rlqiosv5obqw7pklqt.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810817/vdvc-portfolio/merona-media/xslls7ekv2aneuohvmxd.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810818/vdvc-portfolio/merona-media/weeckpatgaq34zq21ytx.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810820/vdvc-portfolio/merona-media/npndmkifjmrzvtwxpdmv.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810823/vdvc-portfolio/merona-media/j3rrwd5tdhccjsvwufel.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810825/vdvc-portfolio/merona-media/p7ntfzjqcqar4euzf4ar.jpg"
     ],
     galleryPictures: [
-      {
-        id: 'merona-g1',
-        url: createSnowyDesignSvg('Merona Media', 'merona-media.vercel.app', '#0284c7', 'web'),
-        caption: 'Merona Media Flagship — Cinematic Videography, Immersive Web Design, Editorial Book Design.',
-        isAI: false,
-      },
-      {
-        id: 'merona-g2',
-        url: createSnowyDesignSvg('Merona Media', 'Specialists For Every Design', '#38bdf8', 'ui'),
-        caption: 'Interactive Portfolio Grid — Seamless showcase across video, digital, and print disciplines.',
-        isAI: false,
-      },
+          {
+                "id": "web1-g-raw-desk",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810814/vdvc-portfolio/merona-media/tcpvtf9dmokbkefarf32.jpg",
+                "caption": "Merona Media — Raw Live Desktop Screenshot.",
+                "isAI": false
+          },
+          {
+                "id": "web1-g-mock-cmp",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810815/vdvc-portfolio/merona-media/v4rlqiosv5obqw7pklqt.jpg",
+                "caption": "Merona Media — Responsive Devices Comparison Showcase.",
+                "isAI": false
+          },
+          {
+                "id": "web1-g-mock-desk",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810817/vdvc-portfolio/merona-media/xslls7ekv2aneuohvmxd.jpg",
+                "caption": "Merona Media — Desktop Studio Mockup.",
+                "isAI": false
+          },
+          {
+                "id": "web1-g-mock-ph",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810818/vdvc-portfolio/merona-media/weeckpatgaq34zq21ytx.jpg",
+                "caption": "Merona Media — Mobile Studio Mockup.",
+                "isAI": false
+          },
+          {
+                "id": "web1-g-raw-tab",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810820/vdvc-portfolio/merona-media/npndmkifjmrzvtwxpdmv.jpg",
+                "caption": "Merona Media — Raw Live Tablet View.",
+                "isAI": false
+          },
+          {
+                "id": "web1-g-raw-mob",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810823/vdvc-portfolio/merona-media/j3rrwd5tdhccjsvwufel.jpg",
+                "caption": "Merona Media — Raw Live Mobile View.",
+                "isAI": false
+          },
+          {
+                "id": "web1-g-extra-1",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810825/vdvc-portfolio/merona-media/p7ntfzjqcqar4euzf4ar.jpg",
+                "caption": "Merona Media — Raw Live Scrolled Mobile Experience.",
+                "isAI": false
+          }
     ],
     processSteps: [
       {
@@ -595,24 +630,66 @@ export const initialProjects: Project[] = [
     duration: '5 Weeks',
     featured: true,
     description: 'A high-fidelity, emotionally intelligent landing page for a mental health clinic, designed with a watercolor sanctuary aesthetic.',
+    imageUrl: 'https://res.cloudinary.com/dwo7oemds/image/upload/v1793810827/vdvc-portfolio/stillwater-therapy/jzoai1q2wpjctxxpg2ak.jpg',
     images: [
-      createSnowyDesignSvg('Stillwater Therapy', 'stillwater-tau-six.vercel.app', '#0284c7', 'web'),
-      createSnowyDesignSvg('Stillwater Therapy', 'Watercolor Sanctuary', '#38bdf8', 'ui'),
-      createSnowyDesignSvg('Stillwater Therapy', 'Patient Care Experience', '#0ea5e9', 'identity'),
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810827/vdvc-portfolio/stillwater-therapy/jzoai1q2wpjctxxpg2ak.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810828/vdvc-portfolio/stillwater-therapy/vtivp1iqv6vpr2ixdyjm.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810830/vdvc-portfolio/stillwater-therapy/eh30egmviqk8n3mkuso9.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810831/vdvc-portfolio/stillwater-therapy/ffqrincz0fllmqwr7wux.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810833/vdvc-portfolio/stillwater-therapy/tvc3cel6ovrukfyqs88j.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810836/vdvc-portfolio/stillwater-therapy/a3njspb3ucqa2fb5l9ot.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810837/vdvc-portfolio/stillwater-therapy/zedy8a7os1qfrtwwlfds.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810839/vdvc-portfolio/stillwater-therapy/byjuonsavfuijxwclsjd.jpg"
     ],
     galleryPictures: [
-      {
-        id: 'stillwater-g1',
-        url: createSnowyDesignSvg('Stillwater Therapy', 'stillwater-tau-six.vercel.app', '#0284c7', 'web'),
-        caption: 'Stillwater Therapy Collective — Emotionally intelligent landing page with a watercolor sanctuary aesthetic.',
-        isAI: false,
-      },
-      {
-        id: 'stillwater-g2',
-        url: createSnowyDesignSvg('Stillwater Therapy', 'Watercolor Sanctuary', '#38bdf8', 'ui'),
-        caption: 'Therapist Matching & Booking Interface — Serene typography and gentle visual transitions.',
-        isAI: false,
-      },
+          {
+                "id": "web2-g-raw-desk",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810827/vdvc-portfolio/stillwater-therapy/jzoai1q2wpjctxxpg2ak.jpg",
+                "caption": "Stillwater Therapy Collective — Raw Live Desktop Screenshot.",
+                "isAI": false
+          },
+          {
+                "id": "web2-g-mock-cmp",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810828/vdvc-portfolio/stillwater-therapy/vtivp1iqv6vpr2ixdyjm.jpg",
+                "caption": "Stillwater Therapy Collective — Responsive Devices Comparison Showcase.",
+                "isAI": false
+          },
+          {
+                "id": "web2-g-mock-desk",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810830/vdvc-portfolio/stillwater-therapy/eh30egmviqk8n3mkuso9.jpg",
+                "caption": "Stillwater Therapy Collective — Desktop Studio Mockup.",
+                "isAI": false
+          },
+          {
+                "id": "web2-g-mock-ph",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810831/vdvc-portfolio/stillwater-therapy/ffqrincz0fllmqwr7wux.jpg",
+                "caption": "Stillwater Therapy Collective — Mobile Studio Mockup.",
+                "isAI": false
+          },
+          {
+                "id": "web2-g-raw-tab",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810833/vdvc-portfolio/stillwater-therapy/tvc3cel6ovrukfyqs88j.jpg",
+                "caption": "Stillwater Therapy Collective — Raw Live Tablet View.",
+                "isAI": false
+          },
+          {
+                "id": "web2-g-raw-mob",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810836/vdvc-portfolio/stillwater-therapy/a3njspb3ucqa2fb5l9ot.jpg",
+                "caption": "Stillwater Therapy Collective — Raw Live Mobile View.",
+                "isAI": false
+          },
+          {
+                "id": "web2-g-extra-1",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810837/vdvc-portfolio/stillwater-therapy/zedy8a7os1qfrtwwlfds.jpg",
+                "caption": "Stillwater Therapy Collective — Raw Live Form & Booking Section.",
+                "isAI": false
+          },
+          {
+                "id": "web2-g-extra-2",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810839/vdvc-portfolio/stillwater-therapy/byjuonsavfuijxwclsjd.jpg",
+                "caption": "Stillwater Therapy Collective — Raw Live Form & Booking Section.",
+                "isAI": false
+          }
     ],
     processSteps: [
       {
@@ -656,24 +733,66 @@ export const initialProjects: Project[] = [
     duration: '6 Weeks',
     featured: true,
     description: 'Shaping culture through fearless storytelling and immersive media. An editorial-grade digital platform engineered for high-impact visual journalism and cultural productions.',
+    imageUrl: 'https://res.cloudinary.com/dwo7oemds/image/upload/v1793810841/vdvc-portfolio/oumera/qpwywunuglq80whftcgn.jpg',
     images: [
-      createSnowyDesignSvg('OUMERA', 'oumera-media.vercel.app', '#0284c7', 'web'),
-      createSnowyDesignSvg('OUMERA', 'The Cultural Vanguard', '#38bdf8', 'ui'),
-      createSnowyDesignSvg('OUMERA', 'Immersive Media', '#0ea5e9', 'editorial'),
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810841/vdvc-portfolio/oumera/qpwywunuglq80whftcgn.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810843/vdvc-portfolio/oumera/by6zvlgtkile3sofmlqe.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810845/vdvc-portfolio/oumera/odvhezwlx6ldtfbqneh3.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810847/vdvc-portfolio/oumera/kkcapzn6c3in58gsjnuc.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810850/vdvc-portfolio/oumera/xdjezez5bck2ygfx4ocv.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810852/vdvc-portfolio/oumera/thuy8pkkkv6d973vmvkr.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810853/vdvc-portfolio/oumera/tfldlb8lcoxewibxgkx8.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810855/vdvc-portfolio/oumera/wysdglj9bg952axpmfw0.jpg"
     ],
     galleryPictures: [
-      {
-        id: 'oumera-g1',
-        url: createSnowyDesignSvg('OUMERA', 'oumera-media.vercel.app', '#0284c7', 'web'),
-        caption: 'OUMERA | The Cultural Vanguard — Shaping culture through fearless storytelling and immersive media.',
-        isAI: false,
-      },
-      {
-        id: 'oumera-g2',
-        url: createSnowyDesignSvg('OUMERA', 'The Cultural Vanguard', '#38bdf8', 'ui'),
-        caption: 'Immersive Feature Stories — Dynamic full-bleed editorial layouts and interactive media players.',
-        isAI: false,
-      },
+          {
+                "id": "web3-g-raw-desk",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810841/vdvc-portfolio/oumera/qpwywunuglq80whftcgn.jpg",
+                "caption": "OUMERA — Raw Live Desktop Screenshot.",
+                "isAI": false
+          },
+          {
+                "id": "web3-g-mock-cmp",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810843/vdvc-portfolio/oumera/by6zvlgtkile3sofmlqe.jpg",
+                "caption": "OUMERA — Responsive Devices Comparison Showcase.",
+                "isAI": false
+          },
+          {
+                "id": "web3-g-mock-desk",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810845/vdvc-portfolio/oumera/odvhezwlx6ldtfbqneh3.jpg",
+                "caption": "OUMERA — Desktop Studio Mockup.",
+                "isAI": false
+          },
+          {
+                "id": "web3-g-mock-ph",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810847/vdvc-portfolio/oumera/kkcapzn6c3in58gsjnuc.jpg",
+                "caption": "OUMERA — Mobile Studio Mockup.",
+                "isAI": false
+          },
+          {
+                "id": "web3-g-raw-tab",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810850/vdvc-portfolio/oumera/xdjezez5bck2ygfx4ocv.jpg",
+                "caption": "OUMERA — Raw Live Tablet View.",
+                "isAI": false
+          },
+          {
+                "id": "web3-g-raw-mob",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810852/vdvc-portfolio/oumera/thuy8pkkkv6d973vmvkr.jpg",
+                "caption": "OUMERA — Raw Live Mobile View.",
+                "isAI": false
+          },
+          {
+                "id": "web3-g-extra-1",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810853/vdvc-portfolio/oumera/tfldlb8lcoxewibxgkx8.jpg",
+                "caption": "OUMERA — Raw Live Form & Booking Section.",
+                "isAI": false
+          },
+          {
+                "id": "web3-g-extra-2",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810855/vdvc-portfolio/oumera/wysdglj9bg952axpmfw0.jpg",
+                "caption": "OUMERA — Raw Live Form & Booking Section.",
+                "isAI": false
+          }
     ],
     processSteps: [
       {
@@ -709,7 +828,7 @@ export const initialProjects: Project[] = [
     shortDescription: 'Warm, approachable digital platform and brand web experience crafted with organic storytelling and intuitive navigation.',
     threeWordDesc: 'Organic Digital Storytelling',
     descriptors: 'Boutique, Interactive, Web',
-    websiteUrl: 'https://litle-acorn.vercel.app/',
+    websiteUrl: 'https://little-acorn.vercel.app/',
     isRealLife: true,
     price: '$8,500 USD',
     year: '2026',
@@ -717,24 +836,66 @@ export const initialProjects: Project[] = [
     duration: '4 Weeks',
     featured: false,
     description: 'Warm, approachable digital platform and brand web experience for Little Acorn, blending playful micro-interactions with clean, accessible information architecture.',
+    imageUrl: 'https://res.cloudinary.com/dwo7oemds/image/upload/v1793810857/vdvc-portfolio/little-acorn/gxlevgz2xxdfy8st3b1f.jpg',
     images: [
-      createSnowyDesignSvg('Little Acorn', 'litle-acorn.vercel.app', '#0284c7', 'web'),
-      createSnowyDesignSvg('Little Acorn', 'Digital Brand Experience', '#38bdf8', 'ui'),
-      createSnowyDesignSvg('Little Acorn', 'Identity & Web System', '#0ea5e9', 'identity'),
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810857/vdvc-portfolio/little-acorn/gxlevgz2xxdfy8st3b1f.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810858/vdvc-portfolio/little-acorn/skipr73uuu7qiepis2fe.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810860/vdvc-portfolio/little-acorn/hhp8nzrkebhioxgoxixg.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810862/vdvc-portfolio/little-acorn/fsef5cdcqjdhwbn6mt9c.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810865/vdvc-portfolio/little-acorn/wwwfycuonoig2wbkwzwf.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810868/vdvc-portfolio/little-acorn/gn95euin5u4u8lnwxpqj.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810869/vdvc-portfolio/little-acorn/a6sjuey4fw1gge45zlfz.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810871/vdvc-portfolio/little-acorn/corinppkb71t325sya3m.jpg"
     ],
     galleryPictures: [
-      {
-        id: 'acorn-g1',
-        url: createSnowyDesignSvg('Little Acorn', 'litle-acorn.vercel.app', '#0284c7', 'web'),
-        caption: 'Little Acorn — Primary web landing experience and interactive story flow.',
-        isAI: false,
-      },
-      {
-        id: 'acorn-g2',
-        url: createSnowyDesignSvg('Little Acorn', 'Digital Brand Experience', '#38bdf8', 'ui'),
-        caption: 'Component System — Tactile cards, warm typography, and responsive mobile navigation.',
-        isAI: false,
-      },
+          {
+                "id": "web4-g-raw-desk",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810857/vdvc-portfolio/little-acorn/gxlevgz2xxdfy8st3b1f.jpg",
+                "caption": "Little Acorn — Raw Live Desktop Screenshot.",
+                "isAI": false
+          },
+          {
+                "id": "web4-g-mock-cmp",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810858/vdvc-portfolio/little-acorn/skipr73uuu7qiepis2fe.jpg",
+                "caption": "Little Acorn — Responsive Devices Comparison Showcase.",
+                "isAI": false
+          },
+          {
+                "id": "web4-g-mock-desk",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810860/vdvc-portfolio/little-acorn/hhp8nzrkebhioxgoxixg.jpg",
+                "caption": "Little Acorn — Desktop Studio Mockup.",
+                "isAI": false
+          },
+          {
+                "id": "web4-g-mock-ph",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810862/vdvc-portfolio/little-acorn/fsef5cdcqjdhwbn6mt9c.jpg",
+                "caption": "Little Acorn — Mobile Studio Mockup.",
+                "isAI": false
+          },
+          {
+                "id": "web4-g-raw-tab",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810865/vdvc-portfolio/little-acorn/wwwfycuonoig2wbkwzwf.jpg",
+                "caption": "Little Acorn — Raw Live Tablet View.",
+                "isAI": false
+          },
+          {
+                "id": "web4-g-raw-mob",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810868/vdvc-portfolio/little-acorn/gn95euin5u4u8lnwxpqj.jpg",
+                "caption": "Little Acorn — Raw Live Mobile View.",
+                "isAI": false
+          },
+          {
+                "id": "web4-g-extra-1",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810869/vdvc-portfolio/little-acorn/a6sjuey4fw1gge45zlfz.jpg",
+                "caption": "Little Acorn — Raw Live Form & Booking Section.",
+                "isAI": false
+          },
+          {
+                "id": "web4-g-extra-2",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810871/vdvc-portfolio/little-acorn/corinppkb71t325sya3m.jpg",
+                "caption": "Little Acorn — Raw Live Form & Booking Section.",
+                "isAI": false
+          }
     ],
     processSteps: [
       {
@@ -751,7 +912,7 @@ export const initialProjects: Project[] = [
           {
             id: 'proc-acorn-2',
             url: createProcessStepSvg('Little Acorn Production', 'Final', '#0284c7'),
-            caption: 'Final live web application deployed at litle-acorn.vercel.app.',
+            caption: 'Final live web application deployed at little-acorn.vercel.app.',
             type: 'Final',
           },
         ],
@@ -778,24 +939,59 @@ export const initialProjects: Project[] = [
     duration: '5 Weeks',
     featured: true,
     description: 'Artisan carbs and seasonal plates. A tactile, appetite-led digital home for The Daily Knead featuring daily bake schedules, seasonal menus, and table reservations.',
+    imageUrl: 'https://res.cloudinary.com/dwo7oemds/image/upload/v1793810873/vdvc-portfolio/the-daily-knead/tudzklcopsanrmz23zg8.jpg',
     images: [
-      createSnowyDesignSvg('The Daily Knead', 'the-daily-knead-2.vercel.app', '#0284c7', 'web'),
-      createSnowyDesignSvg('The Daily Knead', 'Uncomplicated Dining', '#38bdf8', 'ui'),
-      createSnowyDesignSvg('The Daily Knead', 'Artisan Carbs & Plates', '#0ea5e9', 'editorial'),
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810873/vdvc-portfolio/the-daily-knead/tudzklcopsanrmz23zg8.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810874/vdvc-portfolio/the-daily-knead/iriemwpcj6ybopnl3gse.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810876/vdvc-portfolio/the-daily-knead/zo6oulrnwymucj5gc36b.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810877/vdvc-portfolio/the-daily-knead/brjmu8fgvcfg4battzqa.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810880/vdvc-portfolio/the-daily-knead/a8pn5brtn1eilaoaw9oo.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810883/vdvc-portfolio/the-daily-knead/amcl1fsz3erk1p78kufs.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810885/vdvc-portfolio/the-daily-knead/crxchvjfe7gwk6uo1afy.jpg"
     ],
     galleryPictures: [
-      {
-        id: 'knead-g1',
-        url: createSnowyDesignSvg('The Daily Knead', 'the-daily-knead-2.vercel.app', '#0284c7', 'web'),
-        caption: 'The Daily Knead | Uncomplicated Dining — Artisan carbs and seasonal plates.',
-        isAI: false,
-      },
-      {
-        id: 'knead-g2',
-        url: createSnowyDesignSvg('The Daily Knead', 'Uncomplicated Dining', '#38bdf8', 'ui'),
-        caption: 'Seasonal Menu & Bake Schedule — Editorial menu presentation and seamless ordering flow.',
-        isAI: false,
-      },
+          {
+                "id": "web5-g-raw-desk",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810873/vdvc-portfolio/the-daily-knead/tudzklcopsanrmz23zg8.jpg",
+                "caption": "The Daily Knead — Raw Live Desktop Screenshot.",
+                "isAI": false
+          },
+          {
+                "id": "web5-g-mock-cmp",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810874/vdvc-portfolio/the-daily-knead/iriemwpcj6ybopnl3gse.jpg",
+                "caption": "The Daily Knead — Responsive Devices Comparison Showcase.",
+                "isAI": false
+          },
+          {
+                "id": "web5-g-mock-desk",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810876/vdvc-portfolio/the-daily-knead/zo6oulrnwymucj5gc36b.jpg",
+                "caption": "The Daily Knead — Desktop Studio Mockup.",
+                "isAI": false
+          },
+          {
+                "id": "web5-g-mock-ph",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810877/vdvc-portfolio/the-daily-knead/brjmu8fgvcfg4battzqa.jpg",
+                "caption": "The Daily Knead — Mobile Studio Mockup.",
+                "isAI": false
+          },
+          {
+                "id": "web5-g-raw-tab",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810880/vdvc-portfolio/the-daily-knead/a8pn5brtn1eilaoaw9oo.jpg",
+                "caption": "The Daily Knead — Raw Live Tablet View.",
+                "isAI": false
+          },
+          {
+                "id": "web5-g-raw-mob",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810883/vdvc-portfolio/the-daily-knead/amcl1fsz3erk1p78kufs.jpg",
+                "caption": "The Daily Knead — Raw Live Mobile View.",
+                "isAI": false
+          },
+          {
+                "id": "web5-g-extra-1",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810885/vdvc-portfolio/the-daily-knead/crxchvjfe7gwk6uo1afy.jpg",
+                "caption": "The Daily Knead — Raw Live Scrolled Mobile Experience.",
+                "isAI": false
+          }
     ],
     processSteps: [
       {
@@ -839,24 +1035,59 @@ export const initialProjects: Project[] = [
     duration: '5 Weeks',
     featured: true,
     description: 'Atmospheric digital flagship and reservation experience for Brasa | Steakhouse & Grill, crafted with rich editorial pacing, cut-by-cut culinary storytelling, and frictionless booking.',
+    imageUrl: 'https://res.cloudinary.com/dwo7oemds/image/upload/v1793810887/vdvc-portfolio/brasa/np8hixln9at15dnxbakb.jpg',
     images: [
-      createSnowyDesignSvg('Brasa', 'brasa-3.vercel.app', '#0284c7', 'web'),
-      createSnowyDesignSvg('Brasa', 'Steakhouse & Grill', '#38bdf8', 'ui'),
-      createSnowyDesignSvg('Brasa', 'Menu & Cellar Architecture', '#0ea5e9', 'poster'),
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810887/vdvc-portfolio/brasa/np8hixln9at15dnxbakb.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810888/vdvc-portfolio/brasa/ubrpxoe0potwissbz1gl.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810889/vdvc-portfolio/brasa/xytgy0ul3zvb6ltahk3k.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810891/vdvc-portfolio/brasa/k4osfqcivj0m6hczdttn.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810893/vdvc-portfolio/brasa/y2pbzjdg17mgdcc2h9w7.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810897/vdvc-portfolio/brasa/gcdj8lv8dnte79x8fahg.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810899/vdvc-portfolio/brasa/jmbst0ekgbkxtlcwgn1s.jpg"
     ],
     galleryPictures: [
-      {
-        id: 'brasa-g1',
-        url: createSnowyDesignSvg('Brasa', 'brasa-3.vercel.app', '#0284c7', 'web'),
-        caption: 'Brasa | Steakhouse & Grill — Digital flagship and table reservation experience.',
-        isAI: false,
-      },
-      {
-        id: 'brasa-g2',
-        url: createSnowyDesignSvg('Brasa', 'Steakhouse & Grill', '#38bdf8', 'ui'),
-        caption: 'Dry-Aged Cut Guide & Wine Cellar Showcase — Interactive dining discovery.',
-        isAI: false,
-      },
+          {
+                "id": "web6-g-raw-desk",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810887/vdvc-portfolio/brasa/np8hixln9at15dnxbakb.jpg",
+                "caption": "Brasa — Raw Live Desktop Screenshot.",
+                "isAI": false
+          },
+          {
+                "id": "web6-g-mock-cmp",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810888/vdvc-portfolio/brasa/ubrpxoe0potwissbz1gl.jpg",
+                "caption": "Brasa — Responsive Devices Comparison Showcase.",
+                "isAI": false
+          },
+          {
+                "id": "web6-g-mock-desk",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810889/vdvc-portfolio/brasa/xytgy0ul3zvb6ltahk3k.jpg",
+                "caption": "Brasa — Desktop Studio Mockup.",
+                "isAI": false
+          },
+          {
+                "id": "web6-g-mock-ph",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810891/vdvc-portfolio/brasa/k4osfqcivj0m6hczdttn.jpg",
+                "caption": "Brasa — Mobile Studio Mockup.",
+                "isAI": false
+          },
+          {
+                "id": "web6-g-raw-tab",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810893/vdvc-portfolio/brasa/y2pbzjdg17mgdcc2h9w7.jpg",
+                "caption": "Brasa — Raw Live Tablet View.",
+                "isAI": false
+          },
+          {
+                "id": "web6-g-raw-mob",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810897/vdvc-portfolio/brasa/gcdj8lv8dnte79x8fahg.jpg",
+                "caption": "Brasa — Raw Live Mobile View.",
+                "isAI": false
+          },
+          {
+                "id": "web6-g-extra-1",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810899/vdvc-portfolio/brasa/jmbst0ekgbkxtlcwgn1s.jpg",
+                "caption": "Brasa — Raw Live Scrolled Mobile Experience.",
+                "isAI": false
+          }
     ],
     processSteps: [
       {
@@ -900,24 +1131,66 @@ export const initialProjects: Project[] = [
     duration: '5 Weeks',
     featured: false,
     description: 'High-performance clinical web platform and patient booking experience for Kinetic Edge Physiotherapy, clarity-first treatment pathways, and streamlined practitioner scheduling.',
+    imageUrl: 'https://res.cloudinary.com/dwo7oemds/image/upload/v1793810902/vdvc-portfolio/kinetic-edge/dmagnjnmmtnzeylx1cda.jpg',
     images: [
-      createSnowyDesignSvg('Kinetic Edge', 'kinetic-edge-mu.vercel.app', '#0284c7', 'web'),
-      createSnowyDesignSvg('Kinetic Edge', 'Physiotherapy & Rehab', '#38bdf8', 'ui'),
-      createSnowyDesignSvg('Kinetic Edge', 'Biomechanics Interface', '#0ea5e9', 'identity'),
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810902/vdvc-portfolio/kinetic-edge/dmagnjnmmtnzeylx1cda.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810904/vdvc-portfolio/kinetic-edge/qcsewdobdbu4e0ckroln.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810906/vdvc-portfolio/kinetic-edge/sx28waxlsqzvsborqwat.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810908/vdvc-portfolio/kinetic-edge/kiioqvie8vprf7fk4f1c.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810911/vdvc-portfolio/kinetic-edge/nklbohkwol9wnkvjhin3.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810913/vdvc-portfolio/kinetic-edge/gxutcwjapevlarqfvtw3.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810914/vdvc-portfolio/kinetic-edge/hldxjqlwcsbndzos0zjv.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810916/vdvc-portfolio/kinetic-edge/qc32skbl95hjsukv2nms.jpg"
     ],
     galleryPictures: [
-      {
-        id: 'kinetic-g1',
-        url: createSnowyDesignSvg('Kinetic Edge', 'kinetic-edge-mu.vercel.app', '#0284c7', 'web'),
-        caption: 'Kinetic Edge Physiotherapy — Sports rehab platform and clinical appointment portal.',
-        isAI: false,
-      },
-      {
-        id: 'kinetic-g2',
-        url: createSnowyDesignSvg('Kinetic Edge', 'Physiotherapy & Rehab', '#38bdf8', 'ui'),
-        caption: 'Treatment Pathway Explorer — Interactive injury recovery programs and specialist directory.',
-        isAI: false,
-      },
+          {
+                "id": "web7-g-raw-desk",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810902/vdvc-portfolio/kinetic-edge/dmagnjnmmtnzeylx1cda.jpg",
+                "caption": "Kinetic Edge — Raw Live Desktop Screenshot.",
+                "isAI": false
+          },
+          {
+                "id": "web7-g-mock-cmp",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810904/vdvc-portfolio/kinetic-edge/qcsewdobdbu4e0ckroln.jpg",
+                "caption": "Kinetic Edge — Responsive Devices Comparison Showcase.",
+                "isAI": false
+          },
+          {
+                "id": "web7-g-mock-desk",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810906/vdvc-portfolio/kinetic-edge/sx28waxlsqzvsborqwat.jpg",
+                "caption": "Kinetic Edge — Desktop Studio Mockup.",
+                "isAI": false
+          },
+          {
+                "id": "web7-g-mock-ph",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810908/vdvc-portfolio/kinetic-edge/kiioqvie8vprf7fk4f1c.jpg",
+                "caption": "Kinetic Edge — Mobile Studio Mockup.",
+                "isAI": false
+          },
+          {
+                "id": "web7-g-raw-tab",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810911/vdvc-portfolio/kinetic-edge/nklbohkwol9wnkvjhin3.jpg",
+                "caption": "Kinetic Edge — Raw Live Tablet View.",
+                "isAI": false
+          },
+          {
+                "id": "web7-g-raw-mob",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810913/vdvc-portfolio/kinetic-edge/gxutcwjapevlarqfvtw3.jpg",
+                "caption": "Kinetic Edge — Raw Live Mobile View.",
+                "isAI": false
+          },
+          {
+                "id": "web7-g-extra-1",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810914/vdvc-portfolio/kinetic-edge/hldxjqlwcsbndzos0zjv.jpg",
+                "caption": "Kinetic Edge — Raw Live Form & Booking Section.",
+                "isAI": false
+          },
+          {
+                "id": "web7-g-extra-2",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810916/vdvc-portfolio/kinetic-edge/qc32skbl95hjsukv2nms.jpg",
+                "caption": "Kinetic Edge — Raw Live Form & Booking Section.",
+                "isAI": false
+          }
     ],
     processSteps: [
       {
@@ -961,24 +1234,59 @@ export const initialProjects: Project[] = [
     duration: '6 Weeks',
     featured: true,
     description: 'Contemporary product showcase and digital commerce platform for Banjue Seat, highlighting sculptural ergonomics, material finishes, and studio craftsmanship.',
+    imageUrl: 'https://res.cloudinary.com/dwo7oemds/image/upload/v1793810918/vdvc-portfolio/banjue-seat/fsfpyzrhokodjofonmos.jpg',
     images: [
-      createSnowyDesignSvg('Banjue Seat', 'banjue-seat-2-dun.vercel.app', '#0284c7', 'web'),
-      createSnowyDesignSvg('Banjue Seat', 'Sculptural Seating Showcase', '#38bdf8', 'ui'),
-      createSnowyDesignSvg('Banjue Seat', 'Material & Form Archive', '#0ea5e9', 'poster'),
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810918/vdvc-portfolio/banjue-seat/fsfpyzrhokodjofonmos.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810919/vdvc-portfolio/banjue-seat/e4c26rfrd09jp4fmzja8.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810921/vdvc-portfolio/banjue-seat/wphfce69mm8juvrqk5pf.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810922/vdvc-portfolio/banjue-seat/cf1np7fd2wuz1ow3rmej.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810924/vdvc-portfolio/banjue-seat/kg3ksratbnuqgvc3dgsj.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810928/vdvc-portfolio/banjue-seat/btqivmdoirfwu6kvufgk.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793811124/vdvc-portfolio/banjue-seat/kpcbfcdph1orijwumnfu.jpg"
     ],
     galleryPictures: [
-      {
-        id: 'banjue-g1',
-        url: createSnowyDesignSvg('Banjue Seat', 'banjue-seat-2-dun.vercel.app', '#0284c7', 'web'),
-        caption: 'Banjue Seat — Industrial seating showcase and interactive finish selector.',
-        isAI: false,
-      },
-      {
-        id: 'banjue-g2',
-        url: createSnowyDesignSvg('Banjue Seat', 'Sculptural Seating Showcase', '#38bdf8', 'ui'),
-        caption: 'Product Detail & Specification Matrix — Precision dimensions and upholstery curation.',
-        isAI: false,
-      },
+          {
+                "id": "web8-g-raw-desk",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810918/vdvc-portfolio/banjue-seat/fsfpyzrhokodjofonmos.jpg",
+                "caption": "Banjue Seat — Raw Live Desktop Screenshot.",
+                "isAI": false
+          },
+          {
+                "id": "web8-g-mock-cmp",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810919/vdvc-portfolio/banjue-seat/e4c26rfrd09jp4fmzja8.jpg",
+                "caption": "Banjue Seat — Responsive Devices Comparison Showcase.",
+                "isAI": false
+          },
+          {
+                "id": "web8-g-mock-desk",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810921/vdvc-portfolio/banjue-seat/wphfce69mm8juvrqk5pf.jpg",
+                "caption": "Banjue Seat — Desktop Studio Mockup.",
+                "isAI": false
+          },
+          {
+                "id": "web8-g-mock-ph",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810922/vdvc-portfolio/banjue-seat/cf1np7fd2wuz1ow3rmej.jpg",
+                "caption": "Banjue Seat — Mobile Studio Mockup.",
+                "isAI": false
+          },
+          {
+                "id": "web8-g-raw-tab",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810924/vdvc-portfolio/banjue-seat/kg3ksratbnuqgvc3dgsj.jpg",
+                "caption": "Banjue Seat — Raw Live Tablet View.",
+                "isAI": false
+          },
+          {
+                "id": "web8-g-raw-mob",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793810928/vdvc-portfolio/banjue-seat/btqivmdoirfwu6kvufgk.jpg",
+                "caption": "Banjue Seat — Raw Live Mobile View.",
+                "isAI": false
+          },
+          {
+                "id": "web8-g-extra-1",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793811124/vdvc-portfolio/banjue-seat/kpcbfcdph1orijwumnfu.jpg",
+                "caption": "Banjue Seat — Raw Live Scrolled Mobile Experience.",
+                "isAI": false
+          }
     ],
     processSteps: [
       {
@@ -1004,6 +1312,1400 @@ export const initialProjects: Project[] = [
     deliverables: ['Product Showcase Website', 'Material Finish Selector', 'Editorial Art Direction', 'Web Commerce UI'],
     createdAt: 1711300000000,
   },
+  // GD 1 — PIC Organics — Zobo Tea with Beetroot Packaging
+  {
+    "id": "proj-gd-1",
+    "title": "PIC Organics — Zobo Tea with Beetroot Packaging",
+    "category": "Graphic Design",
+    "client": "PIC Organics (Pharmacy Informatics Consult)",
+    "clientDescription": "Natural herbal formulation and organic wellness product manufacturer based in Jos, Nigeria.",
+    "shortDescription": "Stand-up pouch packaging design and 3D commercial product visualization for heart-friendly Zobo Tea with Beetroot.",
+    "threeWordDesc": "Botanical Pouch Packaging",
+    "descriptors": "Packaging, Product Visualization, FMCG",
+    "isRealLife": true,
+    "price": "₦450,000",
+    "currency": "NGN",
+    "year": "2026",
+    "monthYear": "October 2026",
+    "duration": "3 Weeks",
+    "featured": true,
+    "description": "Complete front and back stand-up pouch packaging design for PIC Organics Zobo Tea with Beetroot, paired with high-impact commercial product renders amidst hibiscus petals and water splashes.",
+    "imageUrl": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806396/VDVC_Portfolio/graphic-design/gjtbt7pzvzwkisqygdhk.jpg",
+    "images": [
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806396/VDVC_Portfolio/graphic-design/gjtbt7pzvzwkisqygdhk.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806391/VDVC_Portfolio/graphic-design/pghqoqryveqhvzju0szv.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806386/VDVC_Portfolio/graphic-design/mfucqsgaqikax7j7ne8g.png",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806366/VDVC_Portfolio/graphic-design/ftjxarldypwnnfawnbdd.png"
+    ],
+    "galleryPictures": [
+      {
+        "id": "gd1-g1",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806396/VDVC_Portfolio/graphic-design/gjtbt7pzvzwkisqygdhk.jpg",
+        "caption": "Zobo Tea with Beetroot — Commercial hero product visualization with hibiscus petals and botanical dust.",
+        "isAI": true
+      },
+      {
+        "id": "gd1-g2",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806391/VDVC_Portfolio/graphic-design/pghqoqryveqhvzju0szv.jpg",
+        "caption": "Zobo Tea with Beetroot — Aquatic product staging on rippled water surface.",
+        "isAI": true
+      },
+      {
+        "id": "gd1-g3",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806386/VDVC_Portfolio/graphic-design/mfucqsgaqikax7j7ne8g.png",
+        "caption": "Front Pouch Master Artwork — Custom typography, botanical illustrations, and heart-friendly seal.",
+        "isAI": false
+      },
+      {
+        "id": "gd1-g4",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806366/VDVC_Portfolio/graphic-design/ftjxarldypwnnfawnbdd.png",
+        "caption": "Back Pouch Master Artwork — Nutritional facts, brewing guide, NAFDAC compliance, and barcode layout.",
+        "isAI": false
+      }
+    ],
+    "processSteps": [
+      {
+        "id": "step-gd1-1",
+        "name": "Phase 01: Pouch Die-Line & Print Master Layout",
+        "description": "Developed the front and back print dielines incorporating rich burgundy hibiscus tones, clear preparation instructions, and regulatory labeling.",
+        "pictures": [
+          {
+            "id": "proc-gd1-1",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806386/VDVC_Portfolio/graphic-design/mfucqsgaqikax7j7ne8g.png",
+            "caption": "Final front cover print master (V22).",
+            "type": "Final"
+          },
+          {
+            "id": "proc-gd1-2",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806366/VDVC_Portfolio/graphic-design/ftjxarldypwnnfawnbdd.png",
+            "caption": "Final back cover print master (V2).",
+            "type": "Final"
+          }
+        ]
+      },
+      {
+        "id": "step-gd1-2",
+        "name": "Phase 02: AI-Assisted Commercial Product Staging",
+        "description": "Composite product photography and generative environment lighting crafted to showcase the physical pouch in dynamic botanical and aquatic scenes.",
+        "pictures": [
+          {
+            "id": "proc-gd1-3",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806396/VDVC_Portfolio/graphic-design/gjtbt7pzvzwkisqygdhk.jpg",
+            "caption": "Hibiscus explosion commercial key visual.",
+            "type": "AI"
+          },
+          {
+            "id": "proc-gd1-4",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806391/VDVC_Portfolio/graphic-design/pghqoqryveqhvzju0szv.jpg",
+            "caption": "Water surface reflection commercial render.",
+            "type": "AI"
+          }
+        ]
+      }
+    ],
+    "deliverables": [
+      "Front & Back Pouch Artwork",
+      "Print-Ready Die-Lines",
+      "Commercial 3D/AI Product Mockups"
+    ],
+    "createdAt": 1712600000000
+  },
+  // GD 2 — PIC Organics — Herbal Supplement Capsules Suite
+  {
+    "id": "proj-gd-2",
+    "title": "PIC Organics — Herbal Supplement Capsules Suite",
+    "category": "Graphic Design",
+    "client": "PIC Organics (Pharmacy Informatics Consult)",
+    "clientDescription": "Natural herbal formulation and organic wellness product manufacturer based in Jos, Nigeria.",
+    "shortDescription": "Pharmaceutical-grade label system and 3D levitating bottle campaign for Garlic, Ginger, and NeemCal herbal capsules.",
+    "threeWordDesc": "Herbal Supplement Packaging",
+    "descriptors": "Pharmaceutical, Packaging, 3D Mockup",
+    "isRealLife": true,
+    "price": "₦680,000",
+    "currency": "NGN",
+    "year": "2026",
+    "monthYear": "September 2026",
+    "duration": "4 Weeks",
+    "featured": true,
+    "description": "Comprehensive bottle label architecture and promotional product visualization for PIC Organics’ herbal capsule line—spanning Garlic, Ginger, and NeemCal formulations with cohesive botanical curves and dynamic levitating product shots.",
+    "imageUrl": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807391/VDVC_Portfolio/graphic-design/kbpl9ibaqionr7pn0meb.jpg",
+    "images": [
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807391/VDVC_Portfolio/graphic-design/kbpl9ibaqionr7pn0meb.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807379/VDVC_Portfolio/graphic-design/i4mies3zpvnehegr5yp9.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807383/VDVC_Portfolio/graphic-design/wcnnblzsxagyfadposw0.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807386/VDVC_Portfolio/graphic-design/otuzwsrpqwacndd4jpdt.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807388/VDVC_Portfolio/graphic-design/dlkluw0oofnfbtkfrhk0.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806438/VDVC_Portfolio/graphic-design/ilfigtxtm2stk7n8euqn.png",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806469/VDVC_Portfolio/graphic-design/s0qyud8g19qnsbr05bsa.png",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806478/VDVC_Portfolio/graphic-design/bdcymegalcq5whl2p0b2.jpg"
+    ],
+    "galleryPictures": [
+      {
+        "id": "gd2-g1",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807391/VDVC_Portfolio/graphic-design/kbpl9ibaqionr7pn0meb.jpg",
+        "caption": "Levitating Supplement Bottle — Botanical studio staging with natural ingredients.",
+        "isAI": true
+      },
+      {
+        "id": "gd2-g2",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807379/VDVC_Portfolio/graphic-design/i4mies3zpvnehegr5yp9.jpg",
+        "caption": "Floating Supplement Bottle — Soft fabric & botanical environment showcase.",
+        "isAI": true
+      },
+      {
+        "id": "gd2-g3",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807383/VDVC_Portfolio/graphic-design/wcnnblzsxagyfadposw0.jpg",
+        "caption": "Levitating Bottle Concept I — High-contrast atmospheric product presentation.",
+        "isAI": true
+      },
+      {
+        "id": "gd2-g4",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807386/VDVC_Portfolio/graphic-design/otuzwsrpqwacndd4jpdt.jpg",
+        "caption": "Levitating Bottle Concept II — Organic lighting and hero angle.",
+        "isAI": true
+      },
+      {
+        "id": "gd2-g5",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807388/VDVC_Portfolio/graphic-design/dlkluw0oofnfbtkfrhk0.jpg",
+        "caption": "Levitating Bottle Concept III — Pedestal and natural shadow study.",
+        "isAI": true
+      },
+      {
+        "id": "gd2-g6",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806438/VDVC_Portfolio/graphic-design/ilfigtxtm2stk7n8euqn.png",
+        "caption": "Garlic Capsule Label — Final production wrap-around bottle label.",
+        "isAI": false
+      },
+      {
+        "id": "gd2-g7",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806469/VDVC_Portfolio/graphic-design/s0qyud8g19qnsbr05bsa.png",
+        "caption": "Ginger Capsule Label — Final production wrap-around bottle label.",
+        "isAI": false
+      },
+      {
+        "id": "gd2-g8",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806478/VDVC_Portfolio/graphic-design/bdcymegalcq5whl2p0b2.jpg",
+        "caption": "NeemCal Capsules (500mg x 30) — Full production label with dosage, ingredients, and NAFDAC specifications.",
+        "isAI": false
+      }
+    ],
+    "processSteps": [
+      {
+        "id": "step-gd2-1",
+        "name": "Phase 01: Multi-SKU Label Architecture",
+        "description": "Created a unified wrap-around label system across Garlic, Ginger, and NeemCal SKUs, balancing botanical illustration with clear dosage and regulatory data.",
+        "pictures": [
+          {
+            "id": "proc-gd2-1",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806478/VDVC_Portfolio/graphic-design/bdcymegalcq5whl2p0b2.jpg",
+            "caption": "NeemCal Capsule production print master (v2).",
+            "type": "Final"
+          },
+          {
+            "id": "proc-gd2-2",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806438/VDVC_Portfolio/graphic-design/ilfigtxtm2stk7n8euqn.png",
+            "caption": "Garlic Capsule final label master.",
+            "type": "Final"
+          },
+          {
+            "id": "proc-gd2-3",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806469/VDVC_Portfolio/graphic-design/s0qyud8g19qnsbr05bsa.png",
+            "caption": "Ginger Capsule final label master.",
+            "type": "Final"
+          }
+        ]
+      },
+      {
+        "id": "step-gd2-2",
+        "name": "Phase 02: Levitating Bottle Campaign Visuals",
+        "description": "Generated five distinct levitating and floating bottle scenes to power digital marketing and retail displays.",
+        "pictures": [
+          {
+            "id": "proc-gd2-4",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807391/VDVC_Portfolio/graphic-design/kbpl9ibaqionr7pn0meb.jpg",
+            "caption": "Levitating bottle hero visual.",
+            "type": "AI"
+          },
+          {
+            "id": "proc-gd2-5",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807379/VDVC_Portfolio/graphic-design/i4mies3zpvnehegr5yp9.jpg",
+            "caption": "Floating bottle environment study.",
+            "type": "AI"
+          }
+        ]
+      }
+    ],
+    "deliverables": [
+      "3 SKU Production Labels (Garlic, Ginger, NeemCal)",
+      "5 Commercial Bottle Renders",
+      "Print Production Prepress"
+    ],
+    "createdAt": 1712550000000
+  },
+  // GD 3 — PIC Organics — Ecumenical Product Catalog Trifold
+  {
+    "id": "proj-gd-3",
+    "title": "PIC Organics — Ecumenical Product Catalog Trifold",
+    "category": "Graphic Design",
+    "client": "PIC Organics (Pharmacy Informatics Consult)",
+    "clientDescription": "Natural herbal formulation and organic wellness product manufacturer based in Jos, Nigeria.",
+    "shortDescription": "6-panel trifold brochure and product shelf catalog designed in dual Light and Dark editorial themes.",
+    "threeWordDesc": "Dual-Theme Trifold Catalog",
+    "descriptors": "Brochure, Print Design, Editorial",
+    "isRealLife": true,
+    "price": "₦380,000",
+    "currency": "NGN",
+    "year": "2026",
+    "monthYear": "September 2026",
+    "duration": "2 Weeks",
+    "featured": true,
+    "description": "An informative 6-panel trifold brochure cataloging PIC Organics’ curative cosmetics, vivifying herbal teas, natural food alternatives, capsules, and essential oils—delivered in both lush forest-dark and crisp botanical-light print editions.",
+    "imageUrl": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806496/VDVC_Portfolio/graphic-design/j8oo0ee8k2r0si79tgbk.png",
+    "images": [
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806496/VDVC_Portfolio/graphic-design/j8oo0ee8k2r0si79tgbk.png",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806634/VDVC_Portfolio/graphic-design/oyl0gbnvpq8kiwtkppga.png",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806590/VDVC_Portfolio/graphic-design/rbsfwafunohxoibwqejf.png",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806555/VDVC_Portfolio/graphic-design/b53m4djok0x0etdw1vnz.png"
+    ],
+    "galleryPictures": [
+      {
+        "id": "gd3-g1",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806496/VDVC_Portfolio/graphic-design/j8oo0ee8k2r0si79tgbk.png",
+        "caption": "3D Trifold Brochure Mockup — Inside spread of the forest-dark edition on matte stock.",
+        "isAI": false
+      },
+      {
+        "id": "gd3-g2",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806634/VDVC_Portfolio/graphic-design/oyl0gbnvpq8kiwtkppga.png",
+        "caption": "Outside Spread (Light Edition) — Front cover, back cover, and introductory fold panel.",
+        "isAI": false
+      },
+      {
+        "id": "gd3-g3",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806590/VDVC_Portfolio/graphic-design/rbsfwafunohxoibwqejf.png",
+        "caption": "Inside Spread (Light Edition) — Curative Cosmetics, Vivifying Cha, and complete shelf inventory.",
+        "isAI": false
+      },
+      {
+        "id": "gd3-g4",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806555/VDVC_Portfolio/graphic-design/b53m4djok0x0etdw1vnz.png",
+        "caption": "Inside Spread (Dark Edition) — Deep forest green editorial variant with high-contrast typography.",
+        "isAI": false
+      }
+    ],
+    "processSteps": [
+      {
+        "id": "step-gd3-1",
+        "name": "Phase 01: Information Architecture & Dual-Theme Layout",
+        "description": "Structured over 35 herbal products across four categories (Capsules, Essential Oils, Foods, Herbal Tea) alongside instructional callouts and photography.",
+        "pictures": [
+          {
+            "id": "proc-gd3-1",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806634/VDVC_Portfolio/graphic-design/oyl0gbnvpq8kiwtkppga.png",
+            "caption": "Outside 3-panel master layout (Light theme).",
+            "type": "Final"
+          },
+          {
+            "id": "proc-gd3-2",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806555/VDVC_Portfolio/graphic-design/b53m4djok0x0etdw1vnz.png",
+            "caption": "Inside 3-panel master layout (Dark theme).",
+            "type": "Final"
+          }
+        ]
+      }
+    ],
+    "deliverables": [
+      "6-Panel Trifold Layout (Light & Dark Editions)",
+      "3D Print Presentation Mockup",
+      "Press-Ready CMYK Spreads"
+    ],
+    "createdAt": 1712500000000
+  },
+  // GD 4 — Pamtronics Nig. Ltd. — Independence Day Solar Campaign
+  {
+    "id": "proj-gd-4",
+    "title": "Pamtronics Nig. Ltd. — Independence Day Solar Campaign",
+    "category": "Graphic Design",
+    "client": "Pamtronics Nig. Ltd.",
+    "clientDescription": "Renewable energy and solar power solutions provider supplying inverters, lithium batteries, solar panels, and electric mobility in Nigeria.",
+    "shortDescription": "Dual promotional campaign flyers celebrating Nigeria’s 66th Independence Day with clean solar energy solutions.",
+    "threeWordDesc": "Solar Campaign Key-Visuals",
+    "descriptors": "Campaign Flyer, Social Media, Energy",
+    "isRealLife": true,
+    "price": "₦220,000",
+    "currency": "NGN",
+    "year": "2026",
+    "monthYear": "October 2026",
+    "duration": "1 Week",
+    "featured": true,
+    "description": "High-impact promotional flyer suite for Pamtronics Nig. Ltd. marking Nigeria’s 66th Independence Day (\"Let the sun power your home today\"), showcasing their flagship Lemax & Megarevo inverters, solar panels, and electric scooter range.",
+    "imageUrl": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806641/VDVC_Portfolio/graphic-design/byww8ryqw7jo3pwn5mia.jpg",
+    "images": [
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806641/VDVC_Portfolio/graphic-design/byww8ryqw7jo3pwn5mia.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806662/VDVC_Portfolio/graphic-design/juw9bz8sil92umaon1oq.jpg"
+    ],
+    "galleryPictures": [
+      {
+        "id": "gd4-g1",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806641/VDVC_Portfolio/graphic-design/byww8ryqw7jo3pwn5mia.jpg",
+        "caption": "Pamtronics Independence Day Flyer I (v5) — Clean white & emerald \"66\" typographic composition with product lineup.",
+        "isAI": false
+      },
+      {
+        "id": "gd4-g2",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806662/VDVC_Portfolio/graphic-design/juw9bz8sil92umaon1oq.jpg",
+        "caption": "Pamtronics Independence Day Flyer II (v4) — Alternate campaign variation for social and print distribution.",
+        "isAI": false
+      }
+    ],
+    "processSteps": [
+      {
+        "id": "step-gd4-1",
+        "name": "Phase 01: Campaign Typography & Product Compositing",
+        "description": "Combined celebratory national green-and-gold numeral styling with crisp product cutouts and clear contact metadata.",
+        "pictures": [
+          {
+            "id": "proc-gd4-1",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806641/VDVC_Portfolio/graphic-design/byww8ryqw7jo3pwn5mia.jpg",
+            "caption": "Primary Independence Day key visual (v5).",
+            "type": "Final"
+          },
+          {
+            "id": "proc-gd4-2",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806662/VDVC_Portfolio/graphic-design/juw9bz8sil92umaon1oq.jpg",
+            "caption": "Secondary campaign variation (v4).",
+            "type": "Final"
+          }
+        ]
+      }
+    ],
+    "deliverables": [
+      "2 Campaign Flyer Variations",
+      "Social Media & Print Assets",
+      "Product Cutout Compositing"
+    ],
+    "createdAt": 1712450000000
+  },
+  // GD 5 — To The End — Sports & Badminton Editorial Magazine
+  {
+    "id": "proj-gd-5",
+    "title": "To The End — Sports & Badminton Editorial Magazine",
+    "category": "Graphic Design",
+    "client": "To The End Sports Publication",
+    "clientDescription": "Athletic performance and competitive racquet sports magazine spotlighting youth grit and training routines.",
+    "shortDescription": "Dynamic sports magazine cover design and photorealistic print mockup built around high-velocity badminton action photography.",
+    "threeWordDesc": "Athletic Editorial Cover",
+    "descriptors": "Magazine Cover, Editorial, Sports",
+    "isRealLife": true,
+    "price": "₦280,000",
+    "currency": "NGN",
+    "year": "2026",
+    "monthYear": "August 2026",
+    "duration": "1.5 Weeks",
+    "featured": true,
+    "description": "Editorial cover direction for \"TO THE END\", pairing dramatic stadium lighting and mid-air badminton smash photography with bold italic display typography (\"You fight to the end, that’s all that counts\") and callout badges.",
+    "imageUrl": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806677/VDVC_Portfolio/graphic-design/bln0hrrh8iddzcu7mxxe.jpg",
+    "images": [
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806677/VDVC_Portfolio/graphic-design/bln0hrrh8iddzcu7mxxe.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806663/VDVC_Portfolio/graphic-design/vrxzn4whoaytctlefosi.jpg"
+    ],
+    "galleryPictures": [
+      {
+        "id": "gd5-g1",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806677/VDVC_Portfolio/graphic-design/bln0hrrh8iddzcu7mxxe.jpg",
+        "caption": "To The End Magazine — Photorealistic print edition mockup.",
+        "isAI": false
+      },
+      {
+        "id": "gd5-g2",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806663/VDVC_Portfolio/graphic-design/vrxzn4whoaytctlefosi.jpg",
+        "caption": "To The End Magazine Cover — Full-bleed typographic layout and athletic action composite.",
+        "isAI": false
+      }
+    ],
+    "processSteps": [
+      {
+        "id": "step-gd5-1",
+        "name": "Phase 01: Editorial Cover Hierarchy & Print Mockup",
+        "description": "Balanced dynamic subject masking with high-contrast white and crimson cover lines to capture competitive intensity.",
+        "pictures": [
+          {
+            "id": "proc-gd5-1",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806663/VDVC_Portfolio/graphic-design/vrxzn4whoaytctlefosi.jpg",
+            "caption": "Flat cover production artwork.",
+            "type": "Final"
+          },
+          {
+            "id": "proc-gd5-2",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806677/VDVC_Portfolio/graphic-design/bln0hrrh8iddzcu7mxxe.jpg",
+            "caption": "3D glossy magazine presentation mockup.",
+            "type": "Final"
+          }
+        ]
+      }
+    ],
+    "deliverables": [
+      "Magazine Cover Artwork",
+      "3D Print Presentation Mockup",
+      "Typography & Cover Line System"
+    ],
+    "createdAt": 1712400000000
+  },
+  // GD 6 — Virtuoso Magazine — Menswear & Bespoke Style Cover
+  {
+    "id": "proj-gd-6",
+    "title": "Virtuoso Magazine — Menswear & Bespoke Style Cover",
+    "category": "Graphic Design",
+    "client": "Virtuoso Fashion & Style",
+    "clientDescription": "Contemporary African menswear, tailoring, and sartorial lifestyle publication.",
+    "shortDescription": "Refined serif editorial cover design for Virtuoso Magazine celebrating crisp elegance and 64+ contemporary men’s styles.",
+    "threeWordDesc": "Sartorial Magazine Cover",
+    "descriptors": "Fashion Editorial, Magazine, Typography",
+    "isRealLife": true,
+    "price": "₦260,000",
+    "currency": "NGN",
+    "year": "2026",
+    "monthYear": "August 2026",
+    "duration": "1 Week",
+    "featured": true,
+    "description": "Editorial cover design for VIRTUOSO Magazine (\"Crisp Elegance in Every Design and Style — No Room for Mediocre Looks\"), featuring classic high-contrast serif typography, angled folio callouts, and tactile stone-textured backdrop.",
+    "imageUrl": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806691/VDVC_Portfolio/graphic-design/omhmlyclegknl3w7bijd.jpg",
+    "images": [
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806691/VDVC_Portfolio/graphic-design/omhmlyclegknl3w7bijd.jpg"
+    ],
+    "galleryPictures": [
+      {
+        "id": "gd6-g1",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806691/VDVC_Portfolio/graphic-design/omhmlyclegknl3w7bijd.jpg",
+        "caption": "Virtuoso Magazine Cover Mockup — Bespoke menswear issue featuring 64+ men styles.",
+        "isAI": false
+      }
+    ],
+    "processSteps": [
+      {
+        "id": "step-gd6-1",
+        "name": "Phase 01: Sartorial Typography & Perspective Mockup",
+        "description": "Paired full-length menswear portraiture with classic editorial serif masthead placement so the subject interacts naturally with the title.",
+        "pictures": [
+          {
+            "id": "proc-gd6-1",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806691/VDVC_Portfolio/graphic-design/omhmlyclegknl3w7bijd.jpg",
+            "caption": "Final Virtuoso Magazine cover presentation mockup.",
+            "type": "Final"
+          }
+        ]
+      }
+    ],
+    "deliverables": [
+      "Magazine Cover Layout",
+      "Editorial Masthead Typography",
+      "Print Mockup Presentation"
+    ],
+    "createdAt": 1712350000000
+  },
+  // GD 7 — Pete's Bakery — Peanut Roll Snack of the Week Campaign
+  {
+    "id": "proj-gd-7",
+    "title": "Pete's Bakery — Peanut Roll Snack of the Week Campaign",
+    "category": "Graphic Design",
+    "client": "Pete's Bakery, Odena Plaza",
+    "clientDescription": "Artisan neighborhood bakery and confectionery located at Odena Plaza offering fresh daily pastries and snacks.",
+    "shortDescription": "Warm, appetite-driven promotional poster for Pete’s Bakery featuring their signature Peanut Roll at 30% off.",
+    "threeWordDesc": "Artisan Bakery Promotion",
+    "descriptors": "Food Advertising, Poster, Typography",
+    "isRealLife": true,
+    "price": "₦150,000",
+    "currency": "NGN",
+    "year": "2026",
+    "monthYear": "July 2026",
+    "duration": "4 Days",
+    "featured": false,
+    "description": "Promotional graphic design for Pete’s Bakery spotlighting the \"Peanut Roll — Snack of the Week (30% off)\". Crafted with warm roasted-peanut tones, stacked macro pastry photography, and playful hand-lettered copy (\"In a nutshell, roll up stress and chill\").",
+    "imageUrl": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806725/VDVC_Portfolio/graphic-design/b3ljkubdt9zzdvmd0jca.jpg",
+    "images": [
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806725/VDVC_Portfolio/graphic-design/b3ljkubdt9zzdvmd0jca.jpg"
+    ],
+    "galleryPictures": [
+      {
+        "id": "gd7-g1",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806725/VDVC_Portfolio/graphic-design/b3ljkubdt9zzdvmd0jca.jpg",
+        "caption": "Pete's Bakery Peanut Roll — Snack of the Week 30% off promotional poster.",
+        "isAI": false
+      }
+    ],
+    "processSteps": [
+      {
+        "id": "step-gd7-1",
+        "name": "Phase 01: Appetite Color Grading & Promotional Copy",
+        "description": "Combined close-up swirled pastry imagery with warm golden-brown textures and custom outlined script typography.",
+        "pictures": [
+          {
+            "id": "proc-gd7-1",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806725/VDVC_Portfolio/graphic-design/b3ljkubdt9zzdvmd0jca.jpg",
+            "caption": "Final Peanut Roll promotional banner.",
+            "type": "Final"
+          }
+        ]
+      }
+    ],
+    "deliverables": [
+      "Promotional Landscape Poster",
+      "Social Media Ad Graphic",
+      "Copywriting & Visual Direction"
+    ],
+    "createdAt": 1712300000000
+  },
+  // GD 8 — Pete's Kitchen — "Savor the Flavour" Culinary Ad
+  {
+    "id": "proj-gd-8",
+    "title": "Pete's Kitchen — \"Savor the Flavour\" Culinary Ad",
+    "category": "Graphic Design",
+    "client": "Pete's Kitchen & Bakery",
+    "clientDescription": "Vibrant culinary kitchen and dining spot celebrating simple ingredients and extraordinary taste.",
+    "shortDescription": "Dynamic levitating pasta advertisement (\"Pro tip: Lick the plate. We won’t judge\") crafted with rich royal blue contrast.",
+    "threeWordDesc": "Dynamic Culinary Advertising",
+    "descriptors": "Culinary Ad, Levitation, Hospitality",
+    "isRealLife": true,
+    "price": "₦160,000",
+    "currency": "NGN",
+    "year": "2026",
+    "monthYear": "July 2026",
+    "duration": "4 Days",
+    "featured": false,
+    "description": "Eye-catching culinary advertisement for Pete’s (\"Savor the Flavour! — Simple Ingredients, Extraordinary Taste\"), contrasting warm orange flying pasta, cherry tomatoes, and seared protein against a deep royal blue studio backdrop.",
+    "imageUrl": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806728/VDVC_Portfolio/graphic-design/pqtx232almuasc0alqvc.jpg",
+    "images": [
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806728/VDVC_Portfolio/graphic-design/pqtx232almuasc0alqvc.jpg"
+    ],
+    "galleryPictures": [
+      {
+        "id": "gd8-g1",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806728/VDVC_Portfolio/graphic-design/pqtx232almuasc0alqvc.jpg",
+        "caption": "Savor the Flavour at Pete’s — \"Pro tip: Lick the plate. We won’t judge\" promotional banner.",
+        "isAI": true
+      }
+    ],
+    "processSteps": [
+      {
+        "id": "step-gd8-1",
+        "name": "Phase 01: High-Contrast Food Staging & Ribbon Badge",
+        "description": "Paired a dynamic mid-air culinary illustration with a burgundy corner ribbon and bold complementary orange branding.",
+        "pictures": [
+          {
+            "id": "proc-gd8-1",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806728/VDVC_Portfolio/graphic-design/pqtx232almuasc0alqvc.jpg",
+            "caption": "Final \"Pro Tip\" culinary promotional banner.",
+            "type": "Final"
+          }
+        ]
+      }
+    ],
+    "deliverables": [
+      "Digital Billboard & Social Banner",
+      "Generative Food Illustration",
+      "Brand Typography"
+    ],
+    "createdAt": 1712250000000
+  },
+  // GD 9 — From Our Kitchen to Your Heart — Culinary Story Poster
+  {
+    "id": "proj-gd-9",
+    "title": "From Our Kitchen to Your Heart — Culinary Story Poster",
+    "category": "Graphic Design",
+    "client": "Pete's Kitchen Collective",
+    "clientDescription": "Artisan culinary collective celebrating authentic kitchen prep, fresh ingredients, and shared meals.",
+    "shortDescription": "Overhead mise-en-place culinary poster celebrating kitchen craft (\"The kitchen is where magic happens — and the mess\").",
+    "threeWordDesc": "Overhead Culinary Storytelling",
+    "descriptors": "Culinary, Poster, Typography",
+    "isRealLife": true,
+    "price": "₦140,000",
+    "currency": "NGN",
+    "year": "2026",
+    "monthYear": "June 2026",
+    "duration": "3 Days",
+    "featured": false,
+    "description": "Warm overhead flat-lay poster capturing a chef’s chopping board surrounded by fresh mirepoix, herbs, and spices, engraved with wood-burned script typography (\"From our kitchen to your heart\") and lower-third editorial messaging.",
+    "imageUrl": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806731/VDVC_Portfolio/graphic-design/wosltzg00phrwmrtdeog.jpg",
+    "images": [
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806731/VDVC_Portfolio/graphic-design/wosltzg00phrwmrtdeog.jpg"
+    ],
+    "galleryPictures": [
+      {
+        "id": "gd9-g1",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806731/VDVC_Portfolio/graphic-design/wosltzg00phrwmrtdeog.jpg",
+        "caption": "From Our Kitchen to Your Heart — Overhead culinary prep poster.",
+        "isAI": false
+      }
+    ],
+    "processSteps": [
+      {
+        "id": "step-gd9-1",
+        "name": "Phase 01: Wood-Burned Script Integration & Editorial Lower-Third",
+        "description": "Blended warm golden-glow script directly onto the timber cutting board grain with legible serif & display lower-third copy.",
+        "pictures": [
+          {
+            "id": "proc-gd9-1",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806731/VDVC_Portfolio/graphic-design/wosltzg00phrwmrtdeog.jpg",
+            "caption": "Final culinary storytelling poster.",
+            "type": "Final"
+          }
+        ]
+      }
+    ],
+    "deliverables": [
+      "Wall & Social Poster Design",
+      "Typographic Photo Compositing"
+    ],
+    "createdAt": 1712200000000
+  },
+  // GD 10 — De Padua Learning Academy — 9th Inter-House Sports Emblem
+  {
+    "id": "proj-gd-10",
+    "title": "De Padua Learning Academy — 9th Inter-House Sports Emblem",
+    "category": "Graphic Design",
+    "client": "De Padua Learning Academy",
+    "clientDescription": "Primary and secondary educational academy fostering academic excellence and athletic sportsmanship.",
+    "shortDescription": "Commemorative circular medal and crest print artwork designed for the 9th Inter-House Sports Competition (2025).",
+    "threeWordDesc": "Commemorative Sports Crest",
+    "descriptors": "Emblem, Print Medal, Illustration",
+    "isRealLife": true,
+    "price": "₦120,000",
+    "currency": "NGN",
+    "year": "2025",
+    "monthYear": "November 2025",
+    "duration": "1 Week",
+    "featured": false,
+    "description": "Custom circular medal print emblem created for De Padua Learning Academy’s 9th Inter-House Sports (2025). Features twin growth trees symbolizing mentorship and youth development, arched academy lettering, and tactile vintage speckle texture.",
+    "imageUrl": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806705/VDVC_Portfolio/graphic-design/pponvsxr4dd9cpb6gtbh.png",
+    "images": [
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806705/VDVC_Portfolio/graphic-design/pponvsxr4dd9cpb6gtbh.png"
+    ],
+    "galleryPictures": [
+      {
+        "id": "gd10-g1",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806705/VDVC_Portfolio/graphic-design/pponvsxr4dd9cpb6gtbh.png",
+        "caption": "De Padua Learning Academy — 9th Inter-House Sports 2025 circular medal print artwork.",
+        "isAI": false
+      }
+    ],
+    "processSteps": [
+      {
+        "id": "step-gd10-1",
+        "name": "Phase 01: Circular Badge Vector & Print Preparation",
+        "description": "Engineered a balanced circular crest for physical medal die-sublimation and event apparel printing.",
+        "pictures": [
+          {
+            "id": "proc-gd10-1",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806705/VDVC_Portfolio/graphic-design/pponvsxr4dd9cpb6gtbh.png",
+            "caption": "Final medal print master artwork.",
+            "type": "Final"
+          }
+        ]
+      }
+    ],
+    "deliverables": [
+      "Circular Medal Print Artwork",
+      "Event Crest Illustration",
+      "Print-Ready PNG Master"
+    ],
+    "createdAt": 1712150000000
+  },
+  // GD 1 — PIC Organics — Zobo Tea with Beetroot Packaging
+  {
+    "id": "proj-gd-1",
+    "title": "PIC Organics — Zobo Tea with Beetroot Packaging",
+    "category": "Graphic Design",
+    "client": "PIC Organics (Pharmacy Informatics Consult)",
+    "clientDescription": "Natural herbal formulation and organic wellness product manufacturer based in Jos, Nigeria.",
+    "shortDescription": "Stand-up pouch packaging design and 3D commercial product visualization for heart-friendly Zobo Tea with Beetroot.",
+    "threeWordDesc": "Botanical Pouch Packaging",
+    "descriptors": "Packaging, Product Visualization, FMCG",
+    "isRealLife": true,
+    "price": "₦450,000",
+    "currency": "NGN",
+    "year": "2026",
+    "monthYear": "October 2026",
+    "duration": "3 Weeks",
+    "featured": true,
+    "description": "Complete front and back stand-up pouch packaging design for PIC Organics Zobo Tea with Beetroot, paired with high-impact commercial product renders amidst hibiscus petals and water splashes.",
+    "imageUrl": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806396/VDVC_Portfolio/graphic-design/gjtbt7pzvzwkisqygdhk.jpg",
+    "images": [
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806396/VDVC_Portfolio/graphic-design/gjtbt7pzvzwkisqygdhk.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806391/VDVC_Portfolio/graphic-design/pghqoqryveqhvzju0szv.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806386/VDVC_Portfolio/graphic-design/mfucqsgaqikax7j7ne8g.png",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806366/VDVC_Portfolio/graphic-design/ftjxarldypwnnfawnbdd.png"
+    ],
+    "galleryPictures": [
+      {
+        "id": "gd1-g1",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806396/VDVC_Portfolio/graphic-design/gjtbt7pzvzwkisqygdhk.jpg",
+        "caption": "Zobo Tea with Beetroot — Commercial hero product visualization with hibiscus petals and botanical dust.",
+        "isAI": true
+      },
+      {
+        "id": "gd1-g2",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806391/VDVC_Portfolio/graphic-design/pghqoqryveqhvzju0szv.jpg",
+        "caption": "Zobo Tea with Beetroot — Aquatic product staging on rippled water surface.",
+        "isAI": true
+      },
+      {
+        "id": "gd1-g3",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806386/VDVC_Portfolio/graphic-design/mfucqsgaqikax7j7ne8g.png",
+        "caption": "Front Pouch Master Artwork — Custom typography, botanical illustrations, and heart-friendly seal.",
+        "isAI": false
+      },
+      {
+        "id": "gd1-g4",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806366/VDVC_Portfolio/graphic-design/ftjxarldypwnnfawnbdd.png",
+        "caption": "Back Pouch Master Artwork — Nutritional facts, brewing guide, NAFDAC compliance, and barcode layout.",
+        "isAI": false
+      }
+    ],
+    "processSteps": [
+      {
+        "id": "step-gd1-1",
+        "name": "Phase 01: Pouch Die-Line & Print Master Layout",
+        "description": "Developed the front and back print dielines incorporating rich burgundy hibiscus tones, clear preparation instructions, and regulatory labeling.",
+        "pictures": [
+          {
+            "id": "proc-gd1-1",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806386/VDVC_Portfolio/graphic-design/mfucqsgaqikax7j7ne8g.png",
+            "caption": "Final front cover print master (V22).",
+            "type": "Final"
+          },
+          {
+            "id": "proc-gd1-2",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806366/VDVC_Portfolio/graphic-design/ftjxarldypwnnfawnbdd.png",
+            "caption": "Final back cover print master (V2).",
+            "type": "Final"
+          }
+        ]
+      },
+      {
+        "id": "step-gd1-2",
+        "name": "Phase 02: AI-Assisted Commercial Product Staging",
+        "description": "Composite product photography and generative environment lighting crafted to showcase the physical pouch in dynamic botanical and aquatic scenes.",
+        "pictures": [
+          {
+            "id": "proc-gd1-3",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806396/VDVC_Portfolio/graphic-design/gjtbt7pzvzwkisqygdhk.jpg",
+            "caption": "Hibiscus explosion commercial key visual.",
+            "type": "AI"
+          },
+          {
+            "id": "proc-gd1-4",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806391/VDVC_Portfolio/graphic-design/pghqoqryveqhvzju0szv.jpg",
+            "caption": "Water surface reflection commercial render.",
+            "type": "AI"
+          }
+        ]
+      }
+    ],
+    "deliverables": [
+      "Front & Back Pouch Artwork",
+      "Print-Ready Die-Lines",
+      "Commercial 3D/AI Product Mockups"
+    ],
+    "createdAt": 1712600000000
+  },
+  // GD 2 — PIC Organics — Herbal Supplement Capsules Suite
+  {
+    "id": "proj-gd-2",
+    "title": "PIC Organics — Herbal Supplement Capsules Suite",
+    "category": "Graphic Design",
+    "client": "PIC Organics (Pharmacy Informatics Consult)",
+    "clientDescription": "Natural herbal formulation and organic wellness product manufacturer based in Jos, Nigeria.",
+    "shortDescription": "Pharmaceutical-grade label system and 3D levitating bottle campaign for Garlic, Ginger, and NeemCal herbal capsules.",
+    "threeWordDesc": "Herbal Supplement Packaging",
+    "descriptors": "Pharmaceutical, Packaging, 3D Mockup",
+    "isRealLife": true,
+    "price": "₦680,000",
+    "currency": "NGN",
+    "year": "2026",
+    "monthYear": "September 2026",
+    "duration": "4 Weeks",
+    "featured": true,
+    "description": "Comprehensive bottle label architecture and promotional product visualization for PIC Organics’ herbal capsule line—spanning Garlic, Ginger, and NeemCal formulations with cohesive botanical curves and dynamic levitating product shots.",
+    "imageUrl": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807391/VDVC_Portfolio/graphic-design/kbpl9ibaqionr7pn0meb.jpg",
+    "images": [
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807391/VDVC_Portfolio/graphic-design/kbpl9ibaqionr7pn0meb.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807379/VDVC_Portfolio/graphic-design/i4mies3zpvnehegr5yp9.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807383/VDVC_Portfolio/graphic-design/wcnnblzsxagyfadposw0.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807386/VDVC_Portfolio/graphic-design/otuzwsrpqwacndd4jpdt.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807388/VDVC_Portfolio/graphic-design/dlkluw0oofnfbtkfrhk0.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806438/VDVC_Portfolio/graphic-design/ilfigtxtm2stk7n8euqn.png",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806469/VDVC_Portfolio/graphic-design/s0qyud8g19qnsbr05bsa.png",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806478/VDVC_Portfolio/graphic-design/bdcymegalcq5whl2p0b2.jpg"
+    ],
+    "galleryPictures": [
+      {
+        "id": "gd2-g1",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807391/VDVC_Portfolio/graphic-design/kbpl9ibaqionr7pn0meb.jpg",
+        "caption": "Levitating Supplement Bottle — Botanical studio staging with natural ingredients.",
+        "isAI": true
+      },
+      {
+        "id": "gd2-g2",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807379/VDVC_Portfolio/graphic-design/i4mies3zpvnehegr5yp9.jpg",
+        "caption": "Floating Supplement Bottle — Soft fabric & botanical environment showcase.",
+        "isAI": true
+      },
+      {
+        "id": "gd2-g3",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807383/VDVC_Portfolio/graphic-design/wcnnblzsxagyfadposw0.jpg",
+        "caption": "Levitating Bottle Concept I — High-contrast atmospheric product presentation.",
+        "isAI": true
+      },
+      {
+        "id": "gd2-g4",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807386/VDVC_Portfolio/graphic-design/otuzwsrpqwacndd4jpdt.jpg",
+        "caption": "Levitating Bottle Concept II — Organic lighting and hero angle.",
+        "isAI": true
+      },
+      {
+        "id": "gd2-g5",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807388/VDVC_Portfolio/graphic-design/dlkluw0oofnfbtkfrhk0.jpg",
+        "caption": "Levitating Bottle Concept III — Pedestal and natural shadow study.",
+        "isAI": true
+      },
+      {
+        "id": "gd2-g6",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806438/VDVC_Portfolio/graphic-design/ilfigtxtm2stk7n8euqn.png",
+        "caption": "Garlic Capsule Label — Final production wrap-around bottle label.",
+        "isAI": false
+      },
+      {
+        "id": "gd2-g7",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806469/VDVC_Portfolio/graphic-design/s0qyud8g19qnsbr05bsa.png",
+        "caption": "Ginger Capsule Label — Final production wrap-around bottle label.",
+        "isAI": false
+      },
+      {
+        "id": "gd2-g8",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806478/VDVC_Portfolio/graphic-design/bdcymegalcq5whl2p0b2.jpg",
+        "caption": "NeemCal Capsules (500mg x 30) — Full production label with dosage, ingredients, and NAFDAC specifications.",
+        "isAI": false
+      }
+    ],
+    "processSteps": [
+      {
+        "id": "step-gd2-1",
+        "name": "Phase 01: Multi-SKU Label Architecture",
+        "description": "Created a unified wrap-around label system across Garlic, Ginger, and NeemCal SKUs, balancing botanical illustration with clear dosage and regulatory data.",
+        "pictures": [
+          {
+            "id": "proc-gd2-1",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806478/VDVC_Portfolio/graphic-design/bdcymegalcq5whl2p0b2.jpg",
+            "caption": "NeemCal Capsule production print master (v2).",
+            "type": "Final"
+          },
+          {
+            "id": "proc-gd2-2",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806438/VDVC_Portfolio/graphic-design/ilfigtxtm2stk7n8euqn.png",
+            "caption": "Garlic Capsule final label master.",
+            "type": "Final"
+          },
+          {
+            "id": "proc-gd2-3",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806469/VDVC_Portfolio/graphic-design/s0qyud8g19qnsbr05bsa.png",
+            "caption": "Ginger Capsule final label master.",
+            "type": "Final"
+          }
+        ]
+      },
+      {
+        "id": "step-gd2-2",
+        "name": "Phase 02: Levitating Bottle Campaign Visuals",
+        "description": "Generated five distinct levitating and floating bottle scenes to power digital marketing and retail displays.",
+        "pictures": [
+          {
+            "id": "proc-gd2-4",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807391/VDVC_Portfolio/graphic-design/kbpl9ibaqionr7pn0meb.jpg",
+            "caption": "Levitating bottle hero visual.",
+            "type": "AI"
+          },
+          {
+            "id": "proc-gd2-5",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793807379/VDVC_Portfolio/graphic-design/i4mies3zpvnehegr5yp9.jpg",
+            "caption": "Floating bottle environment study.",
+            "type": "AI"
+          }
+        ]
+      }
+    ],
+    "deliverables": [
+      "3 SKU Production Labels (Garlic, Ginger, NeemCal)",
+      "5 Commercial Bottle Renders",
+      "Print Production Prepress"
+    ],
+    "createdAt": 1712550000000
+  },
+  // GD 3 — PIC Organics — Ecumenical Product Catalog Trifold
+  {
+    "id": "proj-gd-3",
+    "title": "PIC Organics — Ecumenical Product Catalog Trifold",
+    "category": "Graphic Design",
+    "client": "PIC Organics (Pharmacy Informatics Consult)",
+    "clientDescription": "Natural herbal formulation and organic wellness product manufacturer based in Jos, Nigeria.",
+    "shortDescription": "6-panel trifold brochure and product shelf catalog designed in dual Light and Dark editorial themes.",
+    "threeWordDesc": "Dual-Theme Trifold Catalog",
+    "descriptors": "Brochure, Print Design, Editorial",
+    "isRealLife": true,
+    "price": "₦380,000",
+    "currency": "NGN",
+    "year": "2026",
+    "monthYear": "September 2026",
+    "duration": "2 Weeks",
+    "featured": true,
+    "description": "An informative 6-panel trifold brochure cataloging PIC Organics’ curative cosmetics, vivifying herbal teas, natural food alternatives, capsules, and essential oils—delivered in both lush forest-dark and crisp botanical-light print editions.",
+    "imageUrl": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806496/VDVC_Portfolio/graphic-design/j8oo0ee8k2r0si79tgbk.png",
+    "images": [
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806496/VDVC_Portfolio/graphic-design/j8oo0ee8k2r0si79tgbk.png",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806634/VDVC_Portfolio/graphic-design/oyl0gbnvpq8kiwtkppga.png",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806590/VDVC_Portfolio/graphic-design/rbsfwafunohxoibwqejf.png",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806555/VDVC_Portfolio/graphic-design/b53m4djok0x0etdw1vnz.png"
+    ],
+    "galleryPictures": [
+      {
+        "id": "gd3-g1",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806496/VDVC_Portfolio/graphic-design/j8oo0ee8k2r0si79tgbk.png",
+        "caption": "3D Trifold Brochure Mockup — Inside spread of the forest-dark edition on matte stock.",
+        "isAI": false
+      },
+      {
+        "id": "gd3-g2",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806634/VDVC_Portfolio/graphic-design/oyl0gbnvpq8kiwtkppga.png",
+        "caption": "Outside Spread (Light Edition) — Front cover, back cover, and introductory fold panel.",
+        "isAI": false
+      },
+      {
+        "id": "gd3-g3",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806590/VDVC_Portfolio/graphic-design/rbsfwafunohxoibwqejf.png",
+        "caption": "Inside Spread (Light Edition) — Curative Cosmetics, Vivifying Cha, and complete shelf inventory.",
+        "isAI": false
+      },
+      {
+        "id": "gd3-g4",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806555/VDVC_Portfolio/graphic-design/b53m4djok0x0etdw1vnz.png",
+        "caption": "Inside Spread (Dark Edition) — Deep forest green editorial variant with high-contrast typography.",
+        "isAI": false
+      }
+    ],
+    "processSteps": [
+      {
+        "id": "step-gd3-1",
+        "name": "Phase 01: Information Architecture & Dual-Theme Layout",
+        "description": "Structured over 35 herbal products across four categories (Capsules, Essential Oils, Foods, Herbal Tea) alongside instructional callouts and photography.",
+        "pictures": [
+          {
+            "id": "proc-gd3-1",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806634/VDVC_Portfolio/graphic-design/oyl0gbnvpq8kiwtkppga.png",
+            "caption": "Outside 3-panel master layout (Light theme).",
+            "type": "Final"
+          },
+          {
+            "id": "proc-gd3-2",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806555/VDVC_Portfolio/graphic-design/b53m4djok0x0etdw1vnz.png",
+            "caption": "Inside 3-panel master layout (Dark theme).",
+            "type": "Final"
+          }
+        ]
+      }
+    ],
+    "deliverables": [
+      "6-Panel Trifold Layout (Light & Dark Editions)",
+      "3D Print Presentation Mockup",
+      "Press-Ready CMYK Spreads"
+    ],
+    "createdAt": 1712500000000
+  },
+  // GD 4 — Pamtronics Nig. Ltd. — Independence Day Solar Campaign
+  {
+    "id": "proj-gd-4",
+    "title": "Pamtronics Nig. Ltd. — Independence Day Solar Campaign",
+    "category": "Graphic Design",
+    "client": "Pamtronics Nig. Ltd.",
+    "clientDescription": "Renewable energy and solar power solutions provider supplying inverters, lithium batteries, solar panels, and electric mobility in Nigeria.",
+    "shortDescription": "Dual promotional campaign flyers celebrating Nigeria’s 66th Independence Day with clean solar energy solutions.",
+    "threeWordDesc": "Solar Campaign Key-Visuals",
+    "descriptors": "Campaign Flyer, Social Media, Energy",
+    "isRealLife": true,
+    "price": "₦220,000",
+    "currency": "NGN",
+    "year": "2026",
+    "monthYear": "October 2026",
+    "duration": "1 Week",
+    "featured": true,
+    "description": "High-impact promotional flyer suite for Pamtronics Nig. Ltd. marking Nigeria’s 66th Independence Day (\"Let the sun power your home today\"), showcasing their flagship Lemax & Megarevo inverters, solar panels, and electric scooter range.",
+    "imageUrl": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806641/VDVC_Portfolio/graphic-design/byww8ryqw7jo3pwn5mia.jpg",
+    "images": [
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806641/VDVC_Portfolio/graphic-design/byww8ryqw7jo3pwn5mia.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806662/VDVC_Portfolio/graphic-design/juw9bz8sil92umaon1oq.jpg"
+    ],
+    "galleryPictures": [
+      {
+        "id": "gd4-g1",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806641/VDVC_Portfolio/graphic-design/byww8ryqw7jo3pwn5mia.jpg",
+        "caption": "Pamtronics Independence Day Flyer I (v5) — Clean white & emerald \"66\" typographic composition with product lineup.",
+        "isAI": false
+      },
+      {
+        "id": "gd4-g2",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806662/VDVC_Portfolio/graphic-design/juw9bz8sil92umaon1oq.jpg",
+        "caption": "Pamtronics Independence Day Flyer II (v4) — Alternate campaign variation for social and print distribution.",
+        "isAI": false
+      }
+    ],
+    "processSteps": [
+      {
+        "id": "step-gd4-1",
+        "name": "Phase 01: Campaign Typography & Product Compositing",
+        "description": "Combined celebratory national green-and-gold numeral styling with crisp product cutouts and clear contact metadata.",
+        "pictures": [
+          {
+            "id": "proc-gd4-1",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806641/VDVC_Portfolio/graphic-design/byww8ryqw7jo3pwn5mia.jpg",
+            "caption": "Primary Independence Day key visual (v5).",
+            "type": "Final"
+          },
+          {
+            "id": "proc-gd4-2",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806662/VDVC_Portfolio/graphic-design/juw9bz8sil92umaon1oq.jpg",
+            "caption": "Secondary campaign variation (v4).",
+            "type": "Final"
+          }
+        ]
+      }
+    ],
+    "deliverables": [
+      "2 Campaign Flyer Variations",
+      "Social Media & Print Assets",
+      "Product Cutout Compositing"
+    ],
+    "createdAt": 1712450000000
+  },
+  // GD 5 — To The End — Sports & Badminton Editorial Magazine
+  {
+    "id": "proj-gd-5",
+    "title": "To The End — Sports & Badminton Editorial Magazine",
+    "category": "Graphic Design",
+    "client": "To The End Sports Publication",
+    "clientDescription": "Athletic performance and competitive racquet sports magazine spotlighting youth grit and training routines.",
+    "shortDescription": "Dynamic sports magazine cover design and photorealistic print mockup built around high-velocity badminton action photography.",
+    "threeWordDesc": "Athletic Editorial Cover",
+    "descriptors": "Magazine Cover, Editorial, Sports",
+    "isRealLife": true,
+    "price": "₦280,000",
+    "currency": "NGN",
+    "year": "2026",
+    "monthYear": "August 2026",
+    "duration": "1.5 Weeks",
+    "featured": true,
+    "description": "Editorial cover direction for \"TO THE END\", pairing dramatic stadium lighting and mid-air badminton smash photography with bold italic display typography (\"You fight to the end, that’s all that counts\") and callout badges.",
+    "imageUrl": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806677/VDVC_Portfolio/graphic-design/bln0hrrh8iddzcu7mxxe.jpg",
+    "images": [
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806677/VDVC_Portfolio/graphic-design/bln0hrrh8iddzcu7mxxe.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806663/VDVC_Portfolio/graphic-design/vrxzn4whoaytctlefosi.jpg"
+    ],
+    "galleryPictures": [
+      {
+        "id": "gd5-g1",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806677/VDVC_Portfolio/graphic-design/bln0hrrh8iddzcu7mxxe.jpg",
+        "caption": "To The End Magazine — Photorealistic print edition mockup.",
+        "isAI": false
+      },
+      {
+        "id": "gd5-g2",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806663/VDVC_Portfolio/graphic-design/vrxzn4whoaytctlefosi.jpg",
+        "caption": "To The End Magazine Cover — Full-bleed typographic layout and athletic action composite.",
+        "isAI": false
+      }
+    ],
+    "processSteps": [
+      {
+        "id": "step-gd5-1",
+        "name": "Phase 01: Editorial Cover Hierarchy & Print Mockup",
+        "description": "Balanced dynamic subject masking with high-contrast white and crimson cover lines to capture competitive intensity.",
+        "pictures": [
+          {
+            "id": "proc-gd5-1",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806663/VDVC_Portfolio/graphic-design/vrxzn4whoaytctlefosi.jpg",
+            "caption": "Flat cover production artwork.",
+            "type": "Final"
+          },
+          {
+            "id": "proc-gd5-2",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806677/VDVC_Portfolio/graphic-design/bln0hrrh8iddzcu7mxxe.jpg",
+            "caption": "3D glossy magazine presentation mockup.",
+            "type": "Final"
+          }
+        ]
+      }
+    ],
+    "deliverables": [
+      "Magazine Cover Artwork",
+      "3D Print Presentation Mockup",
+      "Typography & Cover Line System"
+    ],
+    "createdAt": 1712400000000
+  },
+  // GD 6 — Virtuoso Magazine — Menswear & Bespoke Style Cover
+  {
+    "id": "proj-gd-6",
+    "title": "Virtuoso Magazine — Menswear & Bespoke Style Cover",
+    "category": "Graphic Design",
+    "client": "Virtuoso Fashion & Style",
+    "clientDescription": "Contemporary African menswear, tailoring, and sartorial lifestyle publication.",
+    "shortDescription": "Refined serif editorial cover design for Virtuoso Magazine celebrating crisp elegance and 64+ contemporary men’s styles.",
+    "threeWordDesc": "Sartorial Magazine Cover",
+    "descriptors": "Fashion Editorial, Magazine, Typography",
+    "isRealLife": true,
+    "price": "₦260,000",
+    "currency": "NGN",
+    "year": "2026",
+    "monthYear": "August 2026",
+    "duration": "1 Week",
+    "featured": true,
+    "description": "Editorial cover design for VIRTUOSO Magazine (\"Crisp Elegance in Every Design and Style — No Room for Mediocre Looks\"), featuring classic high-contrast serif typography, angled folio callouts, and tactile stone-textured backdrop.",
+    "imageUrl": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806691/VDVC_Portfolio/graphic-design/omhmlyclegknl3w7bijd.jpg",
+    "images": [
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806691/VDVC_Portfolio/graphic-design/omhmlyclegknl3w7bijd.jpg"
+    ],
+    "galleryPictures": [
+      {
+        "id": "gd6-g1",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806691/VDVC_Portfolio/graphic-design/omhmlyclegknl3w7bijd.jpg",
+        "caption": "Virtuoso Magazine Cover Mockup — Bespoke menswear issue featuring 64+ men styles.",
+        "isAI": false
+      }
+    ],
+    "processSteps": [
+      {
+        "id": "step-gd6-1",
+        "name": "Phase 01: Sartorial Typography & Perspective Mockup",
+        "description": "Paired full-length menswear portraiture with classic editorial serif masthead placement so the subject interacts naturally with the title.",
+        "pictures": [
+          {
+            "id": "proc-gd6-1",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806691/VDVC_Portfolio/graphic-design/omhmlyclegknl3w7bijd.jpg",
+            "caption": "Final Virtuoso Magazine cover presentation mockup.",
+            "type": "Final"
+          }
+        ]
+      }
+    ],
+    "deliverables": [
+      "Magazine Cover Layout",
+      "Editorial Masthead Typography",
+      "Print Mockup Presentation"
+    ],
+    "createdAt": 1712350000000
+  },
+  // GD 7 — Pete's Bakery — Peanut Roll Snack of the Week Campaign
+  {
+    "id": "proj-gd-7",
+    "title": "Pete's Bakery — Peanut Roll Snack of the Week Campaign",
+    "category": "Graphic Design",
+    "client": "Pete's Bakery, Odena Plaza",
+    "clientDescription": "Artisan neighborhood bakery and confectionery located at Odena Plaza offering fresh daily pastries and snacks.",
+    "shortDescription": "Warm, appetite-driven promotional poster for Pete’s Bakery featuring their signature Peanut Roll at 30% off.",
+    "threeWordDesc": "Artisan Bakery Promotion",
+    "descriptors": "Food Advertising, Poster, Typography",
+    "isRealLife": true,
+    "price": "₦150,000",
+    "currency": "NGN",
+    "year": "2026",
+    "monthYear": "July 2026",
+    "duration": "4 Days",
+    "featured": false,
+    "description": "Promotional graphic design for Pete’s Bakery spotlighting the \"Peanut Roll — Snack of the Week (30% off)\". Crafted with warm roasted-peanut tones, stacked macro pastry photography, and playful hand-lettered copy (\"In a nutshell, roll up stress and chill\").",
+    "imageUrl": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806725/VDVC_Portfolio/graphic-design/b3ljkubdt9zzdvmd0jca.jpg",
+    "images": [
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806725/VDVC_Portfolio/graphic-design/b3ljkubdt9zzdvmd0jca.jpg"
+    ],
+    "galleryPictures": [
+      {
+        "id": "gd7-g1",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806725/VDVC_Portfolio/graphic-design/b3ljkubdt9zzdvmd0jca.jpg",
+        "caption": "Pete's Bakery Peanut Roll — Snack of the Week 30% off promotional poster.",
+        "isAI": false
+      }
+    ],
+    "processSteps": [
+      {
+        "id": "step-gd7-1",
+        "name": "Phase 01: Appetite Color Grading & Promotional Copy",
+        "description": "Combined close-up swirled pastry imagery with warm golden-brown textures and custom outlined script typography.",
+        "pictures": [
+          {
+            "id": "proc-gd7-1",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806725/VDVC_Portfolio/graphic-design/b3ljkubdt9zzdvmd0jca.jpg",
+            "caption": "Final Peanut Roll promotional banner.",
+            "type": "Final"
+          }
+        ]
+      }
+    ],
+    "deliverables": [
+      "Promotional Landscape Poster",
+      "Social Media Ad Graphic",
+      "Copywriting & Visual Direction"
+    ],
+    "createdAt": 1712300000000
+  },
+  // GD 8 — Pete's Kitchen — "Savor the Flavour" Culinary Ad
+  {
+    "id": "proj-gd-8",
+    "title": "Pete's Kitchen — \"Savor the Flavour\" Culinary Ad",
+    "category": "Graphic Design",
+    "client": "Pete's Kitchen & Bakery",
+    "clientDescription": "Vibrant culinary kitchen and dining spot celebrating simple ingredients and extraordinary taste.",
+    "shortDescription": "Dynamic levitating pasta advertisement (\"Pro tip: Lick the plate. We won’t judge\") crafted with rich royal blue contrast.",
+    "threeWordDesc": "Dynamic Culinary Advertising",
+    "descriptors": "Culinary Ad, Levitation, Hospitality",
+    "isRealLife": true,
+    "price": "₦160,000",
+    "currency": "NGN",
+    "year": "2026",
+    "monthYear": "July 2026",
+    "duration": "4 Days",
+    "featured": false,
+    "description": "Eye-catching culinary advertisement for Pete’s (\"Savor the Flavour! — Simple Ingredients, Extraordinary Taste\"), contrasting warm orange flying pasta, cherry tomatoes, and seared protein against a deep royal blue studio backdrop.",
+    "imageUrl": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806728/VDVC_Portfolio/graphic-design/pqtx232almuasc0alqvc.jpg",
+    "images": [
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806728/VDVC_Portfolio/graphic-design/pqtx232almuasc0alqvc.jpg"
+    ],
+    "galleryPictures": [
+      {
+        "id": "gd8-g1",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806728/VDVC_Portfolio/graphic-design/pqtx232almuasc0alqvc.jpg",
+        "caption": "Savor the Flavour at Pete’s — \"Pro tip: Lick the plate. We won’t judge\" promotional banner.",
+        "isAI": true
+      }
+    ],
+    "processSteps": [
+      {
+        "id": "step-gd8-1",
+        "name": "Phase 01: High-Contrast Food Staging & Ribbon Badge",
+        "description": "Paired a dynamic mid-air culinary illustration with a burgundy corner ribbon and bold complementary orange branding.",
+        "pictures": [
+          {
+            "id": "proc-gd8-1",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806728/VDVC_Portfolio/graphic-design/pqtx232almuasc0alqvc.jpg",
+            "caption": "Final \"Pro Tip\" culinary promotional banner.",
+            "type": "Final"
+          }
+        ]
+      }
+    ],
+    "deliverables": [
+      "Digital Billboard & Social Banner",
+      "Generative Food Illustration",
+      "Brand Typography"
+    ],
+    "createdAt": 1712250000000
+  },
+  // GD 9 — From Our Kitchen to Your Heart — Culinary Story Poster
+  {
+    "id": "proj-gd-9",
+    "title": "From Our Kitchen to Your Heart — Culinary Story Poster",
+    "category": "Graphic Design",
+    "client": "Pete's Kitchen Collective",
+    "clientDescription": "Artisan culinary collective celebrating authentic kitchen prep, fresh ingredients, and shared meals.",
+    "shortDescription": "Overhead mise-en-place culinary poster celebrating kitchen craft (\"The kitchen is where magic happens — and the mess\").",
+    "threeWordDesc": "Overhead Culinary Storytelling",
+    "descriptors": "Culinary, Poster, Typography",
+    "isRealLife": true,
+    "price": "₦140,000",
+    "currency": "NGN",
+    "year": "2026",
+    "monthYear": "June 2026",
+    "duration": "3 Days",
+    "featured": false,
+    "description": "Warm overhead flat-lay poster capturing a chef’s chopping board surrounded by fresh mirepoix, herbs, and spices, engraved with wood-burned script typography (\"From our kitchen to your heart\") and lower-third editorial messaging.",
+    "imageUrl": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806731/VDVC_Portfolio/graphic-design/wosltzg00phrwmrtdeog.jpg",
+    "images": [
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806731/VDVC_Portfolio/graphic-design/wosltzg00phrwmrtdeog.jpg"
+    ],
+    "galleryPictures": [
+      {
+        "id": "gd9-g1",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806731/VDVC_Portfolio/graphic-design/wosltzg00phrwmrtdeog.jpg",
+        "caption": "From Our Kitchen to Your Heart — Overhead culinary prep poster.",
+        "isAI": false
+      }
+    ],
+    "processSteps": [
+      {
+        "id": "step-gd9-1",
+        "name": "Phase 01: Wood-Burned Script Integration & Editorial Lower-Third",
+        "description": "Blended warm golden-glow script directly onto the timber cutting board grain with legible serif & display lower-third copy.",
+        "pictures": [
+          {
+            "id": "proc-gd9-1",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806731/VDVC_Portfolio/graphic-design/wosltzg00phrwmrtdeog.jpg",
+            "caption": "Final culinary storytelling poster.",
+            "type": "Final"
+          }
+        ]
+      }
+    ],
+    "deliverables": [
+      "Wall & Social Poster Design",
+      "Typographic Photo Compositing"
+    ],
+    "createdAt": 1712200000000
+  },
+  // GD 10 — De Padua Learning Academy — 9th Inter-House Sports Emblem
+  {
+    "id": "proj-gd-10",
+    "title": "De Padua Learning Academy — 9th Inter-House Sports Emblem",
+    "category": "Graphic Design",
+    "client": "De Padua Learning Academy",
+    "clientDescription": "Primary and secondary educational academy fostering academic excellence and athletic sportsmanship.",
+    "shortDescription": "Commemorative circular medal and crest print artwork designed for the 9th Inter-House Sports Competition (2025).",
+    "threeWordDesc": "Commemorative Sports Crest",
+    "descriptors": "Emblem, Print Medal, Illustration",
+    "isRealLife": true,
+    "price": "₦120,000",
+    "currency": "NGN",
+    "year": "2025",
+    "monthYear": "November 2025",
+    "duration": "1 Week",
+    "featured": false,
+    "description": "Custom circular medal print emblem created for De Padua Learning Academy’s 9th Inter-House Sports (2025). Features twin growth trees symbolizing mentorship and youth development, arched academy lettering, and tactile vintage speckle texture.",
+    "imageUrl": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806705/VDVC_Portfolio/graphic-design/pponvsxr4dd9cpb6gtbh.png",
+    "images": [
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806705/VDVC_Portfolio/graphic-design/pponvsxr4dd9cpb6gtbh.png"
+    ],
+    "galleryPictures": [
+      {
+        "id": "gd10-g1",
+        "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806705/VDVC_Portfolio/graphic-design/pponvsxr4dd9cpb6gtbh.png",
+        "caption": "De Padua Learning Academy — 9th Inter-House Sports 2025 circular medal print artwork.",
+        "isAI": false
+      }
+    ],
+    "processSteps": [
+      {
+        "id": "step-gd10-1",
+        "name": "Phase 01: Circular Badge Vector & Print Preparation",
+        "description": "Engineered a balanced circular crest for physical medal die-sublimation and event apparel printing.",
+        "pictures": [
+          {
+            "id": "proc-gd10-1",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793806705/VDVC_Portfolio/graphic-design/pponvsxr4dd9cpb6gtbh.png",
+            "caption": "Final medal print master artwork.",
+            "type": "Final"
+          }
+        ]
+      }
+    ],
+    "deliverables": [
+      "Circular Medal Print Artwork",
+      "Event Crest Illustration",
+      "Print-Ready PNG Master"
+    ],
+    "createdAt": 1712150000000
+  },
 ];
-
-

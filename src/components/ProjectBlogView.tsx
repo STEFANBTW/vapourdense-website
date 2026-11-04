@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   X,
@@ -49,6 +49,9 @@ interface ExpandedImageState {
   isAI?: boolean;
   type?: 'AI' | 'Final';
   title?: string;
+  source?: 'gallery' | 'process';
+  index?: number;
+  stepIndex?: number;
 }
 
 export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
@@ -112,6 +115,151 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
   // Deliverable input state
   const [newDeliverableText, setNewDeliverableText] = useState('');
 
+  // Fallback gallery pictures (respects empty array if user cleared it)
+  const effectiveGallery: GalleryPicture[] = currentProject?.galleryPictures !== undefined
+    ? currentProject.galleryPictures
+    : (currentProject?.images || []).map((img, idx) => ({
+        id: `gal-${idx}`,
+        url: img,
+        caption: '',
+        isAI: idx % 2 === 1,
+      }));
+
+  // Fallback process steps (respects empty array if user cleared it)
+  const effectiveProcessSteps: ProcessStep[] = currentProject?.processSteps !== undefined
+    ? currentProject.processSteps
+    : (currentProject?.images && currentProject.images.length > 0 ? [
+        {
+          id: 'step-auto-1',
+          name: 'Phase 01: Concept Exploration & Generative Prototyping',
+          description: `Iterative discovery exploring core design themes for ${currentProject.client}. Combining algorithmic AI prompt synthesis with bespoke typography structures.`,
+          pictures: [
+            {
+              id: 'pic-proc-1',
+              url: currentProject.images[0] || '',
+              caption: '',
+              type: 'AI',
+            },
+            {
+              id: 'pic-proc-2',
+              url: currentProject.images[1] || currentProject.images[0] || '',
+              caption: '',
+              type: 'Final',
+            },
+          ],
+        },
+      ] : []);
+
+  // Navigation helper for expanded image lightbox
+  const navigateGalleryImage = useCallback((direction: 'next' | 'prev') => {
+    setExpandedImage(current => {
+      if (!current) return null;
+      const source = current.source || 'gallery';
+
+      if (source === 'gallery') {
+        const items = effectiveGallery;
+        if (items.length <= 1) return current;
+
+        let idx = typeof current.index === 'number' && current.index >= 0 && current.index < items.length
+          ? current.index
+          : items.findIndex(p => p.url === current.url);
+        if (idx === -1) idx = 0;
+
+        const nextIdx = direction === 'next'
+          ? (idx + 1) % items.length
+          : (idx - 1 + items.length) % items.length;
+
+        const nextPic = items[nextIdx];
+        return {
+          url: nextPic.url,
+          caption: nextPic.caption || '',
+          isAI: Boolean(nextPic.isAI),
+          title: `${currentProject?.title || 'Project'} — Gallery Asset ${nextIdx + 1}`,
+          source: 'gallery',
+          index: nextIdx,
+        };
+      } else if (source === 'process') {
+        const stepIdx = current.stepIndex ?? 0;
+        const step = effectiveProcessSteps[stepIdx];
+        const items = step?.pictures || [];
+        if (items.length <= 1) return current;
+
+        let idx = typeof current.index === 'number' && current.index >= 0 && current.index < items.length
+          ? current.index
+          : items.findIndex(p => p.url === current.url);
+        if (idx === -1) idx = 0;
+
+        const nextIdx = direction === 'next'
+          ? (idx + 1) % items.length
+          : (idx - 1 + items.length) % items.length;
+
+        const nextPic = items[nextIdx];
+        return {
+          url: nextPic.url,
+          caption: nextPic.caption || '',
+          type: nextPic.type,
+          isAI: nextPic.type === 'AI',
+          title: `${step.name} — Asset ${nextIdx + 1}`,
+          source: 'process',
+          index: nextIdx,
+          stepIndex: stepIdx,
+        };
+      }
+
+      return current;
+    });
+  }, [effectiveGallery, effectiveProcessSteps, currentProject]);
+
+  const getExpandedMeta = useCallback(() => {
+    if (!expandedImage) return { activeIndex: 0, totalCount: 0 };
+    const source = expandedImage.source || 'gallery';
+
+    if (source === 'gallery') {
+      const items = effectiveGallery;
+      let idx = typeof expandedImage.index === 'number' && expandedImage.index >= 0 && expandedImage.index < items.length
+        ? expandedImage.index
+        : items.findIndex(p => p.url === expandedImage.url);
+      if (idx === -1) idx = 0;
+      return { activeIndex: idx, totalCount: items.length };
+    } else if (source === 'process') {
+      const stepIdx = expandedImage.stepIndex ?? 0;
+      const step = effectiveProcessSteps[stepIdx];
+      const items = step?.pictures || [];
+      let idx = typeof expandedImage.index === 'number' && expandedImage.index >= 0 && expandedImage.index < items.length
+        ? expandedImage.index
+        : items.findIndex(p => p.url === expandedImage.url);
+      if (idx === -1) idx = 0;
+      return { activeIndex: idx, totalCount: items.length };
+    }
+
+    return { activeIndex: 0, totalCount: 0 };
+  }, [expandedImage, effectiveGallery, effectiveProcessSteps]);
+
+  // Touch gesture state for swipe navigation on mobile
+  const touchStartXRef = useRef<number | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+    touchStartYRef.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartXRef.current === null || touchStartYRef.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartXRef.current;
+    const deltaY = e.changedTouches[0].clientY - touchStartYRef.current;
+    touchStartXRef.current = null;
+    touchStartYRef.current = null;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 40) {
+      if (deltaX < 0) {
+        navigateGalleryImage('next');
+      } else {
+        navigateGalleryImage('prev');
+      }
+    }
+  };
+
   // Close project switcher & currency dropdowns on click outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -152,12 +300,18 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
     }
   }, [initialProject]);
 
-  // Handle keyboard shortcuts (Esc to close, Left/Right for project navigation)
+  // Handle keyboard shortcuts (Esc to close, Left/Right for project/gallery navigation)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (expandedImage) {
         if (e.key === 'Escape') {
           setExpandedImage(null);
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          navigateGalleryImage('next');
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          navigateGalleryImage('prev');
         }
         return;
       }
@@ -213,7 +367,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
       window.removeEventListener('keydown', handleKeyDown);
       stopAudioPlayback();
     };
-  }, [currentProject, allProjects, onNavigateProject, onClose, expandedImage, linkModalTarget]);
+  }, [currentProject, allProjects, onNavigateProject, onClose, expandedImage, linkModalTarget, navigateGalleryImage]);
 
   // Audio simulation for voice note
   const startAudioPlayback = () => {
@@ -295,41 +449,6 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
   const currentIndex = allProjects.findIndex(p => p.id === currentProject.id);
   const prevProject = currentIndex > 0 ? allProjects[currentIndex - 1] : null;
   const nextProject = currentIndex < allProjects.length - 1 ? allProjects[currentIndex + 1] : null;
-
-  // Fallback gallery pictures (respects empty array if user cleared it)
-  const effectiveGallery: GalleryPicture[] = currentProject.galleryPictures !== undefined
-    ? currentProject.galleryPictures
-    : (currentProject.images || []).map((img, idx) => ({
-        id: `gal-${idx}`,
-        url: img,
-        caption: '',
-        isAI: idx % 2 === 1,
-      }));
-
-  // Fallback process steps (respects empty array if user cleared it)
-  const effectiveProcessSteps: ProcessStep[] = currentProject.processSteps !== undefined
-    ? currentProject.processSteps
-    : (currentProject.images && currentProject.images.length > 0 ? [
-        {
-          id: 'step-auto-1',
-          name: 'Phase 01: Concept Exploration & Generative Prototyping',
-          description: `Iterative discovery exploring core design themes for ${currentProject.client}. Combining algorithmic AI prompt synthesis with bespoke typography structures.`,
-          pictures: [
-            {
-              id: 'pic-proc-1',
-              url: currentProject.images[0] || '',
-              caption: '',
-              type: 'AI',
-            },
-            {
-              id: 'pic-proc-2',
-              url: currentProject.images[1] || currentProject.images[0] || '',
-              caption: '',
-              type: 'Final',
-            },
-          ],
-        },
-      ] : []);
 
   const remark = currentProject.clientRemark || {
     type: 'voice',
@@ -1078,6 +1197,8 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                                 caption: pic.caption,
                                 isAI: isAIGenerated,
                                 title: `${currentProject.title} — Gallery Asset ${idx + 1}`,
+                                source: 'gallery',
+                                index: idx,
                               });
                             }
                           }}
@@ -1330,6 +1451,9 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                                       type: pic.type,
                                       isAI: isAI,
                                       title: `${step.name} — Asset ${picIdx + 1}`,
+                                      source: 'process',
+                                      index: picIdx,
+                                      stepIndex: stepIdx,
                                     });
                                   }
                                 }}
@@ -2471,50 +2595,145 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
         </div>
       </div>
 
-      {/* MODAL: Enlarge Image */}
+      {/* MODAL: Enlarge Image (Responsive Screen-Filling Lightbox with On-Screen & Keyboard Navigation) */}
       <AnimatePresence>
-        {expandedImage && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setExpandedImage(null)}
-              className="fixed inset-0 bg-black/85 backdrop-blur-md cursor-pointer"
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="relative max-w-5xl max-h-[90vh] w-full flex flex-col items-center justify-center z-10 p-2 sm:p-4"
-            >
-              <button
-                onClick={() => setExpandedImage(null)}
-                className="absolute top-2 right-2 sm:-top-10 sm:right-0 p-2 text-white/80 hover:text-white bg-black/60 rounded-full cursor-pointer z-20"
-                title="Close"
-              >
-                <X className="w-6 h-6" />
-              </button>
+        {expandedImage && (() => {
+          const { activeIndex, totalCount } = getExpandedMeta();
 
-              <div className="relative rounded-2xl overflow-hidden bg-black shadow-2xl max-h-[80vh] flex items-center justify-center border border-white/10">
-                <img
-                  src={expandedImage.url}
-                  alt={expandedImage.caption || 'Enlarged view'}
-                  referrerPolicy="no-referrer"
-                  className="max-h-[75vh] w-auto object-contain"
-                />
+          return (
+            <div
+              className="fixed inset-0 z-50 flex flex-col justify-between items-center h-[100dvh] max-h-[100dvh] w-screen max-w-[100vw] overflow-hidden select-none bg-black/92 backdrop-blur-xl"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Enlarged media view"
+            >
+              {/* Dark blurred backdrop - clicking outside closes modal */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={() => setExpandedImage(null)}
+                className="absolute inset-0 cursor-pointer"
+              />
+
+              {/* TOP BAR: Counter / Badge / Title & Close Button */}
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="relative z-20 w-full flex items-center justify-between gap-3 px-3 sm:px-6 py-2.5 sm:py-3 shrink-0 pointer-events-auto"
+              >
+                {/* Left Side: Counter & Badges */}
+                <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                  {totalCount > 1 && (
+                    <span className="px-3 py-1 rounded-full text-xs font-unisans-regular bg-white/10 text-white/95 border border-white/20 backdrop-blur-md shadow-sm shrink-0">
+                      {activeIndex + 1} / {totalCount}
+                    </span>
+                  )}
+                  {expandedImage.isAI && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-unisans-regular bg-black/70 text-white border border-white/20 backdrop-blur-md shrink-0">
+                      <Sparkles className="w-3 h-3 text-white" />
+                      <span className="hidden sm:inline">AI Generated</span>
+                      <span className="sm:hidden">AI</span>
+                    </span>
+                  )}
+                  {expandedImage.type && !expandedImage.isAI && (
+                    <span className="px-2.5 py-1 rounded-full text-xs font-unisans-regular bg-white/10 text-white/80 border border-white/15 backdrop-blur-md shrink-0">
+                      {expandedImage.type}
+                    </span>
+                  )}
+                  {expandedImage.title && (
+                    <span className="text-xs sm:text-sm font-unisans-thin-caps uppercase tracking-wider text-white/60 truncate hidden md:inline">
+                      {expandedImage.title}
+                    </span>
+                  )}
+                </div>
+
+                {/* Right Side: Close Button */}
+                <button
+                  type="button"
+                  onClick={() => setExpandedImage(null)}
+                  className="p-2 sm:p-2.5 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 active:scale-95 rounded-full border border-white/20 backdrop-blur-md transition-all cursor-pointer shadow-lg shrink-0"
+                  title="Close (Esc)"
+                  aria-label="Close enlarged view"
+                >
+                  <X className="w-5 h-5 sm:w-6 sm:h-6" />
+                </button>
               </div>
 
+              {/* MAIN CONTENT AREA: Centered Screen-Filling Image with Side Navigation Arrows */}
+              <div
+                className="relative z-10 flex-1 w-full min-h-0 min-w-0 flex items-center justify-center px-1 sm:px-14 md:px-20 py-1"
+                onClick={() => setExpandedImage(null)}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+              >
+                {/* On-Screen Arrow Left (Previous) */}
+                {totalCount > 1 && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigateGalleryImage('prev');
+                    }}
+                    className="absolute left-2 sm:left-4 md:left-6 z-30 p-2.5 sm:p-3.5 rounded-full bg-black/60 hover:bg-black/90 active:scale-90 text-white/90 hover:text-white border border-white/20 backdrop-blur-md shadow-2xl transition-all cursor-pointer hover:scale-105"
+                    title="Previous image (Left Arrow)"
+                    aria-label="Previous image"
+                  >
+                    <ChevronLeft className="w-5 h-5 sm:w-7 sm:h-7" />
+                  </button>
+                )}
+
+                {/* Scaled Responsive Image Box */}
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  className="relative flex items-center justify-center max-w-full max-h-full"
+                >
+                  <motion.img
+                    key={expandedImage.url}
+                    initial={{ opacity: 0.35, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.18, ease: 'easeOut' }}
+                    src={expandedImage.url}
+                    alt={expandedImage.caption || expandedImage.title || 'Enlarged view'}
+                    referrerPolicy="no-referrer"
+                    className="max-h-[calc(100dvh-130px)] sm:max-h-[calc(100dvh-120px)] md:max-h-[calc(100dvh-110px)] max-w-[calc(100vw-1.5rem)] sm:max-w-[calc(100vw-7rem)] md:max-w-[calc(100vw-9rem)] w-auto h-auto object-contain rounded-xl sm:rounded-2xl shadow-2xl border border-white/10"
+                  />
+                </div>
+
+                {/* On-Screen Arrow Right (Next) */}
+                {totalCount > 1 && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigateGalleryImage('next');
+                    }}
+                    className="absolute right-2 sm:right-4 md:right-6 z-30 p-2.5 sm:p-3.5 rounded-full bg-black/60 hover:bg-black/90 active:scale-90 text-white/90 hover:text-white border border-white/20 backdrop-blur-md shadow-2xl transition-all cursor-pointer hover:scale-105"
+                    title="Next image (Right Arrow)"
+                    aria-label="Next image"
+                  >
+                    <ChevronRight className="w-5 h-5 sm:w-7 sm:h-7" />
+                  </button>
+                )}
+              </div>
+
+              {/* BOTTOM BAR: Caption */}
               {expandedImage.caption && (
-                <div className="mt-3 text-center px-4 max-w-2xl">
-                  <p className="text-base font-unisans-regular text-white/90">
-                    {expandedImage.caption}
-                  </p>
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  className="relative z-20 w-full max-w-4xl px-4 py-2 sm:py-3 text-center shrink-0 pointer-events-auto"
+                >
+                  <div className="inline-block max-w-full px-4 py-1.5 rounded-2xl bg-black/60 backdrop-blur-md border border-white/10 shadow-lg">
+                    <p className="text-xs sm:text-sm md:text-base font-unisans-regular text-white/95 leading-relaxed line-clamp-3 sm:line-clamp-none">
+                      {expandedImage.caption}
+                    </p>
+                  </div>
                 </div>
               )}
-            </motion.div>
-          </div>
-        )}
+            </div>
+          );
+        })()}
       </AnimatePresence>
 
       {/* MODAL: Add Image via Link */}
