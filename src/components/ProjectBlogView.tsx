@@ -80,7 +80,9 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
   const [expandedImage, setExpandedImage] = useState<ExpandedImageState | null>(null);
 
   // Active client remark type
-  const [activeRemarkType, setActiveRemarkType] = useState<ClientRemarkType>('voice');
+  const [activeRemarkType, setActiveRemarkType] = useState<ClientRemarkType>(
+    () => initialProject?.clientRemark?.type || 'none'
+  );
 
   // Mobile active pane switcher ('gallery_process' | 'other_details')
   const [mobileActivePane, setMobileActivePane] = useState<'gallery_process' | 'other_details'>('gallery_process');
@@ -122,33 +124,11 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
         id: `gal-${idx}`,
         url: img,
         caption: '',
-        isAI: idx % 2 === 1,
+        isAI: false,
       }));
 
-  // Fallback process steps (respects empty array if user cleared it)
-  const effectiveProcessSteps: ProcessStep[] = currentProject?.processSteps !== undefined
-    ? currentProject.processSteps
-    : (currentProject?.images && currentProject.images.length > 0 ? [
-        {
-          id: 'step-auto-1',
-          name: 'Phase 01: Concept Exploration & Generative Prototyping',
-          description: `Iterative discovery exploring core design themes for ${currentProject.client}. Combining algorithmic AI prompt synthesis with bespoke typography structures.`,
-          pictures: [
-            {
-              id: 'pic-proc-1',
-              url: currentProject.images[0] || '',
-              caption: '',
-              type: 'AI',
-            },
-            {
-              id: 'pic-proc-2',
-              url: currentProject.images[1] || currentProject.images[0] || '',
-              caption: '',
-              type: 'Final',
-            },
-          ],
-        },
-      ] : []);
+  // Process steps (never fabricate steps if none were created)
+  const effectiveProcessSteps: ProcessStep[] = currentProject?.processSteps || [];
 
   // Navigation helper for expanded image lightbox
   const navigateGalleryImage = useCallback((direction: 'next' | 'prev') => {
@@ -290,7 +270,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
       if (initialProject.clientRemark?.type) {
         setActiveRemarkType(initialProject.clientRemark.type);
       } else {
-        setActiveRemarkType('voice');
+        setActiveRemarkType('none');
       }
       setIsPlayingVoice(false);
       setVoicePlaybackProgress(0);
@@ -451,11 +431,11 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
   const nextProject = currentIndex < allProjects.length - 1 ? allProjects[currentIndex + 1] : null;
 
   const remark = currentProject.clientRemark || {
-    type: 'voice',
-    comment: `“Working with VDVC completely transformed our digital positioning. The craftsmanship and attention to detail are world-class.”`,
-    clientAuthor: `${currentProject.client} Leadership`,
-    voiceDuration: '0:42',
-    voiceDate: currentProject.monthYear || `${currentProject.year}`,
+    type: 'none',
+    comment: '',
+    clientAuthor: '',
+    pictureUrl: '',
+    voiceAudioUrl: '',
   };
 
   // Check if a client remark actually has real user-supplied content to display on the frontend

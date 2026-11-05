@@ -131,7 +131,7 @@ export interface AboutData {
   founderImageScale?: number;
 }
 
-export const defaultFounderPortraitSvg = '/VDVC 4 - Logo.png';
+export const defaultFounderPortraitSvg = '/VDVC 4 - Logo - NO-TEXT-TRANSPARENT-BG.png';
 
 export const defaultSocialLinks: SocialLinkItem[] = [];
 
@@ -245,8 +245,8 @@ export const defaultAboutData: AboutData = {
   founderName: 'VIRTUAL CAFE',
   bio: 'a flexible system for your paper workloads',
   badge: '',
-  founderImage: '/VDVC 4 - Logo.png',
-  logoUrl: '/VDVC 4 - Logo - NO-TEXT.png',
+  founderImage: '/VDVC 4 - Logo - NO-TEXT-TRANSPARENT-BG.png',
+  logoUrl: '/VDVC 4 - Logo - NO-TEXT-TRANSPARENT-BG.png',
   disciplines: [],
   sections: defaultAboutSections,
   phone: '0701 841 6894',
@@ -298,9 +298,11 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
   const imageSrc =
     data.founderImage &&
     !data.founderImage.includes('Linnea') &&
-    !data.founderImage.startsWith('data:image/svg+xml')
+    !data.founderImage.startsWith('data:image/svg+xml') &&
+    !data.founderImage.endsWith('/VDVC 4 - Logo.png') &&
+    data.founderImage !== '/vdvc-4-logo.png'
       ? data.founderImage
-      : '/VDVC 4 - Logo.png';
+      : '/VDVC 4 - Logo - NO-TEXT-TRANSPARENT-BG.png';
 
   const defaultSoftwareIcons: Record<string, any> = {
     'Microsoft Word': FileText,
@@ -367,23 +369,23 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutD
               </h2>
             </div>
 
-            {/* Picture Card with "VDVC 4 - Logo.png" */}
+            {/* Picture Card with "VDVC 4 - Logo - NO-TEXT-TRANSPARENT-BG.png" */}
             <div
               className="p-4 sm:p-6 rounded-none bg-[#d6d3d3] w-full flex flex-col items-center justify-center border-0 shadow-none transition-all"
               style={{ maxWidth: `${Math.round(448 * ((data.founderImageScale || 100) / 100))}px` }}
             >
-              <div className="w-full aspect-square rounded-none overflow-hidden bg-[#202226] p-0 flex items-center justify-center relative border-0">
+              <div className="w-full aspect-square rounded-none overflow-hidden bg-transparent p-2 sm:p-4 flex items-center justify-center relative border-0">
                 <img
                   src={imageSrc}
-                  alt="VDVC 4 - Logo.png"
+                  alt="VDVC Logo"
                   onError={(e) => {
                     const target = e.currentTarget as HTMLImageElement;
                     if (!target.dataset.fallbackApplied) {
                       target.dataset.fallbackApplied = 'true';
-                      target.src = '/vdvc-4-logo.png';
+                      target.src = '/VDVC 4 - Logo - NO-TEXT-TRANSPARENT-BG.png';
                     }
                   }}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                 />
               </div>
             </div>

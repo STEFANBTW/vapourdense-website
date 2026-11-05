@@ -1264,7 +1264,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     type="text"
                     value={editingAbout.founderImage || ''}
                     onChange={e => setEditingAbout(prev => ({ ...prev, founderImage: e.target.value }))}
-                    placeholder="/VDVC 4 - Logo.png or paste image link"
+                    placeholder="/VDVC 4 - Logo - NO-TEXT-TRANSPARENT-BG.png or paste image link"
                     className="flex-1 px-4 py-2.5 text-xs text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 font-mono"
                   />
                   <label

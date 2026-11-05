@@ -25,7 +25,10 @@ export const Navbar: React.FC<NavbarProps> = ({
   const effectiveMobileVisible = isMobileNavVisible !== undefined ? isMobileNavVisible : isVisible;
 
   const logoSrc =
-    logoUrl && !logoUrl.includes('vdvc-logo.png')
+    logoUrl &&
+    !logoUrl.includes('vdvc-logo.png') &&
+    !logoUrl.endsWith('/VDVC 4 - Logo.png') &&
+    !logoUrl.endsWith('/VDVC 4 - Logo - NO-TEXT.png')
       ? logoUrl
       : '/VDVC 4 - Logo - NO-TEXT-TRANSPARENT-BG.png';
 

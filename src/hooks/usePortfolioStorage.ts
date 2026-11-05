@@ -13,15 +13,45 @@ import { Project } from '../types/portfolio';
 import { initialProjects } from '../data/initialProjects';
 import { AboutData, defaultAboutData, SocialLinkItem } from '../components/AboutSection';
 
-const STORAGE_KEY = 'vdvc_portfolio_projects_v11';
-const SEEDED_WEB_KEY = 'vdvc_seeded_projects_v3';
+const STORAGE_KEY = 'vdvc_portfolio_projects_v13';
+const SEEDED_WEB_KEY = 'vdvc_seeded_projects_v5';
 const ABOUT_STORAGE_KEY = 'vdvc_portfolio_about_v2';
 const AUTH_KEY = 'dive_portfolio_admin_auth';
 export const ADMIN_PASSWORD = 'memeh 23';
 
-const DELETED_PROJECT_IDS = new Set(['proj-5', 'proj-6', 'proj-7']);
+const DELETED_PROJECT_IDS = new Set([
+  'proj-1',
+  'proj-2',
+  'proj-3',
+  'proj-4',
+  'proj-5',
+  'proj-6',
+  'proj-7',
+]);
 const LEGACY_SOCIAL_IDS = new Set(['soc-1', 'soc-2', 'soc-3']);
 const initialMap = new Map(initialProjects.map(p => [p.id, p]));
+
+/**
+ * Deduplicate projects by ID and by normalized (category + title) so duplicate
+ * entries can never appear on initial load or after snapshot updates.
+ */
+function dedupeProjects(list: Project[]): Project[] {
+  const seenIds = new Set<string>();
+  const seenTitleKeys = new Set<string>();
+  const result: Project[] = [];
+
+  for (const item of list) {
+    if (!item || !item.id || DELETED_PROJECT_IDS.has(item.id)) continue;
+    const titleKey = `${(item.category || '').toLowerCase()}::${(item.title || '').trim().toLowerCase()}`;
+    if (seenIds.has(item.id) || (item.title && seenTitleKeys.has(titleKey))) {
+      continue;
+    }
+    seenIds.add(item.id);
+    if (item.title) seenTitleKeys.add(titleKey);
+    result.push(item);
+  }
+  return result;
+}
 
 /**
  * Layers a stored project over the built-in defaults.
@@ -83,17 +113,19 @@ export function usePortfolioStorage() {
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed
-            .filter((p: Project) => !DELETED_PROJECT_IDS.has(p.id))
-            .map((p: Project) => {
-              return mergeWithDefaults(p);
-            });
+          return dedupeProjects(
+            parsed
+              .filter((p: Project) => !DELETED_PROJECT_IDS.has(p.id))
+              .map((p: Project) => mergeWithDefaults(p))
+          ).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
         }
       }
     } catch {
       // fallback
     }
-    return [...initialProjects].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    return dedupeProjects([...initialProjects]).sort(
+      (a, b) => (b.createdAt || 0) - (a.createdAt || 0)
+    );
   });
 
   const [aboutData, setAboutData] = useState<AboutData>(() => {
@@ -105,11 +137,18 @@ export function usePortfolioStorage() {
           if (
             !parsed.founderImage ||
             parsed.founderImage.includes('Linnea') ||
-            parsed.founderImage.startsWith('data:image/svg+xml')
+            parsed.founderImage.startsWith('data:image/svg+xml') ||
+            parsed.founderImage === '/VDVC 4 - Logo.png' ||
+            parsed.founderImage === '/vdvc-4-logo.png'
           ) {
-            parsed.founderImage = '/VDVC 4 - Logo.png';
+            parsed.founderImage = '/VDVC 4 - Logo - NO-TEXT-TRANSPARENT-BG.png';
           }
-          if (!parsed.logoUrl || parsed.logoUrl.includes('vdvc-logo.png')) {
+          if (
+            !parsed.logoUrl ||
+            parsed.logoUrl.includes('vdvc-logo.png') ||
+            parsed.logoUrl === '/VDVC 4 - Logo - NO-TEXT.png' ||
+            parsed.logoUrl === '/VDVC 4 - Logo.png'
+          ) {
             parsed.logoUrl = '/VDVC 4 - Logo - NO-TEXT-TRANSPARENT-BG.png';
           }
           if (!parsed.footerTagline || parsed.footerTagline.includes('Creative Direction')) {
@@ -140,7 +179,6 @@ export function usePortfolioStorage() {
   const [dbError, setDbError] = useState<string | null>(null);
   const lastProjectsJsonRef = useRef<string>('');
   const lastAboutJsonRef = useRef<string>('');
-  const hasSeededWebRef = useRef<boolean>(false);
 
   // Latest state mirrors, used to roll back optimistic updates when a write fails
   const projectsRef = useRef<Project[]>(projects);
@@ -161,7 +199,7 @@ export function usePortfolioStorage() {
         if (snapshot.empty) {
           try {
             const batch = writeBatch(db);
-            initialProjects.forEach(proj => {
+            dedupeProjects(initialProjects).forEach(proj => {
               const docRef = doc(db, 'projects', proj.id);
               batch.set(docRef, proj);
             });
@@ -175,48 +213,18 @@ export function usePortfolioStorage() {
             console.error('Failed to seed initial projects to Firestore:', err);
           }
         } else {
-          const loadedProjects: Project[] = [];
-          const existingIds = new Set<string>();
+          const rawProjects: Project[] = [];
           snapshot.forEach(docSnap => {
             const data = docSnap.data() as Project;
             const docId = data.id || docSnap.id;
-            existingIds.add(docId);
-            if (!DELETED_PROJECT_IDS.has(docSnap.id) && !DELETED_PROJECT_IDS.has(data.id)) {
-              loadedProjects.push(mergeWithDefaults({ ...data, id: docId }));
+            if (!DELETED_PROJECT_IDS.has(docSnap.id) && !DELETED_PROJECT_IDS.has(docId)) {
+              rawProjects.push(mergeWithDefaults({ ...data, id: docId }));
             }
           });
 
-          // Ensure the 8 new website projects are seeded if not already in Firestore
-          const alreadySeeded =
-            hasSeededWebRef.current ||
-            (() => {
-              try {
-                return localStorage.getItem(SEEDED_WEB_KEY) === 'true';
-              } catch {
-                return false;
-              }
-            })();
-
-          const missingWebProjects = initialProjects.filter(
-            p => (p.id.startsWith('proj-web-') || p.id.startsWith('proj-gd-')) && !existingIds.has(p.id)
+          const loadedProjects = dedupeProjects(rawProjects).sort(
+            (a, b) => (b.createdAt || 0) - (a.createdAt || 0)
           );
-
-          if (!alreadySeeded && missingWebProjects.length > 0) {
-            hasSeededWebRef.current = true;
-            missingWebProjects.forEach(p => loadedProjects.push(p));
-            try {
-              const batch = writeBatch(db);
-              missingWebProjects.forEach(proj => {
-                batch.set(doc(db, 'projects', proj.id), proj);
-              });
-              await batch.commit();
-              localStorage.setItem(SEEDED_WEB_KEY, 'true');
-            } catch (err) {
-              console.error('Failed to seed website projects to Firestore:', err);
-            }
-          }
-
-          loadedProjects.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
           const serialized = JSON.stringify(loadedProjects);
           if (serialized !== lastProjectsJsonRef.current) {
             lastProjectsJsonRef.current = serialized;
@@ -259,12 +267,19 @@ export function usePortfolioStorage() {
           if (
             !founderImage ||
             founderImage.includes('Linnea') ||
-            founderImage.startsWith('data:image/svg+xml')
+            founderImage.startsWith('data:image/svg+xml') ||
+            founderImage === '/VDVC 4 - Logo.png' ||
+            founderImage === '/vdvc-4-logo.png'
           ) {
-            founderImage = '/VDVC 4 - Logo.png';
+            founderImage = '/VDVC 4 - Logo - NO-TEXT-TRANSPARENT-BG.png';
           }
           let logoUrl = data.logoUrl;
-          if (!logoUrl || logoUrl.includes('vdvc-logo.png')) {
+          if (
+            !logoUrl ||
+            logoUrl.includes('vdvc-logo.png') ||
+            logoUrl === '/VDVC 4 - Logo - NO-TEXT.png' ||
+            logoUrl === '/VDVC 4 - Logo.png'
+          ) {
             logoUrl = '/VDVC 4 - Logo - NO-TEXT-TRANSPARENT-BG.png';
           }
           let footerTagline = data.footerTagline;
@@ -348,7 +363,7 @@ export function usePortfolioStorage() {
       createdAt: Date.now(),
     };
 
-    setProjects(prev => [newProj, ...prev]);
+    setProjects(prev => dedupeProjects([newProj, ...prev]));
     try {
       assertDocSize(newProj, 'This project');
       await setDoc(doc(db, 'projects', newId), newProj);
@@ -371,8 +386,6 @@ export function usePortfolioStorage() {
     setProjects(prev => prev.map(p => (p.id === id ? { ...p, ...updated } : p)));
     try {
       assertDocSize(nextDoc, 'This project');
-      // setDoc+merge (instead of updateDoc) also works when the document does not exist yet.
-      // Empty strings are stored as-is, so cleared fields stay cleared.
       await setDoc(doc(db, 'projects', id), { ...updated, id, updatedAt: nextDoc.updatedAt }, { merge: true });
       setDbError(null);
     } catch (err) {
@@ -401,10 +414,11 @@ export function usePortfolioStorage() {
   // Reset to the default projects in Firestore
   const resetToDefaults = useCallback(async () => {
     const before = projectsRef.current;
-    const targetProjects = [...initialProjects].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    const targetProjects = dedupeProjects([...initialProjects]).sort(
+      (a, b) => (b.createdAt || 0) - (a.createdAt || 0)
+    );
     setProjects(targetProjects);
     try {
-      // Delete existing in Firestore and reseed
       const existingSnap = await getDocs(collection(db, 'projects'));
       const batch = writeBatch(db);
       existingSnap.forEach(d => {
