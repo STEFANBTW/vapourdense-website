@@ -1207,5 +1207,400 @@ export const initialProjects: Project[] = [
     "deliverables": [],
     "featured": true,
     "createdAt": 1711300000000
-  }
+  },
+  // 13 — Crispan Suites & Event Center
+  {
+    id: 'proj-web-9',
+    title: 'Crispan Suites & Event Center',
+    category: 'Web Design',
+    client: 'Crispan Suites & Event Center',
+    websiteUrl: 'https://crispan-redesign.vercel.app/',
+    isRealLife: true,
+    threeWordDesc: 'Executive Hospitality Sanctuary',
+    price: '',
+    duration: '',
+    year: '',
+    monthYear: '',
+    clientDescription: '',
+    shortDescription: '',
+    description: '',
+    descriptors: '',
+    featured: true,
+    imageUrl: 'https://res.cloudinary.com/dwo7oemds/image/upload/v1793968869/vdvc-portfolio/crispan-suites/hznfst07syhaawjihrtm.jpg',
+    images: [
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968869/vdvc-portfolio/crispan-suites/hznfst07syhaawjihrtm.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968875/vdvc-portfolio/crispan-suites/otuyaoclhy2zqk2hkl7v.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968878/vdvc-portfolio/crispan-suites/c5n2nwy9kl6qpm1wqdeq.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968881/vdvc-portfolio/crispan-suites/uyqxs6ptrieclviyuj66.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968886/vdvc-portfolio/crispan-suites/zh2yvhzj5gk90hhe5qhf.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968888/vdvc-portfolio/crispan-suites/pzgenrj6xxtspptmzl1y.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968894/vdvc-portfolio/crispan-suites/soqed7xg8zg7a5ickwfm.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968896/vdvc-portfolio/crispan-suites/pmdokvwbihd4dtzwbbit.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968898/vdvc-portfolio/crispan-suites/ehhogfp9vwj8a9mlqeex.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968900/vdvc-portfolio/crispan-suites/ztyxm9ih4z2rehninlkq.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793970756/vdvc-portfolio/crispan-suites/hbi4jaakmqy8w2ajuakg.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793970756/vdvc-portfolio/crispan-suites/mhd4wi4s54zksnoxv0hr.jpg"
+    ],
+    galleryPictures: [
+          {
+                "id": "web9-g-raw-desk",
+                "caption": "Crispan Suites & Event Center — Raw Desktop Hero Viewport.",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968869/vdvc-portfolio/crispan-suites/hznfst07syhaawjihrtm.jpg",
+                "isAI": false
+          },
+          {
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968875/vdvc-portfolio/crispan-suites/otuyaoclhy2zqk2hkl7v.jpg",
+                "caption": "Crispan Suites & Event Center — Responsive Devices Showcase.",
+                "id": "web9-g-mock-1",
+                "isAI": false
+          },
+          {
+                "id": "web9-g-mock-2",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968878/vdvc-portfolio/crispan-suites/c5n2nwy9kl6qpm1wqdeq.jpg",
+                "isAI": false,
+                "caption": "Crispan Suites & Event Center — Desktop Studio Mockup."
+          },
+          {
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968881/vdvc-portfolio/crispan-suites/uyqxs6ptrieclviyuj66.jpg",
+                "id": "web9-g-mock-3",
+                "isAI": false,
+                "caption": "Crispan Suites & Event Center — Mobile Studio Mockup."
+          },
+          {
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968886/vdvc-portfolio/crispan-suites/zh2yvhzj5gk90hhe5qhf.jpg",
+                "caption": "Crispan Suites & Event Center — Raw Tablet View.",
+                "id": "web9-g-raw-1",
+                "isAI": false
+          },
+          {
+                "isAI": false,
+                "caption": "Crispan Suites & Event Center — Raw Mobile View.",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968888/vdvc-portfolio/crispan-suites/pzgenrj6xxtspptmzl1y.jpg",
+                "id": "web9-g-raw-2"
+          },
+          {
+                "isAI": false,
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968894/vdvc-portfolio/crispan-suites/soqed7xg8zg7a5ickwfm.jpg",
+                "caption": "Crispan Suites & Event Center — Scrolled Mobile Experience.",
+                "id": "web9-g-raw-3"
+          },
+          {
+                "id": "web9-g-raw-4",
+                "caption": "Crispan Suites & Event Center — Dining, Wellness & Leisure Facilities.",
+                "isAI": false,
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968896/vdvc-portfolio/crispan-suites/pmdokvwbihd4dtzwbbit.jpg"
+          },
+          {
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968898/vdvc-portfolio/crispan-suites/ehhogfp9vwj8a9mlqeex.jpg",
+                "caption": "Crispan Suites & Event Center — Halls & Meeting Rooms.",
+                "id": "web9-g-raw-5",
+                "isAI": false
+          },
+          {
+                "id": "web9-g-raw-6",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968900/vdvc-portfolio/crispan-suites/ztyxm9ih4z2rehninlkq.jpg",
+                "isAI": false,
+                "caption": "Crispan Suites & Event Center — Your Perfect Escape Overview."
+          },
+          {
+                "id": "web9-g-moments-spaces",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793970756/vdvc-portfolio/crispan-suites/hbi4jaakmqy8w2ajuakg.jpg",
+                "caption": "Crispan Suites & Event Center — Moments & Spaces 3D Showcase.",
+                "isAI": false
+          },
+          {
+                "id": "web9-g-facilities-interactive",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793970756/vdvc-portfolio/crispan-suites/mhd4wi4s54zksnoxv0hr.jpg",
+                "caption": "Crispan Suites & Event Center — Dining, Wellness & Leisure Facilities Interactive Cards.",
+                "isAI": false
+          }
+    ],
+    processSteps: [],
+    deliverables: [],
+    createdAt: 1712200000000,
+  },
+  // 14 — TrustIQ | Trust Liq Palace
+  {
+    id: 'proj-web-10',
+    title: 'TrustIQ | Trust Liq Palace',
+    category: 'Web Design',
+    client: 'Trust Liq Palace',
+    websiteUrl: 'https://trustiq-2.vercel.app/',
+    isRealLife: true,
+    threeWordDesc: 'Curated Spirits Showcase',
+    price: '',
+    duration: '',
+    year: '',
+    monthYear: '',
+    clientDescription: '',
+    shortDescription: '',
+    description: '',
+    descriptors: '',
+    featured: true,
+    imageUrl: 'https://res.cloudinary.com/dwo7oemds/image/upload/v1793968902/vdvc-portfolio/trustiq/ot7vteimj6iiqkzkselc.jpg',
+    images: [
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968902/vdvc-portfolio/trustiq/ot7vteimj6iiqkzkselc.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968904/vdvc-portfolio/trustiq/ebtcowjfkl9autfioibb.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968905/vdvc-portfolio/trustiq/i6jgori6lslaedllgshl.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968907/vdvc-portfolio/trustiq/hfck5eoxr8qxwtv29cor.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968909/vdvc-portfolio/trustiq/kah6ov6o9wvl5usl061c.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968912/vdvc-portfolio/trustiq/qidf1wnnxruaanvwe8ws.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968915/vdvc-portfolio/trustiq/hi2anrs7snhitipviv8z.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968916/vdvc-portfolio/trustiq/qkptz7q04bkjcv3nuojh.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968918/vdvc-portfolio/trustiq/wcrinz29ovgzxvwyry7o.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968919/vdvc-portfolio/trustiq/awozjkvml1ylnuuxhxl1.jpg"
+    ],
+    galleryPictures: [
+          {
+                "id": "web10-g-raw-desk",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968902/vdvc-portfolio/trustiq/ot7vteimj6iiqkzkselc.jpg",
+                "caption": "TrustIQ — Raw Desktop Hero Viewport.",
+                "isAI": false
+          },
+          {
+                "id": "web10-g-mock-1",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968904/vdvc-portfolio/trustiq/ebtcowjfkl9autfioibb.jpg",
+                "caption": "TrustIQ — Responsive Devices Showcase.",
+                "isAI": false
+          },
+          {
+                "id": "web10-g-mock-2",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968905/vdvc-portfolio/trustiq/i6jgori6lslaedllgshl.jpg",
+                "caption": "TrustIQ — Desktop Studio Mockup.",
+                "isAI": false
+          },
+          {
+                "id": "web10-g-mock-3",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968907/vdvc-portfolio/trustiq/hfck5eoxr8qxwtv29cor.jpg",
+                "caption": "TrustIQ — Mobile Studio Mockup.",
+                "isAI": false
+          },
+          {
+                "id": "web10-g-raw-1",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968909/vdvc-portfolio/trustiq/kah6ov6o9wvl5usl061c.jpg",
+                "caption": "TrustIQ — Raw Tablet View.",
+                "isAI": false
+          },
+          {
+                "id": "web10-g-raw-2",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968912/vdvc-portfolio/trustiq/qidf1wnnxruaanvwe8ws.jpg",
+                "caption": "TrustIQ — Raw Mobile View.",
+                "isAI": false
+          },
+          {
+                "id": "web10-g-raw-3",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968915/vdvc-portfolio/trustiq/hi2anrs7snhitipviv8z.jpg",
+                "caption": "TrustIQ — Scrolled Mobile Experience.",
+                "isAI": false
+          },
+          {
+                "id": "web10-g-raw-4",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968916/vdvc-portfolio/trustiq/qkptz7q04bkjcv3nuojh.jpg",
+                "caption": "TrustIQ — Featured Selections & Spirits.",
+                "isAI": false
+          },
+          {
+                "id": "web10-g-raw-5",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968918/vdvc-portfolio/trustiq/wcrinz29ovgzxvwyry7o.jpg",
+                "caption": "TrustIQ — The Fridge & Beverage Collection.",
+                "isAI": false
+          },
+          {
+                "id": "web10-g-raw-6",
+                "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1793968919/vdvc-portfolio/trustiq/awozjkvml1ylnuuxhxl1.jpg",
+                "caption": "TrustIQ — Wholesale & Bulk Orders.",
+                "isAI": false
+          }
+    ],
+    processSteps: [],
+    deliverables: [],
+    createdAt: 1712300000000,
+  },
+  {
+    id: 'proj-web-11',
+    title: 'No Limits Furniture: Redefining Boundless Living',
+    category: 'Web Design',
+    client: 'No Limits Furniture',
+    websiteUrl: 'https://no-limits-eight.vercel.app/',
+    isRealLife: true,
+    threeWordDesc: 'Architectural Luxury Living',
+    price: '',
+    duration: '',
+    year: '',
+    monthYear: '',
+    clientDescription: '',
+    shortDescription: '',
+    description: '',
+    descriptors: '',
+    featured: true,
+    imageUrl: 'https://res.cloudinary.com/dwo7oemds/image/upload/v1794003286/vdvc-portfolio/no-limits/w6cqaisonzpn5c1yydfv.jpg',
+    images: [
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003286/vdvc-portfolio/no-limits/w6cqaisonzpn5c1yydfv.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003288/vdvc-portfolio/no-limits/qecseuz3alh165umwuqz.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003292/vdvc-portfolio/no-limits/hhc0kg2yq93mgovopcez.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003295/vdvc-portfolio/no-limits/t4qi2mud43nqpgrjpej4.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003297/vdvc-portfolio/no-limits/ilsh24wkvukoqft6sesz.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003298/vdvc-portfolio/no-limits/hbf8ppvenead7wweurdm.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003300/vdvc-portfolio/no-limits/kh4xp9wbq7x6ujgiodov.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003301/vdvc-portfolio/no-limits/vilbc1rxgorezknxlmgo.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003302/vdvc-portfolio/no-limits/hss7arexex8z7xyvuge5.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003304/vdvc-portfolio/no-limits/cnhmzocdxtboeqlpws5d.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003306/vdvc-portfolio/no-limits/ojgfdhulokepitefm7hg.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003307/vdvc-portfolio/no-limits/okdmycddt3aqw1elvovi.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003309/vdvc-portfolio/no-limits/ekapufknxtpw90byfjad.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003310/vdvc-portfolio/no-limits/fo7g6oxn1fiqd5bqsbq1.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003312/vdvc-portfolio/no-limits/gbe1bl7ivgwxlohscv96.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003312/vdvc-portfolio/no-limits/ysdzamsfheadtaokzils.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003313/vdvc-portfolio/no-limits/libzw9efk4ei8fgbfvhu.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003316/vdvc-portfolio/no-limits/vohilggygqsshuagc4vi.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003316/vdvc-portfolio/no-limits/o9rfpmn69u2qtxufrmix.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003317/vdvc-portfolio/no-limits/anipgylck5k1yno7rxjz.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003318/vdvc-portfolio/no-limits/mwjba6shpfr1hnm00nly.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003319/vdvc-portfolio/no-limits/z7du0xyx8tjlubh6rxxm.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003324/vdvc-portfolio/no-limits/zgtjenede7nxvcisbbn6.jpg"
+],
+    galleryPictures: [
+          {
+                    "id": "web11-g-1",
+                    "caption": "No Limits Furniture — Raw Desktop Hero Viewport.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003286/vdvc-portfolio/no-limits/w6cqaisonzpn5c1yydfv.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web11-g-2",
+                    "caption": "Slow Living Manifesto & Architectural Philosophy.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003288/vdvc-portfolio/no-limits/qecseuz3alh165umwuqz.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web11-g-3",
+                    "caption": "Interactive 3D Catalog Experience Banner.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003292/vdvc-portfolio/no-limits/hhc0kg2yq93mgovopcez.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web11-g-4",
+                    "caption": "Curated Architectural Furniture Collections.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003295/vdvc-portfolio/no-limits/t4qi2mud43nqpgrjpej4.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web11-g-5",
+                    "caption": "The Vanguard Lounge & Sculptural Stool Showcase.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003297/vdvc-portfolio/no-limits/ilsh24wkvukoqft6sesz.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web11-g-6",
+                    "caption": "The Sculpture Ottoman — Product Detail Page.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003298/vdvc-portfolio/no-limits/hbf8ppvenead7wweurdm.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web11-g-7",
+                    "caption": "Real-time Interactive 3D Model Viewport (WebGL).",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003300/vdvc-portfolio/no-limits/kh4xp9wbq7x6ujgiodov.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web11-g-8",
+                    "caption": "3D Scene — Architectural Room (Golden Hour, Front).",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003301/vdvc-portfolio/no-limits/vilbc1rxgorezknxlmgo.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web11-g-9",
+                    "caption": "3D Scene — Full Architectural Room Perspective (Golden Hour).",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003302/vdvc-portfolio/no-limits/hss7arexex8z7xyvuge5.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web11-g-10",
+                    "caption": "3D Scene — Parquet & Cove Lighting Detail (Golden Hour, Angle).",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003304/vdvc-portfolio/no-limits/cnhmzocdxtboeqlpws5d.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web11-g-11",
+                    "caption": "3D Scene — Overhead Plan & Spatial Layout (Top-Down).",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003306/vdvc-portfolio/no-limits/ojgfdhulokepitefm7hg.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web11-g-12",
+                    "caption": "3D Scene — Nocturne Atmosphere with Warm Ambient Cove Glow.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003307/vdvc-portfolio/no-limits/okdmycddt3aqw1elvovi.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web11-g-13",
+                    "caption": "3D Scene — Crisp Daylight Natural Illumination & Soft Shadows.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003309/vdvc-portfolio/no-limits/ekapufknxtpw90byfjad.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web11-g-14",
+                    "caption": "The Living Space — Curated Spatial Editorial.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003310/vdvc-portfolio/no-limits/fo7g6oxn1fiqd5bqsbq1.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web11-g-15",
+                    "caption": "The Dining Space — Architectural Gastronomy.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003312/vdvc-portfolio/no-limits/gbe1bl7ivgwxlohscv96.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web11-g-16",
+                    "caption": "Curated Shop Catalog & Digital Filter Experience.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003312/vdvc-portfolio/no-limits/ysdzamsfheadtaokzils.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web11-g-17",
+                    "caption": "Material-Filtered Artifact Collection Grid.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003313/vdvc-portfolio/no-limits/libzw9efk4ei8fgbfvhu.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web11-g-18",
+                    "caption": "Responsive Tablet Viewport (iPad Pro).",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003316/vdvc-portfolio/no-limits/vohilggygqsshuagc4vi.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web11-g-19",
+                    "caption": "Responsive Mobile Viewport (iPhone).",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003316/vdvc-portfolio/no-limits/o9rfpmn69u2qtxufrmix.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web11-g-20",
+                    "caption": "Mobile Interactive 3D Experience.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003317/vdvc-portfolio/no-limits/anipgylck5k1yno7rxjz.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web11-g-21",
+                    "caption": "Multi-Device Responsive Ecosystem Showcase (Desktop, Tablet, Mobile).",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003318/vdvc-portfolio/no-limits/mwjba6shpfr1hnm00nly.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web11-g-22",
+                    "caption": "Studio Desktop Device Mockup.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003319/vdvc-portfolio/no-limits/z7du0xyx8tjlubh6rxxm.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web11-g-23",
+                    "caption": "Dual Mobile Device Studio Mockup.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003324/vdvc-portfolio/no-limits/zgtjenede7nxvcisbbn6.jpg",
+                    "isAI": false
+          }
+],
+    processSteps: [],
+    deliverables: [],
+    createdAt: 1712400000000,
+  },
 ];

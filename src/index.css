@@ -43,6 +43,20 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Uni Sans Thin';
+  src: local('Uni Sans Thin'), local('UniSans-Thin'), local('Uni Sans Thin All Caps'), local('Uni Sans');
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Uni Sans Heavy';
+  src: local('Uni Sans Heavy'), local('UniSans-Heavy'), local('Uni Sans Heavy All Caps'), local('Uni Sans');
+  font-weight: 800;
+  font-style: normal;
+}
+
 html {
   scroll-behavior: smooth;
   background-color: #d9d9d9;
@@ -64,23 +78,23 @@ body {
 
 @layer base {
   body {
-    font-family: 'Uni Sans Light', 'Uni Sans', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    font-family: 'Uni Sans Light', 'Uni Sans', system-ui, -apple-system, sans-serif;
     font-weight: 300;
     color: #1e293b;
     background-color: #d9d9d9;
   }
   
   h1, h2, h3, .font-display {
-    font-family: 'Syne', system-ui, -apple-system, sans-serif;
+    font-family: 'Phenomena', 'Moon 2.0 Light All Caps', 'Uni Sans Heavy', sans-serif;
   }
 }
 
 .font-display {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Phenomena', 'Moon 2.0 Light All Caps', 'Uni Sans Heavy', sans-serif;
 }
 
 .font-vapour {
-  font-family: 'Moon 2.0 Light All Caps', 'Moon 2.0', 'Moon', 'Syne', sans-serif;
+  font-family: 'Moon 2.0 Light All Caps', 'Moon 2.0', 'Moon', sans-serif;
   text-transform: uppercase;
   font-weight: 300;
   letter-spacing: 0.07em;
@@ -94,35 +108,35 @@ body {
 }
 
 .font-dense {
-  font-family: 'Waxe Regular', 'Waxe', 'Syne', sans-serif;
+  font-family: 'Waxe Regular', 'Waxe', sans-serif;
   font-weight: 400;
   letter-spacing: 0.02em;
 }
 
 .font-virtual-cafe {
-  font-family: 'Phenomena', 'Phenomena Light', 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Phenomena', 'Phenomena Light', sans-serif;
   font-weight: 300;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .font-phenomena {
-  font-family: 'Phenomena', 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Phenomena', sans-serif;
 }
 
 .font-phenomena-bold {
-  font-family: 'Phenomena', 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Phenomena', sans-serif;
   font-weight: 700;
 }
 
 .font-phenomena-extralight {
-  font-family: 'Phenomena', 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Phenomena', sans-serif;
   font-weight: 200;
 }
 
 .font-phenomena-heading,
 .font-phenomenal-heading {
-  font-family: 'Phenomena', 'Phenomena Light', 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Phenomena', 'Phenomena Light', sans-serif;
   font-weight: 400;
   letter-spacing: 0.05em;
 }
@@ -135,18 +149,25 @@ body {
 }
 
 .font-unisans-thin {
-  font-family: 'Uni Sans Thin', 'Uni Sans Light', 'Uni Sans', 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Uni Sans Thin', 'Uni Sans Light', 'Uni Sans', sans-serif;
   font-weight: 100;
   letter-spacing: 0.02em;
 }
 
+.font-unisans-heavy {
+  font-family: 'Uni Sans Heavy', 'Uni Sans', sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 .font-unisans-regular {
-  font-family: 'Uni Sans Regular', 'Uni Sans', 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Uni Sans Regular', 'Uni Sans', sans-serif;
   font-weight: 400;
 }
 
 .font-body, .font-body-copy {
-  font-family: 'Uni Sans Light', 'Uni Sans', 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Uni Sans Light', 'Uni Sans', sans-serif;
   font-weight: 300;
 }
 

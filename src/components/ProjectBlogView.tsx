@@ -114,8 +114,9 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
   const [newProcessDescription, setNewProcessDescription] = useState('');
   const [newProcessPictures, setNewProcessPictures] = useState<ProcessPicture[]>([]);
 
-  // Deliverable input state
+  // Deliverable & Industry input state
   const [newDeliverableText, setNewDeliverableText] = useState('');
+  const [newIndustryText, setNewIndustryText] = useState('');
 
   // Fallback gallery pictures (respects empty array if user cleared it)
   const effectiveGallery: GalleryPicture[] = currentProject?.galleryPictures !== undefined
@@ -276,6 +277,8 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
       setVoicePlaybackProgress(0);
       setExpandedImage(null);
       setIsAddingProcess(false);
+      setNewDeliverableText('');
+      setNewIndustryText('');
       // Keep mobileActivePane unchanged so user remains in whatever view they are in on mobile/tablet
     }
   }, [initialProject]);
@@ -492,13 +495,35 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
   const handleSaveChanges = async () => {
     if (onUpdateProject && currentProject) {
       setSaveError(null);
+      const pendingDeliverables = newDeliverableText
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean);
+      const pendingIndustries = newIndustryText
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean);
+
+      const finalDeliverables =
+        pendingDeliverables.length > 0
+          ? [...(currentProject.deliverables || []), ...pendingDeliverables]
+          : currentProject.deliverables || [];
+      const finalIndustries =
+        pendingIndustries.length > 0
+          ? [...(currentProject.industries || []), ...pendingIndustries]
+          : currentProject.industries || [];
+
       const resolvedThumb = getProjectThumbnail(currentProject);
       const normalizedProject: Project = {
         ...currentProject,
+        deliverables: finalDeliverables,
+        industries: finalIndustries,
         imageUrl: resolvedThumb || '',
         images: resolvedThumb ? [resolvedThumb] : [],
       };
       setCurrentProject(normalizedProject);
+      setNewDeliverableText('');
+      setNewIndustryText('');
       try {
         await onUpdateProject(currentProject.id, normalizedProject);
         setHasUnsavedChanges(false);
@@ -2429,7 +2454,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
             {(isEditable || (currentProject.deliverables && currentProject.deliverables.filter(d => Boolean(d && d.trim())).length > 0)) && (
               <div className="pt-2 border-t border-white/10 space-y-3">
                 <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal">
-                  DELIVERABLES ({currentProject.deliverables?.length || 0})
+                  DELIVERABLES ({currentProject.deliverables?.filter(d => Boolean(d && d.trim())).length || 0})
                 </span>
                 <div className="flex flex-wrap gap-2.5">
                   {(currentProject.deliverables || []).map((deliv, dIdx) => (
@@ -2461,14 +2486,20 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                     <input
                       type="text"
                       value={newDeliverableText}
-                      onChange={e => setNewDeliverableText(e.target.value)}
+                      onChange={e => {
+                        setNewDeliverableText(e.target.value);
+                        if (e.target.value.trim()) setHasUnsavedChanges(true);
+                      }}
                       placeholder="Add deliverable..."
                       onKeyDown={e => {
                         if (e.key === 'Enter') {
                           e.preventDefault();
-                          const val = newDeliverableText.trim();
-                          if (val) {
-                            const updated = [...(currentProject.deliverables || []), val];
+                          const vals = newDeliverableText
+                            .split(',')
+                            .map(s => s.trim())
+                            .filter(Boolean);
+                          if (vals.length > 0) {
+                            const updated = [...(currentProject.deliverables || []), ...vals];
                             updateProjectLocal({ deliverables: updated });
                             setNewDeliverableText('');
                           }
@@ -2479,11 +2510,93 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                     <button
                       type="button"
                       onClick={() => {
-                        const val = newDeliverableText.trim();
-                        if (val) {
-                          const updated = [...(currentProject.deliverables || []), val];
+                        const vals = newDeliverableText
+                          .split(',')
+                          .map(s => s.trim())
+                          .filter(Boolean);
+                        if (vals.length > 0) {
+                          const updated = [...(currentProject.deliverables || []), ...vals];
                           updateProjectLocal({ deliverables: updated });
                           setNewDeliverableText('');
+                        }
+                      }}
+                      className="px-4 py-2.5 text-sm lg:text-[15px] font-unisans-regular bg-white/15 text-white rounded-xl hover:bg-white/25 transition-all cursor-pointer shadow-md border border-white/25"
+                    >
+                      Add
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* 12. Industry (UniSans Regular) */}
+            {(isEditable || (currentProject.industries && currentProject.industries.filter(ind => Boolean(ind && ind.trim())).length > 0)) && (
+              <div className="pt-2 border-t border-white/10 space-y-3">
+                <span className="font-unisans-thin-caps text-[14px] sm:text-[15px] uppercase tracking-wider text-white/55 block font-normal">
+                  INDUSTRY ({currentProject.industries?.filter(ind => Boolean(ind && ind.trim())).length || 0})
+                </span>
+                <div className="flex flex-wrap gap-2.5">
+                  {(currentProject.industries || []).map((ind, iIdx) => (
+                    <span
+                      key={iIdx}
+                      className="inline-flex items-center gap-2 px-3.5 py-1.5 lg:px-3 lg:py-1 rounded-xl text-sm sm:text-base lg:text-[15px] font-unisans-regular font-normal bg-white/5 text-white/90 border border-white/10 group"
+                    >
+                      <span>{ind}</span>
+                      {isEditable && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const updated = (currentProject.industries || []).filter((_, i) => i !== iIdx);
+                            updateProjectLocal({ industries: updated });
+                          }}
+                          className="p-1 rounded-md text-white/40 hover:text-white hover:bg-white/20 transition-colors cursor-pointer -mr-1"
+                          title={`Remove ${ind}`}
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </span>
+                  ))}
+                </div>
+
+                {isEditable && (
+                  <div className="flex items-center gap-2 pt-1">
+                    <input
+                      type="text"
+                      value={newIndustryText}
+                      onChange={e => {
+                        setNewIndustryText(e.target.value);
+                        if (e.target.value.trim()) setHasUnsavedChanges(true);
+                      }}
+                      placeholder="Add industry..."
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          const vals = newIndustryText
+                            .split(',')
+                            .map(s => s.trim())
+                            .filter(Boolean);
+                          if (vals.length > 0) {
+                            const updated = [...(currentProject.industries || []), ...vals];
+                            updateProjectLocal({ industries: updated });
+                            setNewIndustryText('');
+                          }
+                        }
+                      }}
+                      className="flex-1 px-3.5 py-2.5 text-sm lg:text-[15px] font-unisans-regular text-white bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/30"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const vals = newIndustryText
+                          .split(',')
+                          .map(s => s.trim())
+                          .filter(Boolean);
+                        if (vals.length > 0) {
+                          const updated = [...(currentProject.industries || []), ...vals];
+                          updateProjectLocal({ industries: updated });
+                          setNewIndustryText('');
                         }
                       }}
                       className="px-4 py-2.5 text-sm lg:text-[15px] font-unisans-regular bg-white/15 text-white rounded-xl hover:bg-white/25 transition-all cursor-pointer shadow-md border border-white/25"

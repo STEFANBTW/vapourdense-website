@@ -646,7 +646,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         project.description.toLowerCase().includes(q) ||
         (project.threeWordDesc && project.threeWordDesc.toLowerCase().includes(q)) ||
         (project.descriptors && project.descriptors.toLowerCase().includes(q)) ||
-        (project.deliverables && project.deliverables.some(d => d.toLowerCase().includes(q)));
+        (project.deliverables && project.deliverables.some(d => d.toLowerCase().includes(q))) ||
+        (project.industries && project.industries.some(ind => ind.toLowerCase().includes(q)));
 
       return matchesFilter && matchesSearch;
     });

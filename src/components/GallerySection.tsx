@@ -26,12 +26,64 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
   isMobileNavVisible,
 }) => {
   const [selectedFilter, setSelectedFilter] = useState<FilterMode>('All');
+  const [selectedSubFilter, setSelectedSubFilter] = useState<string | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isDragOver, setIsDragOver] = useState(false);
   const [isPastGallery, setIsPastGallery] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
+
+  // Collect unique Industry Types and Deliverables from all projects
+  const secondaryFilterOptions = useMemo(() => {
+    const seen = new Set<string>();
+    const industriesList: { key: string; label: string; type: 'industry' | 'deliverable' }[] = [];
+    const deliverablesList: { key: string; label: string; type: 'industry' | 'deliverable' }[] = [];
+
+    projects.forEach(project => {
+      (project.industries || []).forEach(ind => {
+        const trimmed = ind?.trim();
+        if (!trimmed) return;
+        const norm = trimmed.toLowerCase();
+        if (!seen.has(norm)) {
+          seen.add(norm);
+          industriesList.push({ key: norm, label: trimmed, type: 'industry' });
+        }
+      });
+    });
+
+    projects.forEach(project => {
+      (project.deliverables || []).forEach(deliv => {
+        const trimmed = deliv?.trim();
+        if (!trimmed) return;
+        const norm = trimmed.toLowerCase();
+        if (!seen.has(norm)) {
+          seen.add(norm);
+          deliverablesList.push({ key: norm, label: trimmed, type: 'deliverable' });
+        }
+      });
+    });
+
+    return [...industriesList, ...deliverablesList];
+  }, [projects]);
+
+  const scrollToGalleryTop = () => {
+    setTimeout(() => {
+      const el = document.getElementById('gallery') || sectionRef.current;
+      if (el) {
+        const topPos = el.getBoundingClientRect().top + window.pageYOffset - 10;
+        window.scrollTo({
+          top: Math.max(0, topPos),
+          behavior: 'smooth',
+        });
+      } else {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth',
+        });
+      }
+    }, 10);
+  };
 
   // Keep filter bar strictly confined within the Gallery section on mobile
   useEffect(() => {
@@ -55,24 +107,32 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
 
   const handleSelectFilter = (filter: FilterMode) => {
     setSelectedFilter(filter);
-    setIsDropdownOpen(false);
-
-    // Graceful smooth animated scroll back to the top of the gallery section
-    setTimeout(() => {
-      const el = document.getElementById('gallery') || sectionRef.current;
-      if (el) {
-        const topPos = el.getBoundingClientRect().top + window.pageYOffset - 10;
-        window.scrollTo({
-          top: Math.max(0, topPos),
-          behavior: 'smooth',
-        });
-      } else {
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth',
-        });
+    if (filter === 'All') {
+      setSelectedSubFilter(null);
+    } else if (selectedSubFilter) {
+      const hasMatchInNewCategory = projects.some(project => {
+        let matchesCat = false;
+        if (filter === 'Graphic Design') matchesCat = project.category === 'Graphic Design';
+        else if (filter === 'Web Design') matchesCat = project.category === 'Web Design';
+        else if (filter === 'Real Life: All') matchesCat = Boolean(project.isRealLife);
+        else if (filter === 'Real Life: Graphic Design') matchesCat = Boolean(project.isRealLife) && project.category === 'Graphic Design';
+        else if (filter === 'Real Life: Web Design') matchesCat = Boolean(project.isRealLife) && project.category === 'Web Design';
+        const matchesSub =
+          (project.industries && project.industries.some(i => i?.trim().toLowerCase() === selectedSubFilter)) ||
+          (project.deliverables && project.deliverables.some(d => d?.trim().toLowerCase() === selectedSubFilter));
+        return matchesCat && matchesSub;
+      });
+      if (!hasMatchInNewCategory) {
+        setSelectedSubFilter(null);
       }
-    }, 10);
+    }
+    setIsDropdownOpen(false);
+    scrollToGalleryTop();
+  };
+
+  const handleSelectSubFilter = (subKey: string | null) => {
+    setSelectedSubFilter(subKey);
+    scrollToGalleryTop();
   };
 
   // Close dropdown on outside click
@@ -106,6 +166,13 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
         matchesFilter = Boolean(project.isRealLife) && project.category === 'Web Design';
       }
 
+      const matchesSubFilter =
+        !selectedSubFilter ||
+        (project.industries &&
+          project.industries.some(ind => ind?.trim().toLowerCase() === selectedSubFilter)) ||
+        (project.deliverables &&
+          project.deliverables.some(d => d?.trim().toLowerCase() === selectedSubFilter));
+
       const q = searchQuery.toLowerCase().trim();
       const matchesSearch =
         !q ||
@@ -114,11 +181,12 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
         project.description.toLowerCase().includes(q) ||
         (project.descriptors && project.descriptors.toLowerCase().includes(q)) ||
         (project.threeWordDesc && project.threeWordDesc.toLowerCase().includes(q)) ||
-        (project.deliverables && project.deliverables.some(d => d.toLowerCase().includes(q)));
+        (project.deliverables && project.deliverables.some(d => d.toLowerCase().includes(q))) ||
+        (project.industries && project.industries.some(ind => ind.toLowerCase().includes(q)));
 
-      return matchesFilter && matchesSearch;
+      return matchesFilter && matchesSubFilter && matchesSearch;
     });
-  }, [projects, selectedFilter, searchQuery]);
+  }, [projects, selectedFilter, selectedSubFilter, searchQuery]);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -193,132 +261,170 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
         >
           {/* Single line filter container with overflow-visible so dropdown opens on mobile */}
           <div className="flex items-center justify-between gap-1.5 sm:gap-2 overflow-visible whitespace-nowrap pb-0 w-full max-w-7xl mx-auto">
-            {/* Filters: All, Graphic Design, Web Design */}
-            <div className="flex items-center gap-1 sm:gap-1.5 shrink-0 overflow-visible">
-              <div
-                className="h-9 sm:h-10 flex items-center gap-1 sm:gap-1.5 p-1 bg-white/20 backdrop-blur-md rounded-2xl border border-slate-400/30 shadow-xs"
-              >
-                {/* Filter 0: All (Always text) */}
-                <button
-                  type="button"
-                  onClick={() => handleSelectFilter('All')}
-                  className={`h-full px-3 text-xs font-medium rounded-xl whitespace-nowrap transition-all duration-200 cursor-pointer flex items-center justify-center ${
-                    selectedFilter === 'All'
-                      ? 'bg-[#090132] text-white shadow-sm font-semibold'
-                      : 'text-slate-900 hover:text-black hover:bg-white/20'
-                  }`}
+            {/* Left & Center Group: Fixed Main Filters + Separate Horizontally Scrollable Industry & Deliverable Filters */}
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-1 min-w-0 overflow-visible">
+              {/* Main Filters: All, Graphic Design, Web Design + Real Life Dropdown (shrink-0, never scrolls) */}
+              <div className="flex items-center gap-1 sm:gap-1.5 shrink-0 overflow-visible">
+                <div
+                  className="h-9 sm:h-10 flex items-center gap-1 sm:gap-1.5 p-1 bg-white/20 backdrop-blur-md rounded-2xl border border-slate-400/30 shadow-xs"
                 >
-                  All
-                </button>
+                  {/* Filter 0: All (Always text) */}
+                  <button
+                    type="button"
+                    onClick={() => handleSelectFilter('All')}
+                    className={`h-full px-3 text-xs font-medium rounded-xl whitespace-nowrap transition-all duration-200 cursor-pointer flex items-center justify-center ${
+                      selectedFilter === 'All' && !selectedSubFilter
+                        ? 'bg-[#090132] text-white shadow-sm font-semibold'
+                        : 'text-slate-900 hover:text-black hover:bg-white/20'
+                    }`}
+                  >
+                    All
+                  </button>
 
-                {/* Filter 1: Graphic Design (Icon on mobile, text on desktop & when active) */}
-                <button
-                  type="button"
-                  onClick={() => handleSelectFilter('Graphic Design')}
-                  className={`h-full px-2.5 sm:px-3.5 text-xs font-medium rounded-xl whitespace-nowrap transition-all duration-200 cursor-pointer flex items-center gap-1.5 justify-center ${
-                    selectedFilter === 'Graphic Design'
-                      ? 'bg-[#090132] text-white shadow-sm font-semibold'
-                      : 'text-slate-900 hover:text-black hover:bg-white/20'
-                  }`}
-                  title="Graphic Design"
-                >
-                  <Palette className="w-3.5 h-3.5 shrink-0 sm:hidden" />
-                  <span className={selectedFilter === 'Graphic Design' ? 'inline' : 'hidden sm:inline'}>
-                    Graphic Design
-                  </span>
-                </button>
+                  {/* Filter 1: Graphic Design (Icon on mobile, text on desktop & when active) */}
+                  <button
+                    type="button"
+                    onClick={() => handleSelectFilter('Graphic Design')}
+                    className={`h-full px-2.5 sm:px-3.5 text-xs font-medium rounded-xl whitespace-nowrap transition-all duration-200 cursor-pointer flex items-center gap-1.5 justify-center ${
+                      selectedFilter === 'Graphic Design'
+                        ? 'bg-[#090132] text-white shadow-sm font-semibold'
+                        : 'text-slate-900 hover:text-black hover:bg-white/20'
+                    }`}
+                    title="Graphic Design"
+                  >
+                    <Palette className="w-3.5 h-3.5 shrink-0 sm:hidden" />
+                    <span className={selectedFilter === 'Graphic Design' ? 'inline' : 'hidden sm:inline'}>
+                      Graphic Design
+                    </span>
+                  </button>
 
-                {/* Filter 2: Web Design (Icon on mobile, text on desktop & when active) */}
-                <button
-                  type="button"
-                  onClick={() => handleSelectFilter('Web Design')}
-                  className={`h-full px-2.5 sm:px-3.5 text-xs font-medium rounded-xl whitespace-nowrap transition-all duration-200 cursor-pointer flex items-center gap-1.5 justify-center ${
-                    selectedFilter === 'Web Design'
-                      ? 'bg-[#090132] text-white shadow-sm font-semibold'
-                      : 'text-slate-900 hover:text-black hover:bg-white/20'
-                  }`}
-                  title="Web Design"
-                >
-                  <Globe className="w-3.5 h-3.5 shrink-0 sm:hidden" />
-                  <span className={selectedFilter === 'Web Design' ? 'inline' : 'hidden sm:inline'}>
-                    Web Design
-                  </span>
-                </button>
+                  {/* Filter 2: Web Design (Icon on mobile, text on desktop & when active) */}
+                  <button
+                    type="button"
+                    onClick={() => handleSelectFilter('Web Design')}
+                    className={`h-full px-2.5 sm:px-3.5 text-xs font-medium rounded-xl whitespace-nowrap transition-all duration-200 cursor-pointer flex items-center gap-1.5 justify-center ${
+                      selectedFilter === 'Web Design'
+                        ? 'bg-[#090132] text-white shadow-sm font-semibold'
+                        : 'text-slate-900 hover:text-black hover:bg-white/20'
+                    }`}
+                    title="Web Design"
+                  >
+                    <Globe className="w-3.5 h-3.5 shrink-0 sm:hidden" />
+                    <span className={selectedFilter === 'Web Design' ? 'inline' : 'hidden sm:inline'}>
+                      Web Design
+                    </span>
+                  </button>
+                </div>
+
+                {/* Filter 3: Real Life Projects Dropdown (Icon on mobile, text on desktop & when active) */}
+                <div className="relative shrink-0" ref={dropdownRef}>
+                  <button
+                    type="button"
+                    onClick={() => setIsDropdownOpen(prev => !prev)}
+                    className={`h-9 sm:h-10 px-3 text-xs font-medium rounded-2xl border transition-all duration-200 cursor-pointer flex items-center gap-1.5 shadow-xs backdrop-blur-md ${
+                      isRealLifeActive
+                        ? 'bg-[#090132] text-white border-[#090132] font-semibold'
+                        : 'bg-white/20 hover:bg-white/30 border-slate-400/30 text-slate-900'
+                    }`}
+                    title="Real Life Projects"
+                  >
+                    <Briefcase className="w-3.5 h-3.5 shrink-0 sm:hidden" />
+                    <span className={isRealLifeActive ? 'inline' : 'hidden sm:inline'}>
+                      {isRealLifeActive
+                        ? selectedFilter.replace('Real Life: ', 'Real Life: ')
+                        : 'Real Life Projects'}
+                    </span>
+                    <ChevronDown
+                      className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                        isDropdownOpen ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </button>
+
+                  {/* Dropdown Menu (Opens upwards on mobile at bottom, downwards on desktop) */}
+                  <AnimatePresence>
+                    {isDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 6, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 4, scale: 0.98 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute left-0 bottom-full mb-2 sm:bottom-auto sm:top-full sm:mt-1.5 w-52 sm:w-56 bg-white/95 backdrop-blur-2xl rounded-2xl border border-slate-300 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] py-1.5 z-50 overflow-hidden"
+                      >
+                        <div className="px-3 py-1.5 text-[10px] uppercase tracking-wider text-slate-800 font-bold border-b border-slate-400/30">
+                          Real Life Categories
+                        </div>
+
+                        <button
+                          onClick={() => handleSelectFilter('Real Life: Graphic Design')}
+                          className="w-full px-3.5 py-2 text-left text-xs text-slate-900 hover:bg-black/5 hover:text-black flex items-center justify-between cursor-pointer transition-colors"
+                        >
+                          <span>Graphic Design</span>
+                          {selectedFilter === 'Real Life: Graphic Design' && (
+                            <Check className="w-3.5 h-3.5 text-[#090132]" />
+                          )}
+                        </button>
+
+                        <button
+                          onClick={() => handleSelectFilter('Real Life: Web Design')}
+                          className="w-full px-3.5 py-2 text-left text-xs text-slate-900 hover:bg-black/5 hover:text-black flex items-center justify-between cursor-pointer transition-colors"
+                        >
+                          <span>Web Design</span>
+                          {selectedFilter === 'Real Life: Web Design' && (
+                            <Check className="w-3.5 h-3.5 text-[#090132]" />
+                          )}
+                        </button>
+
+                        <div className="border-t border-slate-400/30 my-1" />
+
+                        <button
+                          onClick={() => handleSelectFilter('Real Life: All')}
+                          className="w-full px-3.5 py-2 text-left text-xs text-slate-900 hover:bg-black/5 hover:text-black flex items-center justify-between cursor-pointer transition-colors"
+                        >
+                          <span>All Real Life Projects</span>
+                          {selectedFilter === 'Real Life: All' && (
+                            <Check className="w-3.5 h-3.5 text-[#090132]" />
+                          )}
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
 
-              {/* Filter 3: Real Life Projects Dropdown (Icon on mobile, text on desktop & when active) */}
-              <div className="relative shrink-0" ref={dropdownRef}>
-                <button
-                  type="button"
-                  onClick={() => setIsDropdownOpen(prev => !prev)}
-                  className={`h-9 sm:h-10 px-3 text-xs font-medium rounded-2xl border transition-all duration-200 cursor-pointer flex items-center gap-1.5 shadow-xs backdrop-blur-md ${
-                    isRealLifeActive
-                      ? 'bg-[#090132] text-white border-[#090132] font-semibold'
-                      : 'bg-white/20 hover:bg-white/30 border-slate-400/30 text-slate-900'
-                  }`}
-                  title="Real Life Projects"
-                >
-                  <Briefcase className="w-3.5 h-3.5 shrink-0 sm:hidden" />
-                  <span className={isRealLifeActive ? 'inline' : 'hidden sm:inline'}>
-                    {isRealLifeActive
-                      ? selectedFilter.replace('Real Life: ', 'Real Life: ')
-                      : 'Real Life Projects'}
-                  </span>
-                  <ChevronDown
-                    className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                      isDropdownOpen ? 'rotate-180' : ''
-                    }`}
-                  />
-                </button>
+              {secondaryFilterOptions.length > 0 && (
+                <div className="h-5 w-px bg-slate-400/40 shrink-0 mx-0.5" aria-hidden="true" />
+              )}
 
-                {/* Dropdown Menu (Opens upwards on mobile at bottom, downwards on desktop) */}
-                <AnimatePresence>
-                  {isDropdownOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 6, scale: 0.98 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 4, scale: 0.98 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute left-0 bottom-full mb-2 sm:bottom-auto sm:top-full sm:mt-1.5 w-52 sm:w-56 bg-white/95 backdrop-blur-2xl rounded-2xl border border-slate-300 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] py-1.5 z-50 overflow-hidden"
+              {/* Separate Horizontally Scrollable Div for Industry Types & Deliverables */}
+              <div
+                onWheel={e => {
+                  const container = e.currentTarget;
+                  if (container.scrollWidth > container.clientWidth && Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                    container.scrollLeft += e.deltaY;
+                  }
+                }}
+                className="flex-1 min-w-0 overflow-x-auto no-scrollbar flex items-center gap-1 sm:gap-1.5"
+                aria-label="Industry and deliverable filters"
+              >
+                {secondaryFilterOptions.map(option => {
+                  const isActive = selectedSubFilter === option.key;
+                  return (
+                    <button
+                      key={option.key}
+                      type="button"
+                      onClick={() => handleSelectSubFilter(isActive ? null : option.key)}
+                      className={`h-9 sm:h-10 px-3 text-xs font-medium rounded-2xl border whitespace-nowrap shrink-0 transition-all duration-200 cursor-pointer flex items-center justify-center shadow-xs backdrop-blur-md ${
+                        isActive
+                          ? 'bg-[#090132] text-white border-[#090132] font-semibold'
+                          : 'bg-white/20 hover:bg-white/30 border-slate-400/30 text-slate-900 hover:text-black'
+                      }`}
+                      title={`${option.type === 'industry' ? 'Industry' : 'Deliverable'}: ${option.label}`}
                     >
-                      <div className="px-3 py-1.5 text-[10px] uppercase tracking-wider text-slate-800 font-bold border-b border-slate-400/30">
-                        Real Life Categories
-                      </div>
-
-                      <button
-                        onClick={() => handleSelectFilter('Real Life: Graphic Design')}
-                        className="w-full px-3.5 py-2 text-left text-xs text-slate-900 hover:bg-black/5 hover:text-black flex items-center justify-between cursor-pointer transition-colors"
-                      >
-                        <span>Graphic Design</span>
-                        {selectedFilter === 'Real Life: Graphic Design' && (
-                          <Check className="w-3.5 h-3.5 text-[#090132]" />
-                        )}
-                      </button>
-
-                      <button
-                        onClick={() => handleSelectFilter('Real Life: Web Design')}
-                        className="w-full px-3.5 py-2 text-left text-xs text-slate-900 hover:bg-black/5 hover:text-black flex items-center justify-between cursor-pointer transition-colors"
-                      >
-                        <span>Web Design</span>
-                        {selectedFilter === 'Real Life: Web Design' && (
-                          <Check className="w-3.5 h-3.5 text-[#090132]" />
-                        )}
-                      </button>
-
-                      <div className="border-t border-slate-400/30 my-1" />
-
-                      <button
-                        onClick={() => handleSelectFilter('Real Life: All')}
-                        className="w-full px-3.5 py-2 text-left text-xs text-slate-900 hover:bg-black/5 hover:text-black flex items-center justify-between cursor-pointer transition-colors"
-                      >
-                        <span>All Real Life Projects</span>
-                        {selectedFilter === 'Real Life: All' && (
-                          <Check className="w-3.5 h-3.5 text-[#090132]" />
-                        )}
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                      <span>{option.label}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -330,7 +436,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
                 value={searchQuery || ''}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search..."
-                className="h-full w-36 sm:w-64 pl-9 pr-3 text-[12px] sm:text-xs text-slate-900 placeholder-slate-600 bg-white/20 backdrop-blur-md border border-slate-400/30 rounded-2xl focus:outline-none focus:border-slate-800 focus:bg-white/40 transition-all shadow-xs"
+                className="h-full w-28 focus:w-36 sm:w-48 lg:w-56 pl-9 pr-3 text-[12px] sm:text-xs text-slate-900 placeholder-slate-600 bg-white/20 backdrop-blur-md border border-slate-400/30 rounded-2xl focus:outline-none focus:border-slate-800 focus:bg-white/40 transition-all shadow-xs"
               />
             </div>
           </div>

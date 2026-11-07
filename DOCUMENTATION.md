@@ -85,7 +85,7 @@ The application uses a distinctive typographic hierarchy specified in `src/index
    - CSS definition:
      ```css
      .font-vapour {
-       font-family: 'Moon 2.0 Light All Caps', 'Moon 2.0', 'Moon', 'Syne', sans-serif;
+       font-family: 'Moon 2.0 Light All Caps', 'Moon 2.0', 'Moon', sans-serif;
        text-transform: uppercase;
        font-weight: 300;
        letter-spacing: 0.07em;
@@ -96,7 +96,7 @@ The application uses a distinctive typographic hierarchy specified in `src/index
    - CSS definition:
      ```css
      .font-dense {
-       font-family: 'Waxe Regular', 'Waxe', 'Syne', sans-serif;
+       font-family: 'Waxe Regular', 'Waxe', sans-serif;
        font-weight: 400;
        letter-spacing: 0.02em;
      }

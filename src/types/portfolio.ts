@@ -63,6 +63,7 @@ export interface Project {
   videos?: string[];
   year: string;
   deliverables?: string[];
+  industries?: string[];
   tags?: string[];
   metrics?: string;
   featured?: boolean;

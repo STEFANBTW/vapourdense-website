@@ -13,8 +13,8 @@ import { Project } from '../types/portfolio';
 import { initialProjects } from '../data/initialProjects';
 import { AboutData, defaultAboutData, SocialLinkItem } from '../components/AboutSection';
 
-const STORAGE_KEY = 'vdvc_portfolio_projects_v13';
-const SEEDED_WEB_KEY = 'vdvc_seeded_projects_v5';
+const STORAGE_KEY = 'vdvc_portfolio_projects_v15';
+const SEEDED_WEB_KEY = 'vdvc_seeded_projects_v7';
 const ABOUT_STORAGE_KEY = 'vdvc_portfolio_about_v2';
 const AUTH_KEY = 'dive_portfolio_admin_auth';
 export const ADMIN_PASSWORD = 'memeh 23';
@@ -63,6 +63,8 @@ function mergeWithDefaults(data: Project): Project {
   const merged: Project = {
     ...fallback,
     ...data,
+    deliverables: Array.isArray(data.deliverables) ? data.deliverables : (fallback?.deliverables ?? []),
+    industries: Array.isArray(data.industries) ? data.industries : (fallback?.industries ?? []),
     imageScalePercent: data.imageScalePercent ?? fallback?.imageScalePercent ?? 100,
   };
   if (
