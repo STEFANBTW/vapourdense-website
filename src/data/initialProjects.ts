@@ -59,7 +59,9 @@ export const initialProjects: Project[] = [
     "currency": "NGN",
     "duration": "1 Weeks",
     "imageScalePercent": 200,
-    "deliverables": [],
+    "deliverables": ["Packaging","Pouch Packaging"],
+    "industries": ["Agro-Processing & Packaging","Consumer Packaged Goods"],
+    "industry": ["Agro-Processing & Packaging","Consumer Packaged Goods"],
     "featured": true,
     "createdAt": 1712600000000
   },
@@ -149,7 +151,9 @@ export const initialProjects: Project[] = [
     "currency": "NGN",
     "duration": "1 Weeks",
     "imageScalePercent": 190,
-    "deliverables": [],
+    "deliverables": ["Packaging","Bottle Label"],
+    "industries": ["Pharmacies & Chemists","Consumer Packaged Goods"],
+    "industry": ["Pharmacies & Chemists","Consumer Packaged Goods"],
     "featured": true,
     "createdAt": 1712550000000
   },
@@ -211,7 +215,9 @@ export const initialProjects: Project[] = [
     "currency": "NGN",
     "duration": "",
     "imageScalePercent": 100,
-    "deliverables": [],
+    "deliverables": ["Brochure","Product Catalogue"],
+    "industries": ["Pharmacies & Chemists","Agro-Processing & Packaging"],
+    "industry": ["Pharmacies & Chemists","Agro-Processing & Packaging"],
     "featured": false,
     "createdAt": 1712500000000
   },
@@ -259,7 +265,9 @@ export const initialProjects: Project[] = [
     "currency": "NGN",
     "duration": "",
     "imageScalePercent": 100,
-    "deliverables": [],
+    "deliverables": ["Flyer","Banner"],
+    "industries": ["Solar & Renewable Energy","Electrical Manufacturing"],
+    "industry": ["Solar & Renewable Energy","Electrical Manufacturing"],
     "featured": false,
     "createdAt": 1712450000000
   },
@@ -307,7 +315,9 @@ export const initialProjects: Project[] = [
     "currency": "NGN",
     "duration": "",
     "imageScalePercent": 100,
-    "deliverables": [],
+    "deliverables": ["Magazine Cover","Poster"],
+    "industries": ["Fitness & Gyms","Film & Broadcasting"],
+    "industry": ["Fitness & Gyms","Film & Broadcasting"],
     "featured": true,
     "createdAt": 1712400000000
   },
@@ -348,7 +358,9 @@ export const initialProjects: Project[] = [
     "currency": "NGN",
     "duration": "",
     "imageScalePercent": 100,
-    "deliverables": [],
+    "deliverables": ["Magazine Cover","Editorial Design"],
+    "industries": ["Fashion & Apparel","Garments & Textiles"],
+    "industry": ["Fashion & Apparel","Garments & Textiles"],
     "featured": true,
     "createdAt": 1712350000000
   },
@@ -389,7 +401,9 @@ export const initialProjects: Project[] = [
     "currency": "NGN",
     "duration": "",
     "imageScalePercent": 100,
-    "deliverables": [],
+    "deliverables": ["Flyer","Banner"],
+    "industries": ["Bakeries & Pastries","Cafes & Juice Bars"],
+    "industry": ["Bakeries & Pastries","Cafes & Juice Bars"],
     "featured": false,
     "createdAt": 1712300000000
   },
@@ -430,7 +444,9 @@ export const initialProjects: Project[] = [
     "currency": "NGN",
     "duration": "",
     "imageScalePercent": 100,
-    "deliverables": [],
+    "deliverables": ["Banner","Social Media Graphics"],
+    "industries": ["Catering & Cloud Kitchens","Cafes & Juice Bars"],
+    "industry": ["Catering & Cloud Kitchens","Cafes & Juice Bars"],
     "featured": false,
     "createdAt": 1712250000000
   },
@@ -471,7 +487,9 @@ export const initialProjects: Project[] = [
     "currency": "NGN",
     "duration": "",
     "imageScalePercent": 100,
-    "deliverables": [],
+    "deliverables": ["Banner","Poster"],
+    "industries": ["Catering & Cloud Kitchens","Cafes & Juice Bars"],
+    "industry": ["Catering & Cloud Kitchens","Cafes & Juice Bars"],
     "featured": false,
     "createdAt": 1712200000000
   },
@@ -512,7 +530,9 @@ export const initialProjects: Project[] = [
     "currency": "NGN",
     "duration": "",
     "imageScalePercent": 100,
-    "deliverables": [],
+    "deliverables": ["Logo","Emblem"],
+    "industries": ["Primary & Secondary Schools","Fitness & Gyms"],
+    "industry": ["Primary & Secondary Schools","Fitness & Gyms"],
     "featured": false,
     "createdAt": 1712150000000
   },
@@ -596,6 +616,8 @@ export const initialProjects: Project[] = [
     "duration": "",
     "imageScalePercent": 100,
     "deliverables": [],
+    "industries": ["Graphic Design Studios","Digital Marketing & SEO"],
+    "industry": ["Graphic Design Studios","Digital Marketing & SEO"],
     "featured": true,
     "createdAt": 1712000000000
   },
@@ -686,6 +708,8 @@ export const initialProjects: Project[] = [
     "duration": "",
     "imageScalePercent": 100,
     "deliverables": [],
+    "industries": ["Mental Health Counseling","Hospitals & Clinics"],
+    "industry": ["Mental Health Counseling","Hospitals & Clinics"],
     "featured": true,
     "createdAt": 1711900000000
   },
@@ -776,6 +800,8 @@ export const initialProjects: Project[] = [
     "duration": "",
     "imageScalePercent": 100,
     "deliverables": [],
+    "industries": ["Content Creators & Influencers","Photography & Videography"],
+    "industry": ["Content Creators & Influencers","Photography & Videography"],
     "featured": true,
     "createdAt": 1711800000000
   },
@@ -866,6 +892,8 @@ export const initialProjects: Project[] = [
     "duration": "",
     "imageScalePercent": 100,
     "deliverables": [],
+    "industries": ["Primary & Secondary Schools","Tutoring & Coaching"],
+    "industry": ["Primary & Secondary Schools","Tutoring & Coaching"],
     "featured": false,
     "createdAt": 1711700000000
   },
@@ -949,6 +977,8 @@ export const initialProjects: Project[] = [
     "duration": "",
     "imageScalePercent": 100,
     "deliverables": [],
+    "industries": ["Bakeries & Pastries","Cafes & Juice Bars"],
+    "industry": ["Bakeries & Pastries","Cafes & Juice Bars"],
     "featured": true,
     "createdAt": 1711600000000
   },
@@ -1032,6 +1062,8 @@ export const initialProjects: Project[] = [
     "duration": "",
     "imageScalePercent": 100,
     "deliverables": [],
+    "industries": ["Bars & Nightclubs","Catering & Cloud Kitchens"],
+    "industry": ["Bars & Nightclubs","Catering & Cloud Kitchens"],
     "featured": true,
     "createdAt": 1711500000000
   },
@@ -1122,6 +1154,8 @@ export const initialProjects: Project[] = [
     "duration": "",
     "imageScalePercent": 100,
     "deliverables": [],
+    "industries": ["Fitness & Gyms","Hospitals & Clinics"],
+    "industry": ["Fitness & Gyms","Hospitals & Clinics"],
     "featured": false,
     "createdAt": 1711400000000
   },
@@ -1317,6 +1351,8 @@ export const initialProjects: Project[] = [
     ],
     processSteps: [],
     deliverables: [],
+    industries: ["Event Venues","Event Planning"],
+    industry: ["Event Venues","Event Planning"],
     createdAt: 1712200000000,
   },
   // 14 — TrustIQ | Trust Liq Palace
@@ -1414,6 +1450,8 @@ export const initialProjects: Project[] = [
     ],
     processSteps: [],
     deliverables: [],
+    industries: ["Bars & Nightclubs","General Merchandise"],
+    industry: ["Bars & Nightclubs","General Merchandise"],
     createdAt: 1712300000000,
   },
   {
@@ -1601,6 +1639,134 @@ export const initialProjects: Project[] = [
 ],
     processSteps: [],
     deliverables: [],
+    industries: ["Home & Furniture","Architecture & Interior Design"],
+    industry: ["Home & Furniture","Architecture & Interior Design"],
     createdAt: 1712400000000,
+  },
+  {
+    id: 'proj-web-12',
+    title: 'The Vanguard — Tribeca',
+    category: 'Web Design',
+    client: 'The Vanguard',
+    websiteUrl: 'https://the-vanguard-tribeca.ai.studio/',
+    isRealLife: true,
+    threeWordDesc: 'Historic Tribeca Sanctuary',
+    price: '',
+    duration: '',
+    year: '',
+    monthYear: '',
+    clientDescription: '',
+    shortDescription: '',
+    description: '',
+    descriptors: '',
+    featured: true,
+    imageUrl: 'https://res.cloudinary.com/dwo7oemds/image/upload/v1794083567/vdvc-portfolio/the-vanguard/aenvdlmd0rpvps1lspls.jpg',
+    images: [
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083567/vdvc-portfolio/the-vanguard/aenvdlmd0rpvps1lspls.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083569/vdvc-portfolio/the-vanguard/kxoqnqgfara1klw1fkng.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083570/vdvc-portfolio/the-vanguard/aer8twsfmjldtamyzeb8.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083571/vdvc-portfolio/the-vanguard/klts140avzbj64swshsj.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083573/vdvc-portfolio/the-vanguard/y3ix2e1elfvc2mkbl63k.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083575/vdvc-portfolio/the-vanguard/albfybehhsoe1q1vuh56.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083577/vdvc-portfolio/the-vanguard/unuv0thws2ptrtclfv1u.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083579/vdvc-portfolio/the-vanguard/wawmmcxunuqghtiroza9.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083580/vdvc-portfolio/the-vanguard/xpgh1ibvoaq93oyrxdnf.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083581/vdvc-portfolio/the-vanguard/zdxajeekge3w4qrdeg6e.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083582/vdvc-portfolio/the-vanguard/abhfmusgvn0d1yyi8lyy.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083584/vdvc-portfolio/the-vanguard/dlnl9brfbrwktxmogxb7.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083585/vdvc-portfolio/the-vanguard/awnvi83ur966fjvq1p9z.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083587/vdvc-portfolio/the-vanguard/dg8xtww7amxkvxerzil9.jpg"
+],
+    galleryPictures: [
+          {
+                    "id": "web12-g-1",
+                    "caption": "The Vanguard — Tribeca — Raw Desktop Hero Viewport.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083567/vdvc-portfolio/the-vanguard/aenvdlmd0rpvps1lspls.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web12-g-2",
+                    "caption": "The House — Restored 1924 Lithography Printworks Heritage.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083569/vdvc-portfolio/the-vanguard/kxoqnqgfara1klw1fkng.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web12-g-3",
+                    "caption": "Curated Guest Rooms & Suites Collection.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083570/vdvc-portfolio/the-vanguard/aer8twsfmjldtamyzeb8.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web12-g-4",
+                    "caption": "Interactive Room Detail Modal & Architectural Specifications.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083571/vdvc-portfolio/the-vanguard/klts140avzbj64swshsj.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web12-g-5",
+                    "caption": "The Ground-Floor Cocktail Lounge & 30-Foot Walnut Bar.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083573/vdvc-portfolio/the-vanguard/y3ix2e1elfvc2mkbl63k.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web12-g-6",
+                    "caption": "North Tribeca On Foot — Curated Walking Guide.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083575/vdvc-portfolio/the-vanguard/albfybehhsoe1q1vuh56.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web12-g-7",
+                    "caption": "Inside 48 Desbrosses — Architectural Photography Gallery.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083577/vdvc-portfolio/the-vanguard/unuv0thws2ptrtclfv1u.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web12-g-8",
+                    "caption": "Direct Reservation Experience & Contact Information.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083579/vdvc-portfolio/the-vanguard/wawmmcxunuqghtiroza9.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web12-g-9",
+                    "caption": "Responsive Tablet Viewport (iPad Pro).",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083580/vdvc-portfolio/the-vanguard/xpgh1ibvoaq93oyrxdnf.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web12-g-10",
+                    "caption": "Responsive Mobile Viewport (iPhone).",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083581/vdvc-portfolio/the-vanguard/zdxajeekge3w4qrdeg6e.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web12-g-11",
+                    "caption": "Mobile Suite & Room Exploration Viewport.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083582/vdvc-portfolio/the-vanguard/abhfmusgvn0d1yyi8lyy.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web12-g-12",
+                    "caption": "Multi-Device Responsive Ecosystem Showcase (Desktop, Tablet, Mobile).",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083584/vdvc-portfolio/the-vanguard/dlnl9brfbrwktxmogxb7.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web12-g-13",
+                    "caption": "Studio Desktop Device Mockup.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083585/vdvc-portfolio/the-vanguard/awnvi83ur966fjvq1p9z.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web12-g-14",
+                    "caption": "Dual Mobile Device Studio Mockup.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794083587/vdvc-portfolio/the-vanguard/dg8xtww7amxkvxerzil9.jpg",
+                    "isAI": false
+          }
+],
+    industries: ['Bars & Nightclubs', 'Event Venues'],
+    industry: ['Bars & Nightclubs', 'Event Venues'],
+    processSteps: [],
+    deliverables: [],
+    createdAt: 1794083567000,
   },
 ];

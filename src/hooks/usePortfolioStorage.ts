@@ -13,8 +13,8 @@ import { Project } from '../types/portfolio';
 import { initialProjects } from '../data/initialProjects';
 import { AboutData, defaultAboutData, SocialLinkItem } from '../components/AboutSection';
 
-const STORAGE_KEY = 'vdvc_portfolio_projects_v15';
-const SEEDED_WEB_KEY = 'vdvc_seeded_projects_v7';
+const STORAGE_KEY = 'vdvc_portfolio_projects_v17';
+const SEEDED_WEB_KEY = 'vdvc_seeded_projects_v9';
 const ABOUT_STORAGE_KEY = 'vdvc_portfolio_about_v2';
 const AUTH_KEY = 'dive_portfolio_admin_auth';
 export const ADMIN_PASSWORD = 'memeh 23';
@@ -64,7 +64,16 @@ function mergeWithDefaults(data: Project): Project {
     ...fallback,
     ...data,
     deliverables: Array.isArray(data.deliverables) ? data.deliverables : (fallback?.deliverables ?? []),
-    industries: Array.isArray(data.industries) ? data.industries : (fallback?.industries ?? []),
+    industries: (Array.isArray(data.industries) && data.industries.length > 0)
+      ? data.industries
+      : ((Array.isArray(data.industry) && data.industry.length > 0)
+        ? data.industry
+        : (fallback?.industries ?? fallback?.industry ?? [])),
+    industry: (Array.isArray(data.industry) && data.industry.length > 0)
+      ? data.industry
+      : ((Array.isArray(data.industries) && data.industries.length > 0)
+        ? data.industries
+        : (fallback?.industry ?? fallback?.industries ?? [])),
     imageScalePercent: data.imageScalePercent ?? fallback?.imageScalePercent ?? 100,
   };
   if (

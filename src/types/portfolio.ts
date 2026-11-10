@@ -64,11 +64,12 @@ export interface Project {
   year: string;
   deliverables?: string[];
   industries?: string[];
+  industry?: string[];
   tags?: string[];
   metrics?: string;
   featured?: boolean;
   isHidden?: boolean;
-  createdAt: number;
+  createdAt?: number;
   updatedAt?: number;
 }
 

@@ -14,123 +14,176 @@ import { CustomSelect } from './CustomSelect';
 import { db } from '../lib/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 
-type StepId =
+export type StepId =
   | 'entry'
   | 'who'
   | 'service'
-  | 'projectType'
   | 'business'
-  | 'goals'
-  | 'feel'
-  | 'scope'
-  | 'brandAssets'
-  | 'existingAssets'
+  | 'projectType'
+  | 'projectStatus'
+  | 'usageFormat'
   | 'quantity'
+  | 'brandAssets'
+  | 'goals'
+  | 'scope'
+  | 'contentReadiness'
+  | 'domainHosting'
+  | 'feel'
+  | 'existingAssets'
   | 'techPreferences'
-  | 'currentState'
   | 'timeline'
   | 'budget'
   | 'contact'
   | 'confirmation';
 
 export const BUSINESS_INDUSTRIES = [
-  "Accounting & Tax",
+  "Accounting & Auditing",
+  "Advertising & Media Agencies",
+  "Aerospace & Aviation",
+  "Agricultural Commodities Trading",
   "Agro-Processing & Packaging",
-  "Architecture & Interior Design",
+  "AI & Machine Learning Services",
+  "Animation & VFX Studios",
+  "Apparel, Fashion & Footwear",
+  "Aquaculture & Fish Farming",
+  "Architecture & Spatial Design",
+  "Art Galleries & Curators",
   "Auto Body & Detailing",
-  "Auto Dealerships",
-  "Auto Repair Workshops",
-  "Auto Spare Parts",
-  "Bakeries & Pastries",
-  "Banking & Microfinance",
-  "Bars & Nightclubs",
-  "Beauty & Cosmetics",
-  "Building Materials Supply",
-  "Business Consulting",
-  "Business Registration Services",
-  "Cafes & Juice Bars",
-  "Carpentry & Roofing",
+  "Auto Dealerships (New & Used)",
+  "Auto Parts & Accessories",
+  "Auto Repair & Workshops",
+  "Bakeries, Pastries & Confectionery",
+  "Banking & Commercial Finance",
+  "Bars, Lounges & Nightclubs",
+  "Beauty, Cosmetics & Skincare",
+  "Beverages, Breweries & Distilleries",
+  "Biotech & Life Sciences",
+  "Blockchain, Crypto & Web3",
+  "Building Materials Supply & Hardware",
+  "Business Consulting & Strategy",
+  "Cafes, Juice Bars & Tea Houses",
+  "Car Rentals, Leasing & Chauffeur Services",
+  "Carpentry, Woodwork & Roofing",
   "Catering & Cloud Kitchens",
-  "Civil Engineering",
-  "Cleaning & Laundry",
-  "Colleges & Universities",
-  "Consumer Packaged Goods",
-  "Content Creators & Influencers",
-  "Crop Farming",
-  "Crypto & Web3",
-  "Data & AI Services",
-  "Dental & Optometry",
-  "Digital Marketing & SEO",
-  "EdTech Platforms",
-  "Electrical & Generator Repair",
-  "Electrical Manufacturing",
-  "Electronics & Gadgets",
-  "Event Planning",
-  "Event Venues",
-  "Facility Management",
-  "Farm Machinery & Inputs",
-  "Fashion & Apparel",
-  "Film & Broadcasting",
-  "Fintech & Payments",
-  "Fish Farming",
-  "Fitness & Gyms",
-  "Forestry & Timber",
-  "Foundations & Trust Funds",
-  "Garments & Textiles",
-  "General Merchandise",
-  "Graphic Design Studios",
+  "Chemicals & Industrial Materials",
+  "Childcare & Early Childhood Education",
+  "Civil Engineering & General Contracting",
+  "Cleaning, Janitorial & Laundry Services",
+  "Cloud Computing & DevOps",
+  "Colleges, Polytechnics & Universities",
+  "Commercial Printing & Publishing",
+  "Commercial Real Estate & Leasing",
+  "Commodity Trading & Export",
+  "Community & Civic Organizations",
+  "Consumer Electronics & Gadgets",
+  "Consumer Packaged Goods (CPG)",
+  "Content Creators, Streamers & Influencers",
+  "Corporate Training & Certifications",
+  "Coworking Spaces & Business Hubs",
+  "Crop Farming & Horticulture",
+  "Cybersecurity & Information Security",
+  "Data Analytics & Business Intelligence",
+  "Delivery, Courier & Last-Mile Logistics",
+  "Dental & Orthodontic Clinics",
+  "Digital Marketing & Growth SEO",
+  "E-Commerce & Direct-to-Consumer (D2C)",
+  "EdTech & Learning Platforms",
+  "Electrical Contracting & Installations",
+  "Electrical Equipment Manufacturing",
+  "Energy Storage, Solar & Renewables",
+  "Event Planning & Management",
+  "Event Venues, Centers & Banquet Halls",
+  "Executive Search & Recruitment",
+  "Facilities Management & Maintenance",
+  "Farm Equipment, Machinery & Inputs",
+  "Fast Food & Quick Service Restaurants (QSR)",
+  "Film, Cinema & Video Production",
+  "Fintech, Payments & Wallets",
+  "Fitness Centers, Gyms & Studios",
+  "Food Processing & Manufacturing",
+  "Forestry, Timber & Wood Products",
+  "Foundations, Trusts & Philanthropy",
+  "Freight Forwarding, Cargo & Haulage",
+  "Gaming, Game Dev & eSports",
+  "Garments, Fabrics & Textiles",
+  "General Merchandise & Department Stores",
+  "Government & Public Sector Bodies",
+  "Graphic Design & Branding Studios",
   "Hair Salons & Barbershops",
-  "Hardware & Telecom",
-  "Haulage & Freight",
-  "Home & Furniture",
-  "Hospitals & Clinics",
-  "HR & Recruitment",
-  "HVAC & Air Conditioning",
-  "Industrial Chemicals",
-  "Insurance Services",
-  "IT & Cybersecurity",
-  "Jewelry & Luxury Goods",
-  "Last-Mile Delivery",
-  "Legal Services",
-  "Lending & Credit",
-  "Livestock & Poultry",
-  "Marine & Rail Transport",
-  "Mental Health Counseling",
-  "Metal Fabrication",
-  "Mining & Quarrying",
-  "Music & Record Labels",
-  "NGOs & Charities",
-  "Oil & Gas Exploration",
-  "Oil & Gas Retail",
-  "Pest Control Services",
-  "Pharmacies & Chemists",
-  "Photography & Videography",
-  "Plastics & Packaging",
-  "Plumbing Services",
-  "POS & Money Transfer",
-  "Primary & Secondary Schools",
-  "Printing & Secretarial",
-  "Property Development",
-  "Public Sector Initiatives",
-  "Real Estate Agencies",
-  "Religious Centers",
-  "Ride-Hailing & Car Hire",
-  "SaaS & Cloud Software",
-  "Security Services",
-  "Shipping & Cargo",
-  "Software & App Development",
-  "Solar & Renewable Energy",
-  "Spas & Skin Clinics",
-  "Supermarkets & Groceries",
-  "Surveying & Consulting",
-  "Tech Bootcamps",
-  "Trade Associations",
-  "Tutoring & Coaching",
-  "Vehicle Rentals & Leasing",
-  "Vocational Training Centers",
-  "Warehousing & Fulfillment",
-  "Water & Utilities",
-  "Wealth Management",
+  "Hardware & IoT Engineering",
+  "Health & Wellness Spas",
+  "Heavy Machinery & Industrial Plant",
+  "Home Decor, Furniture & Living",
+  "Hospitals, Clinics & Medical Centers",
+  "Hospitality & Resort Management",
+  "HR Tech & Talent Platforms",
+  "HVAC, Refrigeration & Cold Storage",
+  "Import & Export Brokerage",
+  "Insurance & Reinsurance",
+  "Interior Architecture & Decoration",
+  "Investment Banking & Private Equity",
+  "IT Infrastructure & Managed Support",
+  "Jewelry, Watches & Luxury Goods",
+  "Journalism, News & Digital Media",
+  "Law Enforcement & Security Solutions",
+  "Legal Services & Law Firms",
+  "Lending, Credit & Microfinance",
+  "Livestock, Poultry & Animal Husbandry",
+  "Luxury Concierge & Lifestyle Services",
+  "Manufacturing & Industrial Assembly",
+  "Marine Transport, Shipping & Ports",
+  "Market Research & Consumer Insights",
+  "Mental Health, Therapy & Counseling",
+  "Metal Fabrication, Welding & Machining",
+  "Mining, Quarrying & Mineral Resources",
+  "Mobile App Development",
+  "Music Production & Record Labels",
+  "NGOs, Non-Profits & Charities",
+  "Nutrition, Supplements & Dietetics",
+  "Oil & Gas Exploration & Production",
+  "Oil & Gas Retail & Distribution",
+  "Optometry & Eye Care Clinics",
+  "Packaging, Boxes & Label Production",
+  "Pest Control & Fumigation Services",
+  "Pet Care, Veterinary & Supplies",
+  "Pharmaceuticals & Chemist Stores",
+  "Photography Studios & Videography",
+  "Physical Therapy & Rehabilitation",
+  "Plastics, Polymers & Rubber",
+  "Plumbing & Water Systems",
+  "Podcasting & Audio Broadcasting",
+  "POS, Payment Terminals & Agency Banking",
+  "Primary & Secondary Schools (K-12)",
+  "Public Relations (PR) & Communications",
+  "Real Estate Agencies & Brokerage",
+  "Real Estate Development & Construction",
+  "Religious Organizations & Faith Centers",
+  "Restaurants & Fine Dining",
+  "Ride-Hailing & Mobility Platforms",
+  "SaaS & Enterprise Cloud Software",
+  "Security Guarding & Surveillance",
+  "Short-Let Apartments & Vacation Rentals",
+  "Software Engineering & Development Agencies",
+  "Sports, Athletics & Recreation",
+  "Supermarkets, Groceries & Provisions",
+  "Supply Chain & Inventory Solutions",
+  "Surveying, Mapping & Geoinformatics",
+  "Telecommunications & Internet Providers",
+  "Think Tanks & Policy Institutes",
+  "Tourism, Travel & Tour Agencies",
+  "Toys, Games & Baby Products",
+  "Translation & Localization Services",
+  "Tutoring, Coaching & Test Prep",
+  "Vehicle Inspection & Diagnostic Centers",
+  "Venture Capital & Angel Networks",
+  "Veterinary Medicine & Animal Clinics",
+  "Video Game Publishing",
+  "Vocational & Technical Trade Schools",
+  "Warehousing, Fulfillment & Storage",
+  "Waste Management & Recycling Services",
+  "Water Treatment, Supply & Bottling",
+  "Wealth Management & Personal Finance",
+  "Yoga, Pilates & Mindfulness",
   "Other / Unlisted"
 ];
 
@@ -143,22 +196,39 @@ export const BookingSection: React.FC = () => {
   // Form State
   const [profileType, setProfileType] = useState<string>(''); // 'idea' | 'prepared'
   const [service, setService] = useState<'website' | 'graphic' | 'backend' | ''>('');
-  
-  // Project Type
-  const [projectType, setProjectType] = useState<string>('');
-  const [customProjectType, setCustomProjectType] = useState<string>('');
-  const [selectedGraphicTypes, setSelectedGraphicTypes] = useState<string[]>([]);
-  
+
   // Business Info
   const [businessName, setBusinessName] = useState<string>('');
   const [industry, setIndustry] = useState<string>('');
   const [customIndustry, setCustomIndustry] = useState<string>('');
   const [isTypingCustomIndustry, setIsTypingCustomIndustry] = useState<boolean>(false);
-  
-  // Goals
+
+  // Project Type
+  const [projectType, setProjectType] = useState<string>('');
+  const [customProjectType, setCustomProjectType] = useState<string>('');
+  const [selectedGraphicTypes, setSelectedGraphicTypes] = useState<string[]>([]);
+  const [selectedBackendTypes, setSelectedBackendTypes] = useState<string[]>([]);
+
+  // Project Status (Prepared: New Build vs. Redesign vs. Upgrade across all 3 services)
+  const [projectStatus, setProjectStatus] = useState<string>('');
+  const [projectStatusDetails, setProjectStatusDetails] = useState<string>('');
+
+  // Graphic specific: Usage & Quantity
+  const [usageFormat, setUsageFormat] = useState<string>('');
+  const [graphicQuantity, setGraphicQuantity] = useState<string>('');
+  const [brandAssets, setBrandAssets] = useState<string>('');
+  const [brandAssetsDetails, setBrandAssetsDetails] = useState<string>('');
+
+  // Goals / Features (Website & Backend)
   const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
   const [customGoal, setCustomGoal] = useState<string>('');
   const [isCustomGoalOpen, setIsCustomGoalOpen] = useState(false);
+
+  // Scope & Readiness (Website)
+  const [scopePages, setScopePages] = useState<string>('');
+  const [contentReadiness, setContentReadiness] = useState<string[]>([]);
+  const [contentReadinessLink, setContentReadinessLink] = useState<string>('');
+  const [domainHosting, setDomainHosting] = useState<string>('');
 
   // Style / Feel Direction
   const [designDirectionChoice, setDesignDirectionChoice] = useState<string>('');
@@ -166,16 +236,14 @@ export const BookingSection: React.FC = () => {
   const [feelDescription, setFeelDescription] = useState<string>('');
   const [referenceWebsiteLink, setReferenceWebsiteLink] = useState<string>('');
 
-  // Assets & Scope fields
-  const [scopePages, setScopePages] = useState<string>('');
-  const [brandAssets, setBrandAssets] = useState<string>('');
-  const [brandAssetsDetails, setBrandAssetsDetails] = useState<string>('');
-  const [existingAssets, setExistingAssets] = useState<string>('');
+  // Idea Existing Assets (Website, Graphic, Backend)
+  const [selectedExistingAssets, setSelectedExistingAssets] = useState<string[]>([]);
+  const [existingAssetsSingle, setExistingAssetsSingle] = useState<string>('');
   const [existingAssetsDetails, setExistingAssetsDetails] = useState<string>('');
-  const [graphicQuantity, setGraphicQuantity] = useState<string>('');
+
+  // Backend Tech Preferences
   const [techStackChoice, setTechStackChoice] = useState<string>('');
   const [techStackDetails, setTechStackDetails] = useState<string>('');
-  const [systemCurrentState, setSystemCurrentState] = useState<string>('');
 
   // Timeline
   const [timelineType, setTimelineType] = useState<'asap' | 'weeks' | 'flexible' | ''>('');
@@ -203,27 +271,30 @@ export const BookingSection: React.FC = () => {
 
   // Compute active step list dynamically based on profileType and service
   const getSteps = (): StepId[] => {
-    if (profileType === 'prepared') {
+    if (profileType === 'idea') {
       if (service === 'website') {
-        return ['who', 'service', 'projectType', 'business', 'goals', 'feel', 'scope', 'timeline', 'budget', 'contact'];
+        return ['who', 'service', 'business', 'projectType', 'existingAssets', 'feel', 'timeline', 'budget', 'contact'];
       }
       if (service === 'graphic') {
-        return ['who', 'service', 'projectType', 'business', 'feel', 'brandAssets', 'quantity', 'timeline', 'budget', 'contact'];
+        return ['who', 'service', 'business', 'projectType', 'existingAssets', 'feel', 'timeline', 'budget', 'contact'];
       }
       if (service === 'backend') {
-        return ['who', 'service', 'projectType', 'business', 'goals', 'techPreferences', 'currentState', 'timeline', 'budget', 'contact'];
+        return ['who', 'service', 'business', 'projectType', 'existingAssets', 'timeline', 'budget', 'contact'];
       }
-      return ['who', 'service', 'projectType', 'business', 'goals', 'feel', 'timeline', 'budget', 'contact'];
+      return ['who', 'service', 'business', 'projectType', 'existingAssets', 'feel', 'timeline', 'budget', 'contact'];
     } else {
-      // Category 1: 'idea'
+      // Prepared
       if (service === 'website') {
-        return ['who', 'service', 'projectType', 'business', 'goals', 'feel', 'existingAssets', 'timeline', 'budget', 'contact'];
+        return ['who', 'service', 'business', 'projectType', 'projectStatus', 'goals', 'scope', 'contentReadiness', 'domainHosting', 'feel', 'timeline', 'budget', 'contact'];
       }
       if (service === 'graphic') {
-        return ['who', 'service', 'projectType', 'business', 'feel', 'existingAssets', 'quantity', 'timeline', 'budget', 'contact'];
+        return ['who', 'service', 'business', 'projectType', 'projectStatus', 'usageFormat', 'quantity', 'brandAssets', 'contentReadiness', 'feel', 'timeline', 'budget', 'contact'];
       }
+      if (service === 'backend') {
+        return ['who', 'service', 'business', 'projectType', 'projectStatus', 'goals', 'techPreferences', 'timeline', 'budget', 'contact'];
+      }
+      return ['who', 'service', 'business', 'projectType', 'projectStatus', 'feel', 'timeline', 'budget', 'contact'];
     }
-    return ['who', 'service', 'projectType', 'business', 'goals', 'feel', 'timeline', 'budget', 'contact'];
   };
 
   const activeSteps = getSteps();
@@ -285,25 +356,62 @@ export const BookingSection: React.FC = () => {
     }
   };
 
-  // Toggle goals
+  // Toggle goals (up to 3 selections)
   const toggleGoal = (tag: string) => {
     if (selectedGoals.includes(tag)) {
       setSelectedGoals(selectedGoals.filter(t => t !== tag));
     } else {
-      if (selectedGoals.length < 2) {
+      if (selectedGoals.length < 3) {
         setSelectedGoals([...selectedGoals, tag]);
       } else {
-        setSelectedGoals([selectedGoals[1], tag]);
+        setSelectedGoals([...selectedGoals.slice(1), tag]);
       }
     }
   };
 
-  // Toggle graphic deliverables for Category 2
+  // Toggle graphic deliverables
   const toggleGraphicType = (type: string) => {
     if (selectedGraphicTypes.includes(type)) {
       setSelectedGraphicTypes(selectedGraphicTypes.filter(t => t !== type));
     } else {
       setSelectedGraphicTypes([...selectedGraphicTypes, type]);
+    }
+  };
+
+  // Toggle backend deliverables
+  const toggleBackendType = (type: string) => {
+    if (selectedBackendTypes.includes(type)) {
+      setSelectedBackendTypes(selectedBackendTypes.filter(t => t !== type));
+    } else {
+      setSelectedBackendTypes([...selectedBackendTypes, type]);
+    }
+  };
+
+  // Toggle content readiness (Website prepared)
+  const toggleContentReadiness = (item: string) => {
+    if (item.startsWith('None yet')) {
+      setContentReadiness([item]);
+      return;
+    }
+    const filtered = contentReadiness.filter(i => !i.startsWith('None yet'));
+    if (filtered.includes(item)) {
+      setContentReadiness(filtered.filter(i => i !== item));
+    } else {
+      setContentReadiness([...filtered, item]);
+    }
+  };
+
+  // Toggle existing assets (Idea website / graphic)
+  const toggleExistingAsset = (item: string) => {
+    if (item.startsWith('Nothing yet')) {
+      setSelectedExistingAssets([item]);
+      return;
+    }
+    const filtered = selectedExistingAssets.filter(i => !i.startsWith('Nothing yet'));
+    if (filtered.includes(item)) {
+      setSelectedExistingAssets(filtered.filter(i => i !== item));
+    } else {
+      setSelectedExistingAssets([...filtered, item]);
     }
   };
 
@@ -316,7 +424,7 @@ export const BookingSection: React.FC = () => {
     const serviceNameMap: Record<string, string> = {
       website: 'Website / Web App',
       graphic: 'Graphic Design',
-      backend: 'Backend / Systems',
+      backend: 'Backend / Custom Software',
     };
 
     const resolvedIndustry =
@@ -324,10 +432,32 @@ export const BookingSection: React.FC = () => {
         ? customIndustry.trim()
         : industry || 'Not specified';
 
-    const effectiveProjectType =
-      profileType === 'prepared' && service === 'graphic'
-        ? [...selectedGraphicTypes, customProjectType.trim()].filter(Boolean).join(', ')
-        : (customProjectType.trim() || projectType || undefined);
+    let effectiveProjectType: string | undefined = undefined;
+    if (service === 'graphic') {
+      const allSelected = [...selectedGraphicTypes, customProjectType.trim()].filter(Boolean);
+      effectiveProjectType = allSelected.length > 0 ? allSelected.join(', ') : (projectType || undefined);
+    } else if (service === 'backend') {
+      const allSelected = [...selectedBackendTypes, customProjectType.trim()].filter(Boolean);
+      effectiveProjectType = allSelected.length > 0 ? allSelected.join(', ') : (projectType || undefined);
+    } else {
+      effectiveProjectType = customProjectType.trim() || projectType || undefined;
+    }
+
+    const effectiveExistingAssets =
+      profileType === 'idea'
+        ? service === 'backend'
+          ? (existingAssetsSingle ? `${existingAssetsSingle}${existingAssetsDetails.trim() ? `: ${existingAssetsDetails.trim()}` : ''}` : undefined)
+          : (selectedExistingAssets.length > 0 ? `${selectedExistingAssets.join(', ')}${existingAssetsDetails.trim() ? `: ${existingAssetsDetails.trim()}` : ''}` : undefined)
+        : undefined;
+
+    const effectiveContentReadiness =
+      profileType === 'prepared'
+        ? service === 'website'
+          ? contentReadiness.length > 0 ? [...contentReadiness, contentReadinessLink.trim() ? `Link: ${contentReadinessLink.trim()}` : ''].filter(Boolean) : undefined
+          : service === 'graphic'
+          ? (projectType ? [projectType] : undefined) // or single status stored in contentReadiness
+          : undefined
+        : undefined;
 
     const briefData: ProjectBriefData = {
       referenceId: ref,
@@ -340,21 +470,26 @@ export const BookingSection: React.FC = () => {
       industry: resolvedIndustry,
       profileType:
         profileType === 'idea'
-          ? "I have an idea but I'm not sure where to start"
+          ? 'I have an idea, but need direction'
           : 'I know exactly what I want',
       service: serviceNameMap[service] || 'Creative Consulting',
       projectType: effectiveProjectType,
+      projectStatus: projectStatus || undefined,
+      projectStatusDetails: projectStatusDetails.trim() || undefined,
+      usageFormat: usageFormat || undefined,
       goals: selectedGoals,
       customGoal: customGoal.trim() || undefined,
+      scopePages: scopePages || undefined,
+      contentReadiness: effectiveContentReadiness,
+      domainHosting: domainHosting || undefined,
       feelMood: feelMood || designDirectionChoice || undefined,
       feelDescription: feelDescription.trim() || undefined,
       referenceWebsiteLink: referenceWebsiteLink.trim() || undefined,
-      scopePages: scopePages || undefined,
       graphicQuantity: graphicQuantity || undefined,
       brandAssets: brandAssets ? `${brandAssets}${brandAssetsDetails.trim() ? `: ${brandAssetsDetails.trim()}` : ''}` : undefined,
-      existingAssets: existingAssets ? `${existingAssets}${existingAssetsDetails.trim() ? `: ${existingAssetsDetails.trim()}` : ''}` : undefined,
+      existingAssets: effectiveExistingAssets,
       techStackPreference: techStackChoice ? `${techStackChoice}${techStackDetails.trim() ? `: ${techStackDetails.trim()}` : ''}` : undefined,
-      systemCurrentState: systemCurrentState || undefined,
+      systemCurrentState: projectStatus || undefined,
       timelineType,
       timelineWeeks: timelineType === 'weeks' ? timelineWeeks : undefined,
       budgetType,
@@ -407,20 +542,22 @@ Preferred Contact: ${briefData.preferredContact}
 Service: ${briefData.service}
 Readiness: ${briefData.profileType}
 Deliverable: ${briefData.projectType || 'N/A'}
-Goals: ${briefData.goals.join(', ')} ${briefData.customGoal ? `(${briefData.customGoal})` : ''}
+Project Stage: ${briefData.projectStatus || 'N/A'}${briefData.projectStatusDetails ? ` (${briefData.projectStatusDetails})` : ''}
+Usage Format: ${briefData.usageFormat || 'N/A'}
+Goals / Features: ${briefData.goals.join(', ')} ${briefData.customGoal ? `(${briefData.customGoal})` : ''}
+Page Scope: ${briefData.scopePages || 'N/A'}
+Content Readiness: ${briefData.contentReadiness ? briefData.contentReadiness.join(', ') : 'N/A'}
+Domain & Hosting: ${briefData.domainHosting || 'N/A'}
 Style Direction: ${briefData.feelMood || 'N/A'}
-Description: ${briefData.feelDescription || 'N/A'}
+Style Description: ${briefData.feelDescription || 'N/A'}
 Reference Link: ${briefData.referenceWebsiteLink || 'N/A'}
-Scope Pages: ${briefData.scopePages || 'N/A'}
 Graphic Quantity: ${briefData.graphicQuantity || 'N/A'}
 Brand Assets: ${briefData.brandAssets || 'N/A'}
 Existing Assets: ${briefData.existingAssets || 'N/A'}
 Tech Preferences: ${briefData.techStackPreference || 'N/A'}
-Current System State: ${briefData.systemCurrentState || 'N/A'}
 Timeline: ${briefData.timelineType === 'weeks' ? `${briefData.timelineWeeks} Weeks` : briefData.timelineType}
 Budget: ${briefData.budgetBand || briefData.budgetType}`;
 
-      // Background form dispatch to formsubmit / web3forms API for vapourdense@gmail.com
       fetch('https://formsubmit.co/ajax/vapourdense@gmail.com', {
         method: 'POST',
         headers: {
@@ -441,8 +578,13 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
           service: briefData.service,
           readiness: briefData.profileType,
           deliverable: briefData.projectType || 'N/A',
+          project_stage: briefData.projectStatus || 'N/A',
+          project_stage_details: briefData.projectStatusDetails || 'N/A',
+          usage_format: briefData.usageFormat || 'N/A',
           goals: briefData.goals.join(', '),
           custom_goal: briefData.customGoal || 'N/A',
+          page_scope: briefData.scopePages || 'N/A',
+          domain_hosting: briefData.domainHosting || 'N/A',
           style_direction: briefData.feelMood || 'N/A',
           style_description: briefData.feelDescription || 'N/A',
           reference_link: briefData.referenceWebsiteLink || 'N/A',
@@ -473,8 +615,6 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
       console.error('Error generating PDF:', err);
     }
   };
-
-  const isGoalsNextActive = selectedGoals.length > 0 || customGoal.trim().length >= 4;
 
   return (
     <section
@@ -542,7 +682,7 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
               {/* VIEWPORT CONTAINER */}
               <div className="flex-1 w-[85vw] max-w-[85vw] sm:w-full sm:max-w-none max-h-[86dvh] sm:max-h-full mx-auto my-auto sm:my-0 flex flex-col justify-between items-center px-1 py-2 sm:p-8 md:p-14 lg:p-16 relative rounded-none overflow-y-auto">
                 <div className="w-full max-w-4xl lg:max-w-5xl mx-auto space-y-3.5 sm:space-y-7 my-auto">
-                  {/* Wide Orange Progress Bar (On top of back arrow, no percentage) */}
+                  {/* Wide Orange Progress Bar */}
                   <div className="w-full">
                     <div className="h-1.5 w-full bg-white/10 relative rounded-none overflow-hidden">
                       <motion.div
@@ -567,7 +707,7 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                   </div>
 
                   {/* --------------------------------------------------------
-                      QUESTION 1 — The Split (Category 1 vs Category 2)
+                      STEP 1: READINESS SPLIT ('who')
                      -------------------------------------------------------- */}
                   {currentStep === 'who' && (
                     <div className="space-y-2.5 sm:space-y-7">
@@ -595,10 +735,10 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                           }`}
                         >
                           <h4 className="font-display text-lg sm:text-xl font-bold text-white mb-2 leading-snug">
-                            I have an idea but I&apos;m not sure where to start
+                            I have an idea, but need direction
                           </h4>
                           <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed">
-                            You know you need something — a website, a design, maybe more. You&apos;re just not sure what that looks like yet.
+                            You know the outcome you want, but need help figuring out the right scope, features, or visual direction.
                           </p>
                         </button>
 
@@ -619,7 +759,7 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                             I know exactly what I want
                           </h4>
                           <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed">
-                            You&apos;ve got the specs, the vision, or at least a strong direction. You&apos;re ready to get into the details.
+                            You have clear deliverables, required features, or references ready to get into the details.
                           </p>
                         </button>
                       </div>
@@ -627,25 +767,25 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                   )}
 
                   {/* --------------------------------------------------------
-                      SERVICE SELECTION
+                      STEP 2: SERVICE SELECTION ('service')
                      -------------------------------------------------------- */}
                   {currentStep === 'service' && (
                     <div className="space-y-2.5 sm:space-y-7">
                       <div>
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
-                          NEXT, TELL US  —
+                          STEP 1 — SERVICE
                         </span>
                         <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
-                          What are you looking to get done?
+                          What are you looking to build?
                         </h3>
                       </div>
 
-                      <div className={`grid grid-cols-1 ${profileType === 'idea' ? 'sm:grid-cols-2' : 'sm:grid-cols-3'} gap-5 pt-1`}>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-1">
                         <button
                           type="button"
                           onClick={() => {
                             setService('website');
-                            goToStep('projectType');
+                            goToStep('business');
                           }}
                           className={`p-6 sm:p-7 text-left rounded-none transition-all duration-300 cursor-pointer group hover:-translate-y-1 shadow-sm border ${
                             service === 'website'
@@ -660,7 +800,7 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                             Website / Web App
                           </h4>
                           <p className="text-xs sm:text-[13px] text-slate-300 font-light leading-relaxed">
-                            From a clean business site to a fully functional web application — if it lives in a browser, this is it.
+                            Business websites, landing pages, online stores, and web applications.
                           </p>
                         </button>
 
@@ -668,7 +808,7 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                           type="button"
                           onClick={() => {
                             setService('graphic');
-                            goToStep('projectType');
+                            goToStep('business');
                           }}
                           className={`p-6 sm:p-7 text-left rounded-none transition-all duration-300 cursor-pointer group hover:-translate-y-1 shadow-sm border ${
                             service === 'graphic'
@@ -683,234 +823,44 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                             Graphic Design
                           </h4>
                           <p className="text-xs sm:text-[13px] text-slate-300 font-light leading-relaxed">
-                            Logos, flyers, brand kits, social media graphics. If it needs to look great, we&apos;ve got you.
+                            Logos, brand identity kits, flyers, packaging, pitch decks, and social graphics.
                           </p>
                         </button>
 
-                        {/* Only rendered if user knows what they want (Category 2) */}
-                        {profileType !== 'idea' && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setService('backend');
-                              goToStep('projectType');
-                            }}
-                            className={`p-6 sm:p-7 text-left rounded-none transition-all duration-300 cursor-pointer group hover:-translate-y-1 shadow-sm border ${
-                              service === 'backend'
-                                ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg'
-                                : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
-                            }`}
-                          >
-                            <div className="w-11 h-11 rounded-none bg-white/10 flex items-center justify-center text-[#38bdf8] mb-4 group-hover:scale-105 transition-transform">
-                              <Server className="w-5 h-5 text-[#38bdf8]" />
-                            </div>
-                            <h4 className="font-display text-base sm:text-lg font-bold text-white mb-1.5">
-                              Backend / Systems
-                            </h4>
-                            <p className="text-xs sm:text-[13px] text-slate-300 font-light leading-relaxed">
-                              APIs, databases, dashboards, integrations. The stuff that powers everything behind the scenes.
-                            </p>
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* --------------------------------------------------------
-                      Q2 — WHAT ARE YOU LOOKING TO GET DONE? / DELIVERABLES / SYSTEM TYPE
-                     -------------------------------------------------------- */}
-                  {currentStep === 'projectType' && (
-                    <div className="space-y-2.5 sm:space-y-7">
-                      <div>
-                        <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
-                          {profileType === 'idea'
-                            ? service === 'graphic'
-                              ? 'Q2 — DELIVERABLE SCOPE'
-                              : 'Q2 — MAIN GOAL'
-                            : service === 'website'
-                            ? 'Q2 — PROJECT TYPE'
-                            : service === 'graphic'
-                            ? 'Q2 — DELIVERABLE SCOPE'
-                            : 'Q2 — PROJECT TYPE'}
-                        </span>
-                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
-                          {profileType === 'idea'
-                            ? service === 'graphic'
-                              ? 'What are we crafting together?'
-                              : 'What are you looking to get done?'
-                            : service === 'website'
-                            ? 'What type of project are you building?'
-                            : service === 'graphic'
-                            ? 'What are we crafting together?'
-                            : 'What type of system are you building?'}
-                        </h3>
-                      </div>
-
-                      {/* Options Grid */}
-                      <div className="space-y-4 pt-1">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
-                          {/* CATEGORY 1: Website */}
-                          {profileType === 'idea' && service === 'website' &&
-                            [
-                              'Show people what my business is about',
-                              'Let customers contact or reach me easily',
-                              'Let customers book, order, or sign up for something',
-                              'Sell products online',
-                              "I'm not sure yet — I just know I need a website",
-                            ].map(item => (
-                              <button
-                                key={item}
-                                type="button"
-                                onClick={() => setProjectType(item)}
-                                className={`p-5 text-left rounded-none transition-all cursor-pointer border ${
-                                  projectType === item
-                                    ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
-                                    : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
-                                }`}
-                              >
-                                <h4 className="text-sm sm:text-base font-bold text-white">{item}</h4>
-                              </button>
-                            ))}
-
-                          {/* CATEGORY 1: Graphic */}
-                          {profileType === 'idea' && service === 'graphic' &&
-                            [
-                              'A logo for my business',
-                              'Something to hand out or share (flyer, business card)',
-                              'Graphics for my social media pages',
-                              'I want my whole brand to look consistent',
-                              "I'm not sure yet — I just know it needs to look better",
-                            ].map(item => (
-                              <button
-                                key={item}
-                                type="button"
-                                onClick={() => setProjectType(item)}
-                                className={`p-5 text-left rounded-none transition-all cursor-pointer border ${
-                                  projectType === item
-                                    ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
-                                    : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
-                                }`}
-                              >
-                                <h4 className="text-sm sm:text-base font-bold text-white">{item}</h4>
-                              </button>
-                            ))}
-
-                          {/* CATEGORY 2: Website */}
-                          {profileType === 'prepared' && service === 'website' &&
-                            [
-                              'Informational / Brochure site',
-                              'Web Application (users log in, interact with data)',
-                              'E-commerce store',
-                              'Landing page / Single page',
-                              'Portfolio site',
-                            ].map(item => (
-                              <button
-                                key={item}
-                                type="button"
-                                onClick={() => setProjectType(item)}
-                                className={`p-5 text-left rounded-none transition-all cursor-pointer border ${
-                                  projectType === item
-                                    ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
-                                    : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
-                                }`}
-                              >
-                                <h4 className="text-sm sm:text-base font-bold text-white">{item}</h4>
-                              </button>
-                            ))}
-
-                          {/* CATEGORY 2: Graphic */}
-                          {profileType === 'prepared' && service === 'graphic' &&
-                            [
-                              'Logo',
-                              'Flyer or Poster',
-                              'Business Card',
-                              'Social Media Graphics',
-                              'Brand Identity Kit',
-                              'Packaging',
-                            ].map(item => {
-                              const active = selectedGraphicTypes.includes(item);
-                              return (
-                                <button
-                                  key={item}
-                                  type="button"
-                                  onClick={() => toggleGraphicType(item)}
-                                  className={`p-5 text-left rounded-none transition-all cursor-pointer border ${
-                                    active
-                                      ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
-                                      : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
-                                  }`}
-                                >
-                                  <h4 className="text-sm sm:text-base font-bold text-white">{item}</h4>
-                                </button>
-                              );
-                            })}
-
-                          {/* CATEGORY 2: Backend */}
-                          {profileType === 'prepared' && service === 'backend' &&
-                            [
-                              'REST API or backend for an existing frontend',
-                              'Admin dashboard or internal tool',
-                              'Database design and setup',
-                              'Third-party integrations (payments, auth, SMS, etc.)',
-                              'Automation or workflow system',
-                            ].map(item => (
-                              <button
-                                key={item}
-                                type="button"
-                                onClick={() => setProjectType(item)}
-                                className={`p-5 text-left rounded-none transition-all cursor-pointer border ${
-                                  projectType === item
-                                    ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
-                                    : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
-                                }`}
-                              >
-                                <h4 className="text-sm sm:text-base font-bold text-white">{item}</h4>
-                              </button>
-                            ))}
-                        </div>
-
-                        {/* Something else text input (for Category 2) */}
-                        {profileType === 'prepared' && (
-                          <div className="pt-2">
-                            <label className="font-unisans-thin-caps block text-xs sm:text-[13px] uppercase tracking-wider text-slate-300 mb-1.5">
-                              Something else (text input):
-                            </label>
-                            <input
-                              type="text"
-                              value={customProjectType}
-                              onChange={e => setCustomProjectType(e.target.value)}
-                              placeholder="Type your specific project / deliverable type..."
-                              className="w-full px-4 py-3 text-xs sm:text-sm text-white placeholder-slate-400 bg-white/[0.06] border border-white/20 rounded-none focus:outline-none focus:border-[#003663] focus:ring-2 focus:ring-[#38bdf8]/50"
-                            />
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="pt-4 flex justify-center">
                         <button
                           type="button"
-                          disabled={
-                            profileType === 'prepared' && service === 'graphic'
-                              ? selectedGraphicTypes.length === 0 && !customProjectType.trim()
-                              : !projectType && !customProjectType.trim()
-                          }
-                          onClick={() => goToStep('business')}
-                          className="px-10 py-3.5 text-sm sm:text-base font-bold text-white bg-[#003663] hover:bg-[#002647] border border-[#38bdf8]/40 disabled:opacity-40 disabled:pointer-events-none rounded-none shadow-lg transition-all cursor-pointer"
+                          onClick={() => {
+                            setService('backend');
+                            goToStep('business');
+                          }}
+                          className={`p-6 sm:p-7 text-left rounded-none transition-all duration-300 cursor-pointer group hover:-translate-y-1 shadow-sm border ${
+                            service === 'backend'
+                              ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg'
+                              : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
+                          }`}
                         >
-                          Next →
+                          <div className="w-11 h-11 rounded-none bg-white/10 flex items-center justify-center text-[#38bdf8] mb-4 group-hover:scale-105 transition-transform">
+                            <Server className="w-5 h-5 text-[#38bdf8]" />
+                          </div>
+                          <h4 className="font-display text-base sm:text-lg font-bold text-white mb-1.5">
+                            Backend / Custom Software
+                          </h4>
+                          <p className="text-xs sm:text-[13px] text-slate-300 font-light leading-relaxed">
+                            Custom software, SaaS MVPs, internal tools, automations, APIs, and integrations.
+                          </p>
                         </button>
                       </div>
                     </div>
                   )}
 
                   {/* --------------------------------------------------------
-                      Q3 — Business Info (All Paths)
+                      STEP 3: BUSINESS INFO ('business')
                      -------------------------------------------------------- */}
                   {currentStep === 'business' && (
                     <div className="space-y-2.5 sm:space-y-7">
                       <div>
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
-                          Q3 — BUSINESS INFO
+                          STEP 2 — BUSINESS INFO
                         </span>
                         <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
                           Tell us about your brand.
@@ -1014,13 +964,7 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                         <button
                           type="button"
                           disabled={!businessName.trim()}
-                          onClick={() => {
-                            if (service === 'graphic') {
-                              goToStep('feel');
-                            } else {
-                              goToStep('goals');
-                            }
-                          }}
+                          onClick={goToNext}
                           className="px-10 py-3.5 text-sm sm:text-base font-bold text-white bg-[#003663] hover:bg-[#002647] border border-[#38bdf8]/40 disabled:opacity-40 disabled:pointer-events-none rounded-none shadow-lg transition-all cursor-pointer"
                         >
                           Next →
@@ -1030,293 +974,215 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                   )}
 
                   {/* --------------------------------------------------------
-                      Q4 — GOALS (Website & Backend Paths)
+                      STEP 4: DELIVERABLES & FOCUS ('projectType')
                      -------------------------------------------------------- */}
-                  {currentStep === 'goals' && (
+                  {currentStep === 'projectType' && (
                     <div className="space-y-2.5 sm:space-y-7">
                       <div>
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
-                          {profileType === 'idea'
-                            ? 'Q4 — CALL TO ACTION (UP TO 2)'
-                            : service === 'backend'
-                            ? 'Q4 — KEY CRITERIA (UP TO 2)'
-                            : 'Q4 — GOALS (UP TO 2)'}
+                          {profileType === 'idea' ? 'STEP 3 — MAIN GOAL' : 'STEP 3 — DELIVERABLES'}
                         </span>
-
                         <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
                           {profileType === 'idea'
-                            ? 'What do you want people to do when they visit your site?'
-                            : service === 'backend'
-                            ? 'What does success look like for this engine?'
-                            : 'What do you want people to do when they land on your site?'}
+                            ? service === 'website'
+                              ? 'What should this website do for your business?'
+                              : service === 'graphic'
+                              ? 'What do you need designed?'
+                              : 'What problem should this software solve?'
+                            : service === 'website'
+                            ? 'What type of website or web app are you building?'
+                            : service === 'graphic'
+                            ? 'Which deliverables do you need?'
+                            : 'What type of software or system are we building?'}
                         </h3>
                       </div>
 
-                      {/* Tag options */}
                       <div className="space-y-4 pt-1">
-                        <div className="flex flex-wrap gap-2.5">
-                          {(profileType === 'idea'
-                            ? [
-                                'Contact or reach me easily',
-                                'Learn about my products or services',
-                                'Book an appointment or session',
-                                'Buy something directly',
-                                'Trust my brand more',
-                              ]
-                            : service === 'backend'
-                            ? [
-                                'Power a frontend or mobile app',
-                                'Build an internal tool',
-                                'Connect third-party services',
-                                'Automate a business process',
-                              ]
-                            : [
-                                'Contact or reach me easily',
-                                'Let customers book or order something',
-                                'Sell products directly',
-                                'Automate a business process',
-                                'Replace or improve an existing system',
-                              ]
-                          ).map(tag => {
-                            const active = selectedGoals.includes(tag);
-                            return (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                          {/* IDEA: Website */}
+                          {profileType === 'idea' && service === 'website' &&
+                            [
+                              'Explain my business and build credibility',
+                              'Sell products directly online',
+                              'Let clients book appointments or services',
+                              'Replace or modernize an outdated website',
+                              'Launch a new product, event, or campaign',
+                              'Not sure yet — guide me on what fits best',
+                            ].map(item => (
                               <button
-                                key={tag}
+                                key={item}
                                 type="button"
-                                onClick={() => toggleGoal(tag)}
-                                className={`px-4 py-2.5 rounded-none text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer border ${
-                                  active
-                                    ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-md font-semibold'
-                                    : 'bg-white/[0.05] hover:bg-white/[0.12] border-white/15 text-slate-200 hover:text-white'
+                                onClick={() => setProjectType(item)}
+                                className={`p-5 text-left rounded-none transition-all cursor-pointer border ${
+                                  projectType === item
+                                    ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
+                                    : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
                                 }`}
                               >
-                                {tag}
+                                <h4 className="text-sm sm:text-base font-bold text-white">{item}</h4>
                               </button>
-                            );
-                          })}
+                            ))}
 
-                          {profileType === 'idea' && !isCustomGoalOpen && (
-                            <button
-                              type="button"
-                              onClick={() => setIsCustomGoalOpen(true)}
-                              className="px-4 py-2.5 rounded-none text-xs sm:text-sm font-medium text-[#38bdf8] hover:text-white hover:bg-white/[0.12] bg-white/[0.05] border border-white/15 cursor-pointer transition-colors"
-                            >
-                              ✏️ Something else (short text input)
-                            </button>
-                          )}
+                          {/* IDEA: Graphic (Multi-select) */}
+                          {profileType === 'idea' && service === 'graphic' &&
+                            [
+                              'A logo for my business',
+                              'Flyers, posters, or business cards',
+                              'Social media graphics',
+                              'A consistent look for my whole brand',
+                              'Product packaging or labels',
+                              'Company profile or presentation deck',
+                            ].map(item => {
+                              const active = selectedGraphicTypes.includes(item);
+                              return (
+                                <button
+                                  key={item}
+                                  type="button"
+                                  onClick={() => toggleGraphicType(item)}
+                                  className={`p-5 text-left rounded-none transition-all cursor-pointer border ${
+                                    active
+                                      ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
+                                      : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
+                                  }`}
+                                >
+                                  <h4 className="text-sm sm:text-base font-bold text-white">{item}</h4>
+                                </button>
+                              );
+                            })}
+
+                          {/* IDEA: Backend / Custom Software */}
+                          {profileType === 'idea' && service === 'backend' &&
+                            [
+                              'Turn a new app or software idea into a working product',
+                              'Save time by automating repetitive manual work',
+                              'Help my team track operations, sales, or data in one place',
+                              'Connect payments, WhatsApp, or tools we already use',
+                              'Fix or upgrade a system that isn\'t working well',
+                            ].map(item => (
+                              <button
+                                key={item}
+                                type="button"
+                                onClick={() => setProjectType(item)}
+                                className={`p-5 text-left rounded-none transition-all cursor-pointer border ${
+                                  projectType === item
+                                    ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
+                                    : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
+                                }`}
+                              >
+                                <h4 className="text-sm sm:text-base font-bold text-white">{item}</h4>
+                              </button>
+                            ))}
+
+                          {/* PREPARED: Website */}
+                          {profileType === 'prepared' && service === 'website' &&
+                            [
+                              'Company / Corporate Website',
+                              'Landing Page / Campaign Site',
+                              'E-Commerce Store',
+                              'Web Application / Client Portal',
+                              'Portfolio / Showcase Site',
+                            ].map(item => (
+                              <button
+                                key={item}
+                                type="button"
+                                onClick={() => setProjectType(item)}
+                                className={`p-5 text-left rounded-none transition-all cursor-pointer border ${
+                                  projectType === item
+                                    ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
+                                    : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
+                                }`}
+                              >
+                                <h4 className="text-sm sm:text-base font-bold text-white">{item}</h4>
+                              </button>
+                            ))}
+
+                          {/* PREPARED: Graphic (Multi-select) */}
+                          {profileType === 'prepared' && service === 'graphic' &&
+                            [
+                              'Logo Design',
+                              'Full Brand Identity Kit',
+                              'Flyer or Poster',
+                              'Social Media Graphics Kit',
+                              'Pitch Deck / Company Profile',
+                              'Packaging / Label Design',
+                              'Business Card / Stationery',
+                            ].map(item => {
+                              const active = selectedGraphicTypes.includes(item);
+                              return (
+                                <button
+                                  key={item}
+                                  type="button"
+                                  onClick={() => toggleGraphicType(item)}
+                                  className={`p-5 text-left rounded-none transition-all cursor-pointer border ${
+                                    active
+                                      ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
+                                      : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
+                                  }`}
+                                >
+                                  <h4 className="text-sm sm:text-base font-bold text-white">{item}</h4>
+                                </button>
+                              );
+                            })}
+
+                          {/* PREPARED: Backend / Custom Software (Multi-select) */}
+                          {profileType === 'prepared' && service === 'backend' &&
+                            [
+                              'Custom Web / Desktop / Mobile Software or SaaS MVP',
+                              'Internal Business Tool, Portal, or Admin Dashboard',
+                              'Workflow Automation & AI / Bot Integrations',
+                              'APIs, Databases & Backend Architecture',
+                              'Third-Party Integrations (Payments, SMS, WhatsApp, ERP/CRM)',
+                            ].map(item => {
+                              const active = selectedBackendTypes.includes(item);
+                              return (
+                                <button
+                                  key={item}
+                                  type="button"
+                                  onClick={() => toggleBackendType(item)}
+                                  className={`p-5 text-left rounded-none transition-all cursor-pointer border ${
+                                    active
+                                      ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
+                                      : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
+                                  }`}
+                                >
+                                  <h4 className="text-sm sm:text-base font-bold text-white">{item}</h4>
+                                </button>
+                              );
+                            })}
                         </div>
 
-                        {/* Something else input field */}
-                        {(profileType === 'prepared' || isCustomGoalOpen) && (
-                          <div className="w-full pt-1">
-                            <input
-                              type="text"
-                              value={customGoal}
-                              onChange={e => setCustomGoal(e.target.value)}
-                              placeholder="Something else (short text input)..."
-                              className="w-full px-4 py-3 text-xs sm:text-sm text-white placeholder-slate-400 bg-white/[0.06] border border-white/20 rounded-none focus:outline-none focus:border-[#003663] focus:ring-2 focus:ring-[#38bdf8]/50"
-                            />
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="pt-5 flex justify-center">
-                        <button
-                          type="button"
-                          disabled={!isGoalsNextActive}
-                          onClick={() => {
-                            if (profileType === 'prepared') {
-                              if (service === 'website') goToStep('feel');
-                              else if (service === 'backend') goToStep('techPreferences');
-                              else goToStep('feel');
-                            } else {
-                              goToStep('feel');
+                        {/* Optional custom input */}
+                        <div className="pt-2">
+                          <label className="font-unisans-thin-caps block text-xs sm:text-[13px] uppercase tracking-wider text-slate-300 mb-1.5">
+                            Specific deliverable or custom note (optional):
+                          </label>
+                          <input
+                            type="text"
+                            value={customProjectType}
+                            onChange={e => setCustomProjectType(e.target.value)}
+                            placeholder={
+                              service === 'graphic'
+                                ? 'e.g. 3D logo animation, merchandise apparel design...'
+                                : service === 'backend'
+                                ? 'e.g. Python FastAPI microservice, Stripe marketplace billing...'
+                                : 'e.g. Multi-vendor marketplace, real estate property portal...'
                             }
-                          }}
-                          className={`px-10 py-3.5 text-sm sm:text-base font-bold text-white rounded-none shadow-lg transition-all cursor-pointer border ${
-                            isGoalsNextActive
-                              ? 'bg-[#003663] hover:bg-[#002647] border-[#38bdf8]/40 ring-2 ring-[#38bdf8]/30'
-                              : 'bg-white/10 text-white/30 border-white/10 opacity-40 pointer-events-none'
-                          }`}
-                        >
-                          Next →
-                        </button>
+                            className="w-full px-4 py-3 text-xs sm:text-sm text-white placeholder-slate-400 bg-white/[0.06] border border-white/20 rounded-none focus:outline-none focus:border-[#003663] focus:ring-2 focus:ring-[#38bdf8]/50"
+                          />
+                        </div>
                       </div>
-                    </div>
-                  )}
-
-                  {/* --------------------------------------------------------
-                      Q5 (Website) / Q4 (Graphic) — FEEL & STYLE DIRECTION
-                     -------------------------------------------------------- */}
-                  {currentStep === 'feel' && (
-                    <div className="space-y-2.5 sm:space-y-7">
-                      <div>
-                        <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
-                          {service === 'graphic'
-                            ? 'Q4 — DESIGN DIRECTION'
-                            : 'Q5 — DESIGN DIRECTION'}
-                        </span>
-                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
-                          {service === 'graphic'
-                            ? 'What should people feel when they see your design?'
-                            : profileType === 'idea'
-                            ? 'How do you want it to feel?'
-                            : 'Do you have a design direction in mind?'}
-                        </h3>
-                      </div>
-
-                      {/* CATEGORY 1: Website */}
-                      {profileType === 'idea' && service === 'website' && (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-1">
-                          {[
-                            'Clean & Professional',
-                            'Bold & Energetic',
-                            'Warm & Friendly',
-                            'Minimal & Elegant',
-                            'Dark & Dramatic',
-                            'Surprise me — I trust you',
-                          ].map(item => (
-                            <button
-                              key={item}
-                              type="button"
-                              onClick={() => setFeelMood(item)}
-                              className={`p-5 text-left rounded-none transition-all cursor-pointer border ${
-                                feelMood === item
-                                  ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
-                                  : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
-                              }`}
-                            >
-                              <h4 className="text-sm sm:text-base font-bold text-white">{item}</h4>
-                            </button>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* CATEGORY 1: Graphic */}
-                      {profileType === 'idea' && service === 'graphic' && (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
-                          {[
-                            'That this business is serious and trustworthy',
-                            'That this business is fun and exciting',
-                            'That this business is premium and high-end',
-                            'That this business is friendly and approachable',
-                            "I'm not sure — just make it look great",
-                          ].map(item => (
-                            <button
-                              key={item}
-                              type="button"
-                              onClick={() => setFeelMood(item)}
-                              className={`p-5 text-left rounded-none transition-all cursor-pointer border ${
-                                feelMood === item
-                                  ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
-                                  : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
-                              }`}
-                            >
-                              <h4 className="text-sm sm:text-base font-bold text-white">{item}</h4>
-                            </button>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* CATEGORY 2: Prepared Design Direction */}
-                      {profileType === 'prepared' && (
-                        <div className="space-y-4 pt-1">
-                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <button
-                              type="button"
-                              onClick={() => setDesignDirectionChoice('references')}
-                              className={`p-5 text-left rounded-none transition-all cursor-pointer border ${
-                                designDirectionChoice === 'references'
-                                  ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
-                                  : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
-                              }`}
-                            >
-                              <h4 className="text-sm sm:text-base font-bold text-white mb-1.5">
-                                {service === 'graphic'
-                                  ? 'I have references (link or upload)'
-                                  : 'Yes, I have references or a style guide (link or file upload)'}
-                              </h4>
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => setDesignDirectionChoice('idea')}
-                              className={`p-5 text-left rounded-none transition-all cursor-pointer border ${
-                                designDirectionChoice === 'idea'
-                                  ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
-                                  : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
-                              }`}
-                            >
-                              <h4 className="text-sm sm:text-base font-bold text-white mb-1.5">
-                                {service === 'graphic'
-                                  ? 'I have a general idea (text input)'
-                                  : 'Yes, I have a general idea (text input)'}
-                              </h4>
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => setDesignDirectionChoice('surprise')}
-                              className={`p-5 text-left rounded-none transition-all cursor-pointer border ${
-                                designDirectionChoice === 'surprise'
-                                  ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
-                                  : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
-                              }`}
-                            >
-                              <h4 className="text-sm sm:text-base font-bold text-white mb-1.5">
-                                {service === 'graphic'
-                                  ? 'Start from scratch — surprise me'
-                                  : "No — I'll leave the creative direction to you"}
-                              </h4>
-                            </button>
-                          </div>
-
-                          {designDirectionChoice === 'references' && (
-                            <div className="pt-2">
-                              <label className="font-unisans-thin-caps block text-xs sm:text-[13px] uppercase tracking-wider text-slate-300 mb-1.5 flex items-center gap-1.5">
-                                <LinkIcon className="w-3.5 h-3.5 text-[#38bdf8]" />
-                                <span>Paste reference link or file URL:</span>
-                              </label>
-                              <input
-                                type="url"
-                                value={referenceWebsiteLink}
-                                onChange={e => setReferenceWebsiteLink(e.target.value)}
-                                placeholder="https://example.com or Figma / Google Drive link..."
-                                className="w-full px-4 py-3 text-xs sm:text-sm text-white placeholder-slate-400 bg-white/[0.06] border border-white/20 rounded-none focus:outline-none focus:border-[#003663] focus:ring-2 focus:ring-[#38bdf8]/50"
-                              />
-                            </div>
-                          )}
-
-                          {designDirectionChoice === 'idea' && (
-                            <div className="pt-2">
-                              <label className="font-unisans-thin-caps block text-xs sm:text-[13px] uppercase tracking-wider text-slate-300 mb-1.5">
-                                Describe your general idea:
-                              </label>
-                              <textarea
-                                rows={2}
-                                value={feelDescription}
-                                onChange={e => setFeelDescription(e.target.value)}
-                                placeholder="Describe the aesthetic, typography, colors, or mood..."
-                                className="w-full p-3.5 text-xs sm:text-sm text-white placeholder-slate-400 bg-white/[0.06] border border-white/20 rounded-none focus:outline-none focus:border-[#003663] focus:ring-2 focus:ring-[#38bdf8]/50"
-                              />
-                            </div>
-                          )}
-                        </div>
-                      )}
 
                       <div className="pt-4 flex justify-center">
                         <button
                           type="button"
-                          disabled={profileType === 'prepared' ? !designDirectionChoice : !feelMood}
-                          onClick={() => {
-                            if (profileType === 'prepared') {
-                              if (service === 'website') goToStep('scope');
-                              else if (service === 'graphic') goToStep('brandAssets');
-                              else goToStep('timeline');
-                            } else {
-                              goToStep('existingAssets');
-                            }
-                          }}
+                          disabled={
+                            service === 'graphic'
+                              ? selectedGraphicTypes.length === 0 && !customProjectType.trim() && !projectType
+                              : service === 'backend' && profileType === 'prepared'
+                              ? selectedBackendTypes.length === 0 && !customProjectType.trim() && !projectType
+                              : !projectType && !customProjectType.trim()
+                          }
+                          onClick={goToNext}
                           className="px-10 py-3.5 text-sm sm:text-base font-bold text-white bg-[#003663] hover:bg-[#002647] border border-[#38bdf8]/40 disabled:opacity-40 disabled:pointer-events-none rounded-none shadow-lg transition-all cursor-pointer"
                         >
                           Next →
@@ -1326,66 +1192,85 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                   )}
 
                   {/* --------------------------------------------------------
-                      CATEGORY 1: Q6 (Website) / Q5 (Graphic) — EXISTING ASSETS
+                      STEP 5: PREPARED — PROJECT STATUS (NEW / REDESIGN / UPGRADE)
                      -------------------------------------------------------- */}
-                  {currentStep === 'existingAssets' && profileType === 'idea' && (
+                  {currentStep === 'projectStatus' && profileType === 'prepared' && (
                     <div className="space-y-2.5 sm:space-y-7">
                       <div>
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
-                          {service === 'graphic'
-                            ? 'Q5 — ASSETS'
-                            : 'Q6 — EXISTING ARTIFACTS'}
+                          STEP 4 — PROJECT STAGE
                         </span>
                         <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
-                          {service === 'graphic'
-                            ? 'Are there brand guidelines or materials we can work with already in place?'
-                            : 'Do you have anything already?'}
+                          {service === 'website'
+                            ? 'Is this a new website, a redesign, or an upgrade?'
+                            : service === 'graphic'
+                            ? 'Is this a new brand, a redesign, or an upgrade?'
+                            : 'Is this a new build, a redesign, or an upgrade?'}
                         </h3>
                       </div>
 
-                      <div className="space-y-3.5 pt-1 max-w-2xl mx-auto">
-                        {(service === 'graphic'
-                          ? [
-                              "No — we're starting from scratch",
-                              'I have a logo but need more designed around it',
-                              'I have some colours or a style I like (describe or upload)',
-                              'I have old designs that need a refresh',
-                            ]
-                          : [
-                              "No — we're starting from scratch",
-                              'I have a logo or some brand colours',
-                              'I have an old website that needs replacing',
-                              'I have some content ready (photos, text, etc.)',
-                            ]
-                        ).map(item => (
-                          <button
-                            key={item}
-                            type="button"
-                            onClick={() => setExistingAssets(item)}
-                            className={`w-full p-5 text-left rounded-none transition-all cursor-pointer border ${
-                              existingAssets === item
-                                ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
-                                : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
-                            }`}
-                          >
-                            <h4 className="text-sm sm:text-base font-bold text-white">{item}</h4>
-                          </button>
-                        ))}
+                      <div className="space-y-4 pt-1 max-w-2xl mx-auto">
+                        <div className="space-y-3.5">
+                          {(service === 'website'
+                            ? [
+                                'Brand new website (building from scratch)',
+                                'Full redesign of an existing website',
+                                'Upgrade / adding new features to an existing website',
+                              ]
+                            : service === 'graphic'
+                            ? [
+                                'Brand new design (starting from scratch)',
+                                'Full redesign / complete rebrand',
+                                'Upgrade / expanding existing brand assets',
+                              ]
+                            : [
+                                'Brand new system (building from scratch)',
+                                'Full redesign / system overhaul of existing software',
+                                'Upgrade / adding new features or integrations to existing software',
+                              ]
+                          ).map(item => (
+                            <button
+                              key={item}
+                              type="button"
+                              onClick={() => setProjectStatus(item)}
+                              className={`w-full p-5 text-left rounded-none transition-all cursor-pointer border ${
+                                projectStatus === item
+                                  ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
+                                  : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
+                              }`}
+                            >
+                              <h4 className="text-sm sm:text-base font-bold text-white">{item}</h4>
+                            </button>
+                          ))}
+                        </div>
 
-                        {existingAssets && !existingAssets.startsWith('No') && (
+                        {/* Optional details input when redesigning or upgrading */}
+                        {projectStatus && !projectStatus.includes('scratch') && (
                           <div className="pt-3 p-4 bg-white/[0.04] border border-white/15 rounded-none space-y-2">
                             <label className="font-unisans-thin-caps block text-xs sm:text-[13px] uppercase tracking-wider text-slate-200 mb-1 flex items-center justify-between flex-wrap gap-1">
                               <span className="flex items-center gap-1.5 text-[#38bdf8] font-bold">
                                 <LinkIcon className="w-3.5 h-3.5" />
-                                <span>Drop Asset Link:</span>
+                                <span>
+                                  {service === 'website'
+                                    ? 'Current Website URL:'
+                                    : service === 'graphic'
+                                    ? 'Link to Existing Brand / Asset Folder:'
+                                    : 'Codebase, Repository, or Spec Link:'}
+                                </span>
                               </span>
-                              <span className="text-[10px] text-slate-300 lowercase tracking-normal italic">(Optional — Google Drive, Dropbox, Figma, Canva, etc.)</span>
+                              <span className="text-[10px] text-slate-300 lowercase tracking-normal italic">(Optional)</span>
                             </label>
                             <input
-                              type="url"
-                              value={existingAssetsDetails}
-                              onChange={e => setExistingAssetsDetails(e.target.value)}
-                              placeholder="Paste URL to your asset, logo, brand guide, drive folder or reference..."
+                              type="text"
+                              value={projectStatusDetails}
+                              onChange={e => setProjectStatusDetails(e.target.value)}
+                              placeholder={
+                                service === 'website'
+                                  ? 'https://yourcurrentwebsite.com'
+                                  : service === 'graphic'
+                                  ? 'https://drive.google.com/... or Figma link'
+                                  : 'https://github.com/... or staging server URL'
+                              }
                               className="w-full px-4 py-3 text-xs sm:text-sm text-white placeholder-slate-400 bg-white/[0.06] border border-white/20 rounded-none focus:outline-none focus:border-[#38bdf8] focus:ring-1 focus:ring-[#38bdf8]"
                             />
                           </div>
@@ -1395,14 +1280,8 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                       <div className="pt-4 flex justify-center">
                         <button
                           type="button"
-                          disabled={!existingAssets}
-                          onClick={() => {
-                            if (service === 'graphic') {
-                              goToStep('quantity');
-                            } else {
-                              goToStep('timeline');
-                            }
-                          }}
+                          disabled={!projectStatus}
+                          onClick={goToNext}
                           className="px-10 py-3.5 text-sm sm:text-base font-bold text-white bg-[#003663] hover:bg-[#002647] border border-[#38bdf8]/40 disabled:opacity-40 disabled:pointer-events-none rounded-none shadow-lg transition-all cursor-pointer"
                         >
                           Next →
@@ -1412,27 +1291,85 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                   )}
 
                   {/* --------------------------------------------------------
-                      CATEGORY 2 (Website Path): Q6 — Pages / Scope
+                      STEP: PREPARED GRAPHIC — USAGE FORMAT ('usageFormat')
                      -------------------------------------------------------- */}
-                  {currentStep === 'scope' && profileType === 'prepared' && service === 'website' && (
+                  {currentStep === 'usageFormat' && profileType === 'prepared' && service === 'graphic' && (
                     <div className="space-y-2.5 sm:space-y-7">
                       <div>
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
-                          Q6 — PAGES / SCOPE
+                          STEP 5 — USAGE FORMAT
                         </span>
                         <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
-                          How many pages or views do you need?
+                          Where will these designs be used?
+                        </h3>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-1">
+                        {[
+                          { title: 'Digital / Social Media Only', desc: 'Optimized for screens, social profiles, web, and ads.' },
+                          { title: 'Print Only (Press-ready)', desc: 'CMYK press-ready vector PDFs, bleed lines, packaging specs.' },
+                          { title: 'Both Print & Digital', desc: 'Full package with web formats (RGB) and print deliverables (CMYK).' },
+                        ].map(opt => (
+                          <button
+                            key={opt.title}
+                            type="button"
+                            onClick={() => setUsageFormat(opt.title)}
+                            className={`p-6 sm:p-7 text-left rounded-none transition-all cursor-pointer hover:-translate-y-1 shadow-sm border ${
+                              usageFormat === opt.title
+                                ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
+                                : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
+                            }`}
+                          >
+                            <h4 className="font-display text-base sm:text-lg font-bold text-white mb-1.5">
+                              {opt.title}
+                            </h4>
+                            <p className="text-xs sm:text-[13px] text-slate-300 font-light leading-relaxed">
+                              {opt.desc}
+                            </p>
+                          </button>
+                        ))}
+                      </div>
+
+                      <div className="pt-4 flex justify-center">
+                        <button
+                          type="button"
+                          disabled={!usageFormat}
+                          onClick={goToNext}
+                          className="px-10 py-3.5 text-sm sm:text-base font-bold text-white bg-[#003663] hover:bg-[#002647] border border-[#38bdf8]/40 disabled:opacity-40 disabled:pointer-events-none rounded-none shadow-lg transition-all cursor-pointer"
+                        >
+                          Next →
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* --------------------------------------------------------
+                      STEP: GRAPHIC — QUANTITY / VOLUME ('quantity')
+                     -------------------------------------------------------- */}
+                  {currentStep === 'quantity' && service === 'graphic' && (
+                    <div className="space-y-2.5 sm:space-y-7">
+                      <div>
+                        <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
+                          {profileType === 'idea' ? 'STEP 4 — VOLUME' : 'STEP 6 — VOLUME'}
+                        </span>
+                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
+                          How many design pieces do you need?
                         </h3>
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-1">
-                        {['1–3 pages', '4–7 pages', '8+ pages', 'Not sure yet'].map(opt => (
+                        {[
+                          'Single Piece (1 item)',
+                          'Small Set (2–5 pieces)',
+                          'Full Campaign / Suite (6+ pieces)',
+                          'Ongoing Monthly Support',
+                        ].map(opt => (
                           <button
                             key={opt}
                             type="button"
-                            onClick={() => setScopePages(opt)}
+                            onClick={() => setGraphicQuantity(opt)}
                             className={`p-6 text-center rounded-none transition-all cursor-pointer border ${
-                              scopePages === opt
+                              graphicQuantity === opt
                                 ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
                                 : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
                             }`}
@@ -1445,8 +1382,8 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                       <div className="pt-4 flex justify-center">
                         <button
                           type="button"
-                          disabled={!scopePages}
-                          onClick={() => goToStep('timeline')}
+                          disabled={!graphicQuantity}
+                          onClick={goToNext}
                           className="px-10 py-3.5 text-sm sm:text-base font-bold text-white bg-[#003663] hover:bg-[#002647] border border-[#38bdf8]/40 disabled:opacity-40 disabled:pointer-events-none rounded-none shadow-lg transition-all cursor-pointer"
                         >
                           Next →
@@ -1456,25 +1393,25 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                   )}
 
                   {/* --------------------------------------------------------
-                      CATEGORY 2 (Graphic Path): Q5 — Existing Brand Assets
+                      STEP: PREPARED GRAPHIC — EXISTING BRAND ASSETS ('brandAssets')
                      -------------------------------------------------------- */}
                   {currentStep === 'brandAssets' && profileType === 'prepared' && service === 'graphic' && (
                     <div className="space-y-2.5 sm:space-y-7">
                       <div>
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
-                          Q5 — EXISTING BRAND ASSETS
+                          STEP 7 — EXISTING BRAND ASSETS
                         </span>
                         <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
-                          What do you have on ground?
+                          What brand assets do you have on ground?
                         </h3>
                       </div>
 
                       <div className="space-y-4 pt-1 max-w-2xl mx-auto">
                         <div className="space-y-3">
                           {[
-                            'Yes, I have a logo and brand colours (upload or describe)',
-                            'No — starting from scratch',
-                            'It exists but needs a refresh',
+                            'I have a logo, colours, and brand guidelines',
+                            'I have old designs that need a refresh',
+                            'Starting completely from scratch',
                           ].map(opt => (
                             <button
                               key={opt}
@@ -1491,7 +1428,7 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                           ))}
                         </div>
 
-                        {brandAssets && !brandAssets.startsWith('No') && (
+                        {brandAssets && !brandAssets.startsWith('Starting') && (
                           <div className="pt-3 p-4 bg-white/[0.04] border border-white/15 rounded-none space-y-2">
                             <label className="font-unisans-thin-caps block text-xs sm:text-[13px] uppercase tracking-wider text-slate-200 mb-1 flex items-center justify-between flex-wrap gap-1">
                               <span className="flex items-center gap-1.5 text-[#38bdf8] font-bold">
@@ -1515,7 +1452,7 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                         <button
                           type="button"
                           disabled={!brandAssets}
-                          onClick={() => goToStep('quantity')}
+                          onClick={goToNext}
                           className="px-10 py-3.5 text-sm sm:text-base font-bold text-white bg-[#003663] hover:bg-[#002647] border border-[#38bdf8]/40 disabled:opacity-40 disabled:pointer-events-none rounded-none shadow-lg transition-all cursor-pointer"
                         >
                           Next →
@@ -1525,47 +1462,129 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                   )}
 
                   {/* --------------------------------------------------------
-                      Q6 — QUANTITY (Graphic Path: Category 1 & Category 2)
+                      STEP: GOALS & CORE CAPABILITIES ('goals')
                      -------------------------------------------------------- */}
-                  {currentStep === 'quantity' && service === 'graphic' && (
+                  {currentStep === 'goals' && (
                     <div className="space-y-2.5 sm:space-y-7">
                       <div>
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
-                          Q6 — QUANTITY
+                          {service === 'backend' ? 'CORE CAPABILITIES (UP TO 3)' : 'REQUIRED FEATURES (UP TO 3)'}
                         </span>
+
                         <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
-                          {profileType === 'idea'
-                            ? 'How many pieces do you need?'
-                            : 'What quantity are you looking for?'}
+                          {service === 'backend'
+                            ? 'Which core capabilities does this system require?'
+                            : 'Which features do you need built in?'}
                         </h3>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-1">
-                        {(profileType === 'idea'
-                          ? [
-                              'Just one',
-                              'A small set (2–5 pieces)',
-                              "I need a few different things (we'll figure it out together)",
-                              'Not sure yet',
-                            ]
-                          : [
-                              'Just one piece',
-                              'A small set (2–5 pieces)',
-                              'An ongoing supply',
-                              'Not sure yet',
-                            ]
-                        ).map(opt => (
+                      <div className="space-y-4 pt-1">
+                        <div className="flex flex-wrap gap-2.5">
+                          {(service === 'backend'
+                            ? [
+                                'User Auth & Role-Based Permissions',
+                                'Payment Gateway / Billing Logic',
+                                'Admin Dashboard & Reporting',
+                                'Automated Alerts (Email, SMS, WhatsApp)',
+                                'Database Design & Cloud Storage',
+                                'External API / Webhook Integrations',
+                              ]
+                            : [
+                                'Payments / E-Commerce Checkout',
+                                'Booking / Appointment Scheduling',
+                                'Blog / Self-Editable CMS',
+                                'User Login / Client Dashboard',
+                                'WhatsApp / CRM / Lead Capture',
+                                'Custom Animations / Interactive 3D',
+                              ]
+                          ).map(tag => {
+                            const active = selectedGoals.includes(tag);
+                            return (
+                              <button
+                                key={tag}
+                                type="button"
+                                onClick={() => toggleGoal(tag)}
+                                className={`px-4 py-2.5 rounded-none text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer border ${
+                                  active
+                                    ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-md font-semibold'
+                                    : 'bg-white/[0.05] hover:bg-white/[0.12] border-white/15 text-slate-200 hover:text-white'
+                                }`}
+                              >
+                                {tag}
+                              </button>
+                            );
+                          })}
+
+                          {!isCustomGoalOpen && (
+                            <button
+                              type="button"
+                              onClick={() => setIsCustomGoalOpen(true)}
+                              className="px-4 py-2.5 rounded-none text-xs sm:text-sm font-medium text-[#38bdf8] hover:text-white hover:bg-white/[0.12] bg-white/[0.05] border border-white/15 cursor-pointer transition-colors"
+                            >
+                              + Other custom capability
+                            </button>
+                          )}
+                        </div>
+
+                        {isCustomGoalOpen && (
+                          <div className="w-full pt-1">
+                            <input
+                              type="text"
+                              value={customGoal}
+                              onChange={e => setCustomGoal(e.target.value)}
+                              placeholder="Any other specific feature, workflow, or integration? (optional)"
+                              className="w-full px-4 py-3 text-xs sm:text-sm text-white placeholder-slate-400 bg-white/[0.06] border border-white/20 rounded-none focus:outline-none focus:border-[#003663] focus:ring-2 focus:ring-[#38bdf8]/50"
+                            />
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="pt-5 flex justify-center">
+                        <button
+                          type="button"
+                          disabled={selectedGoals.length === 0 && !customGoal.trim()}
+                          onClick={goToNext}
+                          className="px-10 py-3.5 text-sm sm:text-base font-bold text-white bg-[#003663] hover:bg-[#002647] border border-[#38bdf8]/40 disabled:opacity-40 disabled:pointer-events-none rounded-none shadow-lg transition-all cursor-pointer"
+                        >
+                          Next →
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* --------------------------------------------------------
+                      STEP: PREPARED WEBSITE — SCOPE ('scope')
+                     -------------------------------------------------------- */}
+                  {currentStep === 'scope' && profileType === 'prepared' && service === 'website' && (
+                    <div className="space-y-2.5 sm:space-y-7">
+                      <div>
+                        <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
+                          PAGES / ESTIMATED SIZE
+                        </span>
+                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
+                          Roughly how many pages or screens?
+                        </h3>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 pt-1">
+                        {[
+                          '1-Page Landing Page',
+                          '2–5 Pages',
+                          '6–10+ Pages',
+                          'Multi-Screen Web App',
+                          'Not sure yet',
+                        ].map(opt => (
                           <button
                             key={opt}
                             type="button"
-                            onClick={() => setGraphicQuantity(opt)}
+                            onClick={() => setScopePages(opt)}
                             className={`p-6 text-center rounded-none transition-all cursor-pointer border ${
-                              graphicQuantity === opt
+                              scopePages === opt
                                 ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
                                 : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
                             }`}
                           >
-                            <h4 className="text-base font-bold text-white">{opt}</h4>
+                            <h4 className="text-sm sm:text-base font-bold text-white">{opt}</h4>
                           </button>
                         ))}
                       </div>
@@ -1573,8 +1592,8 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                       <div className="pt-4 flex justify-center">
                         <button
                           type="button"
-                          disabled={!graphicQuantity}
-                          onClick={() => goToStep('timeline')}
+                          disabled={!scopePages}
+                          onClick={goToNext}
                           className="px-10 py-3.5 text-sm sm:text-base font-bold text-white bg-[#003663] hover:bg-[#002647] border border-[#38bdf8]/40 disabled:opacity-40 disabled:pointer-events-none rounded-none shadow-lg transition-all cursor-pointer"
                         >
                           Next →
@@ -1584,25 +1603,457 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                   )}
 
                   {/* --------------------------------------------------------
-                      CATEGORY 2 (Backend Path): Q5 — Tech Preferences
+                      STEP: PREPARED — CONTENT READINESS ('contentReadiness')
+                     -------------------------------------------------------- */}
+                  {currentStep === 'contentReadiness' && profileType === 'prepared' && (
+                    <div className="space-y-2.5 sm:space-y-7">
+                      <div>
+                        <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
+                          {service === 'graphic' ? 'TEXT & PHOTO READINESS' : 'CONTENT & ASSETS'}
+                        </span>
+                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
+                          {service === 'graphic'
+                            ? 'Are the exact wording and photos ready?'
+                            : 'Which materials do you already have ready?'}
+                        </h3>
+                      </div>
+
+                      {service === 'graphic' ? (
+                        <div className="space-y-3.5 pt-1 max-w-2xl mx-auto">
+                          {[
+                            'Yes — final text/wording and photos are ready',
+                            'I have rough text/ideas, need help polishing them',
+                            'No — I need VDVC to come up with the copy and imagery',
+                          ].map(opt => (
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => setProjectType(opt)}
+                              className={`w-full p-5 text-left rounded-none transition-all cursor-pointer border ${
+                                projectType === opt
+                                  ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
+                                  : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
+                              }`}
+                            >
+                              <h4 className="text-sm sm:text-base font-bold text-white">{opt}</h4>
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="space-y-4 pt-1 max-w-2xl mx-auto">
+                          <div className="space-y-3">
+                            {[
+                              'Logo & Brand Guidelines',
+                              'Written Text / Page Copy',
+                              'Product or Business Photos',
+                              'UI Wireframes / Figma Design',
+                              'None yet — need VDVC to create copy & assets',
+                            ].map(opt => {
+                              const active = contentReadiness.includes(opt);
+                              return (
+                                <button
+                                  key={opt}
+                                  type="button"
+                                  onClick={() => toggleContentReadiness(opt)}
+                                  className={`w-full p-5 text-left rounded-none transition-all cursor-pointer border ${
+                                    active
+                                      ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
+                                      : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
+                                  }`}
+                                >
+                                  <h4 className="text-sm sm:text-base font-bold text-white">{opt}</h4>
+                                </button>
+                              );
+                            })}
+                          </div>
+
+                          {contentReadiness.length > 0 && !contentReadiness[0]?.startsWith('None yet') && (
+                            <div className="pt-3 p-4 bg-white/[0.04] border border-white/15 rounded-none space-y-2">
+                              <label className="font-unisans-thin-caps block text-xs sm:text-[13px] uppercase tracking-wider text-slate-200 mb-1 flex items-center justify-between flex-wrap gap-1">
+                                <span className="flex items-center gap-1.5 text-[#38bdf8] font-bold">
+                                  <LinkIcon className="w-3.5 h-3.5" />
+                                  <span>Drop Asset / Drive / Figma Link:</span>
+                                </span>
+                                <span className="text-[10px] text-slate-300 lowercase tracking-normal italic">(Optional)</span>
+                              </label>
+                              <input
+                                type="url"
+                                value={contentReadinessLink}
+                                onChange={e => setContentReadinessLink(e.target.value)}
+                                placeholder="Paste Google Drive, Dropbox, or Figma link..."
+                                className="w-full px-4 py-3 text-xs sm:text-sm text-white placeholder-slate-400 bg-white/[0.06] border border-white/20 rounded-none focus:outline-none focus:border-[#38bdf8] focus:ring-1 focus:ring-[#38bdf8]"
+                              />
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      <div className="pt-4 flex justify-center">
+                        <button
+                          type="button"
+                          disabled={service === 'graphic' ? !projectType : contentReadiness.length === 0}
+                          onClick={goToNext}
+                          className="px-10 py-3.5 text-sm sm:text-base font-bold text-white bg-[#003663] hover:bg-[#002647] border border-[#38bdf8]/40 disabled:opacity-40 disabled:pointer-events-none rounded-none shadow-lg transition-all cursor-pointer"
+                        >
+                          Next →
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* --------------------------------------------------------
+                      STEP: PREPARED WEBSITE — DOMAIN & HOSTING ('domainHosting')
+                     -------------------------------------------------------- */}
+                  {currentStep === 'domainHosting' && profileType === 'prepared' && service === 'website' && (
+                    <div className="space-y-2.5 sm:space-y-7">
+                      <div>
+                        <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
+                          DOMAIN & HOSTING
+                        </span>
+                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
+                          Do you have a domain name and hosting set up?
+                        </h3>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1 max-w-2xl mx-auto">
+                        {[
+                          { title: 'Yes — I have both domain and hosting', desc: 'Ready for DNS connection and live deployment.' },
+                          { title: 'I only have a domain name', desc: 'Need VDVC to handle cloud hosting and server configuration.' },
+                          { title: 'No — I need VDVC to handle both', desc: 'We will register domain and provision cloud infrastructure.' },
+                          { title: 'Not sure — advise me', desc: 'We will recommend the most reliable, cost-effective setup.' },
+                        ].map(opt => (
+                          <button
+                            key={opt.title}
+                            type="button"
+                            onClick={() => setDomainHosting(opt.title)}
+                            className={`p-6 text-left rounded-none transition-all cursor-pointer border ${
+                              domainHosting === opt.title
+                                ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
+                                : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
+                            }`}
+                          >
+                            <h4 className="text-sm sm:text-base font-bold text-white mb-1.5">{opt.title}</h4>
+                            <p className="text-xs text-slate-300 font-light leading-relaxed">{opt.desc}</p>
+                          </button>
+                        ))}
+                      </div>
+
+                      <div className="pt-4 flex justify-center">
+                        <button
+                          type="button"
+                          disabled={!domainHosting}
+                          onClick={goToNext}
+                          className="px-10 py-3.5 text-sm sm:text-base font-bold text-white bg-[#003663] hover:bg-[#002647] border border-[#38bdf8]/40 disabled:opacity-40 disabled:pointer-events-none rounded-none shadow-lg transition-all cursor-pointer"
+                        >
+                          Next →
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* --------------------------------------------------------
+                      STEP: DESIGN DIRECTION & REFS ('feel')
+                     -------------------------------------------------------- */}
+                  {currentStep === 'feel' && (
+                    <div className="space-y-2.5 sm:space-y-7">
+                      <div>
+                        <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
+                          DESIGN DIRECTION & MOOD
+                        </span>
+                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
+                          {profileType === 'idea'
+                            ? service === 'graphic'
+                              ? 'What impression should your design give?'
+                              : 'How should your website feel to visitors?'
+                            : 'Do you have visual references or a specific style in mind?'}
+                        </h3>
+                      </div>
+
+                      {/* IDEA: Website feel options */}
+                      {profileType === 'idea' && service === 'website' && (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-1">
+                          {[
+                            'Clean & Professional',
+                            'Bold & Energetic',
+                            'Warm & Friendly',
+                            'Minimal & Elegant',
+                            'Dark & High-Craft',
+                            'Surprise me — recommend what fits best',
+                          ].map(item => (
+                            <button
+                              key={item}
+                              type="button"
+                              onClick={() => setFeelMood(item)}
+                              className={`p-5 text-left rounded-none transition-all cursor-pointer border ${
+                                feelMood === item
+                                  ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
+                                  : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
+                              }`}
+                            >
+                              <h4 className="text-sm sm:text-base font-bold text-white">{item}</h4>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* IDEA: Graphic feel options */}
+                      {profileType === 'idea' && service === 'graphic' && (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-1">
+                          {[
+                            'Serious & Trustworthy',
+                            'Bold & Exciting',
+                            'Premium & High-End',
+                            'Warm & Approachable',
+                            'Minimal & Modern',
+                            'Not sure — just make it look great',
+                          ].map(item => (
+                            <button
+                              key={item}
+                              type="button"
+                              onClick={() => setFeelMood(item)}
+                              className={`p-5 text-left rounded-none transition-all cursor-pointer border ${
+                                feelMood === item
+                                  ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
+                                  : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
+                              }`}
+                            >
+                              <h4 className="text-sm sm:text-base font-bold text-white">{item}</h4>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* PREPARED: Design direction selection */}
+                      {profileType === 'prepared' && (
+                        <div className="space-y-4 pt-1 max-w-3xl mx-auto">
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <button
+                              type="button"
+                              onClick={() => setDesignDirectionChoice('references')}
+                              className={`p-5 text-left rounded-none transition-all cursor-pointer border ${
+                                designDirectionChoice === 'references'
+                                  ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
+                                  : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
+                              }`}
+                            >
+                              <h4 className="text-sm sm:text-base font-bold text-white mb-1.5">
+                                I have references or a style guide
+                              </h4>
+                              <p className="text-xs text-slate-300 font-light">
+                                Links to websites, Figma, Pinterest, or Drive.
+                              </p>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => setDesignDirectionChoice('idea')}
+                              className={`p-5 text-left rounded-none transition-all cursor-pointer border ${
+                                designDirectionChoice === 'idea'
+                                  ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
+                                  : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
+                              }`}
+                            >
+                              <h4 className="text-sm sm:text-base font-bold text-white mb-1.5">
+                                I have a specific aesthetic in mind
+                              </h4>
+                              <p className="text-xs text-slate-300 font-light">
+                                Describe colors, typography, mood, or vibes.
+                              </p>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => setDesignDirectionChoice('surprise')}
+                              className={`p-5 text-left rounded-none transition-all cursor-pointer border ${
+                                designDirectionChoice === 'surprise'
+                                  ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
+                                  : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
+                              }`}
+                            >
+                              <h4 className="text-sm sm:text-base font-bold text-white mb-1.5">
+                                Start from scratch — surprise me
+                              </h4>
+                              <p className="text-xs text-slate-300 font-light">
+                                Full creative direction left to VDVC.
+                              </p>
+                            </button>
+                          </div>
+
+                          {designDirectionChoice === 'references' && (
+                            <div className="pt-2">
+                              <label className="font-unisans-thin-caps block text-xs sm:text-[13px] uppercase tracking-wider text-slate-300 mb-1.5 flex items-center gap-1.5">
+                                <LinkIcon className="w-3.5 h-3.5 text-[#38bdf8]" />
+                                <span>Paste reference link or file URL:</span>
+                              </label>
+                              <input
+                                type="url"
+                                value={referenceWebsiteLink}
+                                onChange={e => setReferenceWebsiteLink(e.target.value)}
+                                placeholder="https://example.com, Figma, or Google Drive link..."
+                                className="w-full px-4 py-3 text-xs sm:text-sm text-white placeholder-slate-400 bg-white/[0.06] border border-white/20 rounded-none focus:outline-none focus:border-[#003663] focus:ring-2 focus:ring-[#38bdf8]/50"
+                              />
+                            </div>
+                          )}
+
+                          {designDirectionChoice === 'idea' && (
+                            <div className="pt-2">
+                              <label className="font-unisans-thin-caps block text-xs sm:text-[13px] uppercase tracking-wider text-slate-300 mb-1.5">
+                                Describe your aesthetic & mood:
+                              </label>
+                              <textarea
+                                rows={2}
+                                value={feelDescription}
+                                onChange={e => setFeelDescription(e.target.value)}
+                                placeholder="Describe the aesthetic, colors, typography, or feeling..."
+                                className="w-full p-3.5 text-xs sm:text-sm text-white placeholder-slate-400 bg-white/[0.06] border border-white/20 rounded-none focus:outline-none focus:border-[#003663] focus:ring-2 focus:ring-[#38bdf8]/50"
+                              />
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      <div className="pt-4 flex justify-center">
+                        <button
+                          type="button"
+                          disabled={profileType === 'prepared' ? !designDirectionChoice : !feelMood}
+                          onClick={goToNext}
+                          className="px-10 py-3.5 text-sm sm:text-base font-bold text-white bg-[#003663] hover:bg-[#002647] border border-[#38bdf8]/40 disabled:opacity-40 disabled:pointer-events-none rounded-none shadow-lg transition-all cursor-pointer"
+                        >
+                          Next →
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* --------------------------------------------------------
+                      STEP: IDEA — WHAT'S READY ('existingAssets')
+                     -------------------------------------------------------- */}
+                  {currentStep === 'existingAssets' && profileType === 'idea' && (
+                    <div className="space-y-2.5 sm:space-y-7">
+                      <div>
+                        <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
+                          WHAT YOU HAVE READY
+                        </span>
+                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
+                          {service === 'backend'
+                            ? 'What do you have in place right now?'
+                            : service === 'graphic'
+                            ? 'What do you already have for this design?'
+                            : 'What do you already have in place?'}
+                        </h3>
+                      </div>
+
+                      <div className="space-y-3.5 pt-1 max-w-2xl mx-auto">
+                        {service === 'backend' ? (
+                          <div className="space-y-3">
+                            {[
+                              'Just the idea — we need to map it out from scratch',
+                              'Written notes, sketches, or a rough document',
+                              'Spreadsheets or manual workflows we currently use',
+                              'An existing website or app that needs this built in',
+                            ].map(item => (
+                              <button
+                                key={item}
+                                type="button"
+                                onClick={() => setExistingAssetsSingle(item)}
+                                className={`w-full p-5 text-left rounded-none transition-all cursor-pointer border ${
+                                  existingAssetsSingle === item
+                                    ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
+                                    : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
+                                }`}
+                              >
+                                <h4 className="text-sm sm:text-base font-bold text-white">{item}</h4>
+                              </button>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="space-y-3">
+                            {(service === 'graphic'
+                              ? [
+                                  'I already have a logo and brand colours',
+                                  'I have the exact text / wording ready',
+                                  'I have photos or product images to include',
+                                  'I have old designs that need a refresh',
+                                  'Nothing yet — starting completely from scratch',
+                                ]
+                              : [
+                                  'Logo or brand colours',
+                                  'Written text about my business / services',
+                                  'Photos of my products, work, or team',
+                                  'An old website we are replacing',
+                                  'Nothing yet — we\'re starting from scratch',
+                                ]
+                            ).map(item => {
+                              const active = selectedExistingAssets.includes(item);
+                              return (
+                                <button
+                                  key={item}
+                                  type="button"
+                                  onClick={() => toggleExistingAsset(item)}
+                                  className={`w-full p-5 text-left rounded-none transition-all cursor-pointer border ${
+                                    active
+                                      ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
+                                      : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
+                                  }`}
+                                >
+                                  <h4 className="text-sm sm:text-base font-bold text-white">{item}</h4>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+
+                        <div className="pt-3 p-4 bg-white/[0.04] border border-white/15 rounded-none space-y-2">
+                          <label className="font-unisans-thin-caps block text-xs sm:text-[13px] uppercase tracking-wider text-slate-200 mb-1 flex items-center justify-between flex-wrap gap-1">
+                            <span className="flex items-center gap-1.5 text-[#38bdf8] font-bold">
+                              <LinkIcon className="w-3.5 h-3.5" />
+                              <span>Drop Link or Folder:</span>
+                            </span>
+                            <span className="text-[10px] text-slate-300 lowercase tracking-normal italic">(Optional — Google Drive, Dropbox, Figma, Canva, etc.)</span>
+                          </label>
+                          <input
+                            type="url"
+                            value={existingAssetsDetails}
+                            onChange={e => setExistingAssetsDetails(e.target.value)}
+                            placeholder="Paste URL to your asset folder, drive, reference or document..."
+                            className="w-full px-4 py-3 text-xs sm:text-sm text-white placeholder-slate-400 bg-white/[0.06] border border-white/20 rounded-none focus:outline-none focus:border-[#38bdf8] focus:ring-1 focus:ring-[#38bdf8]"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="pt-4 flex justify-center">
+                        <button
+                          type="button"
+                          disabled={service === 'backend' ? !existingAssetsSingle : selectedExistingAssets.length === 0}
+                          onClick={goToNext}
+                          className="px-10 py-3.5 text-sm sm:text-base font-bold text-white bg-[#003663] hover:bg-[#002647] border border-[#38bdf8]/40 disabled:opacity-40 disabled:pointer-events-none rounded-none shadow-lg transition-all cursor-pointer"
+                        >
+                          Next →
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* --------------------------------------------------------
+                      STEP: PREPARED BACKEND — TECH PREFERENCES ('techPreferences')
                      -------------------------------------------------------- */}
                   {currentStep === 'techPreferences' && profileType === 'prepared' && service === 'backend' && (
                     <div className="space-y-2.5 sm:space-y-7">
                       <div>
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
-                          Q5 — TOOLING CHOICES
+                          TECH STACK & SPECS
                         </span>
                         <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
-                          Do you have a preferred stack in mind?
+                          Do you have a preferred tech stack or spec document?
                         </h3>
                       </div>
 
                       <div className="space-y-4 pt-1 max-w-2xl mx-auto">
                         <div className="space-y-3">
                           {[
-                            'Yes, I have a preferred stack (text input)',
-                            'No — recommend what works best',
-                            'I have an existing codebase (text input)',
+                            'Recommend the best stack for my requirements',
+                            'I have a preferred tech stack',
+                            'Must match our existing codebase',
                           ].map(opt => (
                             <button
                               key={opt}
@@ -1619,10 +2070,10 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                           ))}
                         </div>
 
-                        {(techStackChoice.includes('preferred stack') || techStackChoice.includes('existing codebase')) && (
+                        {(techStackChoice.includes('preferred') || techStackChoice.includes('existing')) && (
                           <div className="pt-2">
                             <label className="font-unisans-thin-caps block text-xs sm:text-[13px] uppercase tracking-wider text-slate-300 mb-1.5">
-                              Specify your stack or codebase details:
+                              Specify your stack or repository details:
                             </label>
                             <input
                               type="text"
@@ -1639,7 +2090,7 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                         <button
                           type="button"
                           disabled={!techStackChoice}
-                          onClick={() => goToStep('currentState')}
+                          onClick={goToNext}
                           className="px-10 py-3.5 text-sm sm:text-base font-bold text-white bg-[#003663] hover:bg-[#002647] border border-[#38bdf8]/40 disabled:opacity-40 disabled:pointer-events-none rounded-none shadow-lg transition-all cursor-pointer"
                         >
                           Next →
@@ -1649,64 +2100,16 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                   )}
 
                   {/* --------------------------------------------------------
-                      CATEGORY 2 (Backend Path): Q6 — Current State
-                     -------------------------------------------------------- */}
-                  {currentStep === 'currentState' && profileType === 'prepared' && service === 'backend' && (
-                    <div className="space-y-2.5 sm:space-y-7">
-                      <div>
-                        <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
-                          Q6 — CURRENT STATE
-                        </span>
-                        <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
-                          What stage are we picking things up from?
-                        </h3>
-                      </div>
-
-                      <div className="space-y-3.5 pt-1 max-w-2xl mx-auto">
-                        {[
-                          'Brand new — starting from scratch',
-                          'Existing project that needs improvement',
-                          'Existing project I want to hand off or maintain',
-                        ].map(opt => (
-                          <button
-                            key={opt}
-                            type="button"
-                            onClick={() => setSystemCurrentState(opt)}
-                            className={`w-full p-5 text-left rounded-none transition-all cursor-pointer border ${
-                              systemCurrentState === opt
-                                ? 'bg-[#003663] border-2 border-[#38bdf8] text-white shadow-lg font-bold'
-                                : 'bg-white/[0.05] hover:bg-white/[0.10] border-white/15 text-white backdrop-blur-md'
-                            }`}
-                          >
-                            <h4 className="text-sm sm:text-base font-bold text-white">{opt}</h4>
-                          </button>
-                        ))}
-                      </div>
-
-                      <div className="pt-4 flex justify-center">
-                        <button
-                          type="button"
-                          disabled={!systemCurrentState}
-                          onClick={() => goToStep('timeline')}
-                          className="px-10 py-3.5 text-sm sm:text-base font-bold text-white bg-[#003663] hover:bg-[#002647] border border-[#38bdf8]/40 disabled:opacity-40 disabled:pointer-events-none rounded-none shadow-lg transition-all cursor-pointer"
-                        >
-                          Next →
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* --------------------------------------------------------
-                      Q7 — TIMELINE (All Paths)
+                      STEP: TIMELINE ('timeline')
                      -------------------------------------------------------- */}
                   {currentStep === 'timeline' && (
                     <div className="space-y-2.5 sm:space-y-7">
                       <div>
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
-                          Q7 — ALMOST THERE, TIMELINE
+                          TIMELINE & DELIVERY
                         </span>
                         <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
-                          {profileType === 'idea' ? 'When do you want it?' : 'When do you need this live?'}
+                          When do you need this delivered?
                         </h3>
                       </div>
 
@@ -1721,7 +2124,7 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                           }`}
                         >
                           <h4 className="font-display text-base sm:text-lg font-bold text-white mb-1.5">
-                            {profileType === 'idea' ? 'As soon as possible' : 'ASAP'}
+                            As soon as possible
                           </h4>
                           <p className="text-xs sm:text-[13px] text-slate-300 font-light leading-relaxed">
                             We&apos;ll prioritize this and move fast.
@@ -1738,7 +2141,7 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                           }`}
                         >
                           <h4 className="font-display text-base sm:text-lg font-bold text-white mb-1.5">
-                            Slider: 1–8 weeks
+                            Set target weeks (1–8 weeks)
                           </h4>
                           <p className="text-xs sm:text-[13px] text-slate-300 font-light leading-relaxed">
                             Specify your target delivery window.
@@ -1755,7 +2158,7 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                           }`}
                         >
                           <h4 className="font-display text-base sm:text-lg font-bold text-white mb-1.5">
-                            {profileType === 'idea' ? "I'm not sure yet" : "I'm flexible"}
+                            Flexible
                           </h4>
                           <p className="text-xs sm:text-[13px] text-slate-300 font-light leading-relaxed">
                             Quality first. Whenever it&apos;s ready.
@@ -1799,7 +2202,7 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                         <button
                           type="button"
                           disabled={!timelineType}
-                          onClick={() => goToStep('budget')}
+                          onClick={goToNext}
                           className="px-10 py-3.5 text-sm sm:text-base font-bold text-white bg-[#003663] hover:bg-[#002647] border border-[#38bdf8]/40 disabled:opacity-40 disabled:pointer-events-none rounded-none shadow-lg transition-all cursor-pointer"
                         >
                           Next →
@@ -1809,16 +2212,16 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                   )}
 
                   {/* --------------------------------------------------------
-                      Q8 — BUDGET (All Paths with Comma-Separated Formatting)
+                      STEP: BUDGET ('budget')
                      -------------------------------------------------------- */}
                   {currentStep === 'budget' && (
                     <div className="space-y-2.5 sm:space-y-7">
                       <div>
                         <span className="font-unisans-thin-caps text-[10px] sm:text-[13px] uppercase tracking-widest text-white block mb-2">
-                          {profileType === 'idea' ? 'Q8 — FINALLY, BUDGET' : 'Q8 — FINALLY, INVESTMENT'}
+                          INVESTMENT & BUDGET
                         </span>
                         <h3 className="font-phenomena text-4xl sm:text-4xl lg:text-[54px] font-bold text-white tracking-tight leading-tight">
-                          {profileType === 'idea' ? 'How much do you want to pay for it?' : 'What budget range are you working with?'}
+                          What budget range are you working with?
                         </h3>
                         <p className="text-xs sm:text-sm text-slate-300 font-light mt-1.5">
                           Slide to choose an exact budget or type your specific amount up to ₦10,000,000+.
@@ -1826,7 +2229,7 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                       </div>
 
                       <div className="space-y-4 pt-1 max-w-2xl mx-auto">
-                        {/* Interactive exact budget slider with COMMA SEPARATED NUMBERS */}
+                        {/* Interactive exact budget slider */}
                         <div
                           onClick={() => setBudgetType('exact')}
                           className={`p-6 text-left rounded-none transition-all cursor-pointer border ${
@@ -1838,7 +2241,7 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                             <div>
                               <h4 className="text-base font-bold text-white">
-                                Slider
+                                Target Budget
                               </h4>
                             </div>
 
@@ -1913,7 +2316,7 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                             }`}
                           >
                             <h4 className="text-sm sm:text-base font-bold text-white">
-                              {profileType === 'idea' ? "I have no idea yet — I'm just exploring" : 'No idea yet'}
+                              Not sure yet — send a quote
                             </h4>
                             <p className="text-xs text-slate-300 font-light mt-1">
                               Quote based on required deliverables.
@@ -1926,7 +2329,7 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                         <button
                           type="button"
                           disabled={!budgetType}
-                          onClick={() => goToStep('contact')}
+                          onClick={goToNext}
                           className="px-10 py-3.5 text-sm sm:text-base font-bold text-white bg-[#003663] hover:bg-[#002647] border border-[#38bdf8]/40 disabled:opacity-40 disabled:pointer-events-none rounded-none shadow-lg transition-all cursor-pointer"
                         >
                           Next →
@@ -1936,8 +2339,8 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                   )}
 
                   {/* --------------------------------------------------------
-                      CONTACT DETAILS & DOSSIER DISPATCH
-                   -------------------------------------------------------- */}
+                      STEP: CONTACT DETAILS ('contact')
+                     -------------------------------------------------------- */}
                   {currentStep === 'contact' && (
                     <div className="space-y-2.5 sm:space-y-7">
                       <div>
@@ -2085,26 +2488,45 @@ Budget: ${briefData.budgetBand || briefData.budgetType}`;
                   onClick={() => {
                     setProfileType('');
                     setService('');
+                    setBusinessName('');
+                    setIndustry('');
+                    setCustomIndustry('');
+                    setIsTypingCustomIndustry(false);
                     setProjectType('');
                     setCustomProjectType('');
                     setSelectedGraphicTypes([]);
-                    setBusinessName('');
-                    setIndustry('');
+                    setSelectedBackendTypes([]);
+                    setProjectStatus('');
+                    setProjectStatusDetails('');
+                    setUsageFormat('');
+                    setGraphicQuantity('');
+                    setBrandAssets('');
+                    setBrandAssetsDetails('');
                     setSelectedGoals([]);
                     setCustomGoal('');
+                    setIsCustomGoalOpen(false);
+                    setScopePages('');
+                    setContentReadiness([]);
+                    setContentReadinessLink('');
+                    setDomainHosting('');
                     setDesignDirectionChoice('');
                     setFeelMood('');
                     setFeelDescription('');
                     setReferenceWebsiteLink('');
-                    setScopePages('');
-                    setBrandAssets('');
-                    setBrandAssetsDetails('');
-                    setExistingAssets('');
+                    setSelectedExistingAssets([]);
+                    setExistingAssetsSingle('');
                     setExistingAssetsDetails('');
-                    setGraphicQuantity('');
                     setTechStackChoice('');
                     setTechStackDetails('');
-                    setSystemCurrentState('');
+                    setTimelineType('');
+                    setTimelineWeeks(4);
+                    setBudgetType('exact');
+                    setExactBudgetAmount(2800000);
+                    setFullName('');
+                    setEmail('');
+                    setPhone('');
+                    setPreferredContact('Email');
+                    setBriefSummary(null);
                     setCurrentStep('entry');
                   }}
                   className="px-8 py-3.5 rounded-none bg-[#003663] hover:bg-[#002647] border border-[#38bdf8]/40 text-white text-sm font-bold transition-all cursor-pointer shadow-lg"

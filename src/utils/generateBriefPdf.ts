@@ -6,6 +6,13 @@ export interface ProjectBriefData {
   profileType: string;
   service: string;
   projectType?: string;
+  projectStatus?: string;
+  projectStatusDetails?: string;
+  siteStatus?: string;
+  currentWebsiteUrl?: string;
+  usageFormat?: string;
+  contentReadiness?: string[];
+  domainHosting?: string;
   goals: string[];
   customGoal?: string;
   feelMood?: string;
@@ -132,15 +139,38 @@ export const generateBriefPdf = (data: ProjectBriefData): jsPDF => {
   if (data.projectType) {
     drawRow('Deliverable Type:', data.projectType);
   }
+  if (data.projectStatus) {
+    drawRow(
+      'Project Stage:',
+      data.projectStatus + (data.projectStatusDetails ? ` (${data.projectStatusDetails})` : '')
+    );
+  } else if (data.siteStatus) {
+    drawRow('Site Status:', data.siteStatus);
+  }
+  if (data.currentWebsiteUrl) {
+    drawRow('Current Website:', data.currentWebsiteUrl);
+  }
+  if (data.usageFormat) {
+    drawRow('Usage Format:', data.usageFormat);
+  }
 
   const allGoals = [...(data.goals || [])];
   if (data.customGoal && data.customGoal.trim()) {
     allGoals.push(data.customGoal.trim());
   }
   if (allGoals.length > 0) {
-    drawRow('Key Goals:', allGoals.join(', '));
+    drawRow('Key Goals / Features:', allGoals.join(', '));
   }
 
+  if (data.scopePages) {
+    drawRow('Page Count / Size:', data.scopePages);
+  }
+  if (data.contentReadiness && data.contentReadiness.length > 0) {
+    drawRow('Content Readiness:', data.contentReadiness.join(', '));
+  }
+  if (data.domainHosting) {
+    drawRow('Domain & Hosting:', data.domainHosting);
+  }
   if (data.feelMood) {
     drawRow('Design Style:', data.feelMood);
   }
@@ -149,9 +179,6 @@ export const generateBriefPdf = (data: ProjectBriefData): jsPDF => {
   }
   if (data.referenceWebsiteLink && data.referenceWebsiteLink.trim()) {
     drawRow('Reference Link:', data.referenceWebsiteLink.trim());
-  }
-  if (data.scopePages) {
-    drawRow('Page Count:', data.scopePages);
   }
   if (data.graphicQuantity) {
     drawRow('Design Quantity:', data.graphicQuantity);

@@ -3240,6 +3240,29 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       </div>
                     )}
 
+                    {(selectedBriefModal.projectStatus || selectedBriefModal.siteStatus) && (
+                      <div className="p-3.5 bg-[#ededed] rounded-xl border-0">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
+                          Project Stage
+                        </span>
+                        <span className="text-xs font-bold text-slate-900 block">
+                          {selectedBriefModal.projectStatus || selectedBriefModal.siteStatus}
+                          {selectedBriefModal.projectStatusDetails ? ` (${selectedBriefModal.projectStatusDetails})` : ''}
+                        </span>
+                      </div>
+                    )}
+
+                    {selectedBriefModal.usageFormat && (
+                      <div className="p-3.5 bg-[#ededed] rounded-xl border-0">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
+                          Usage Format
+                        </span>
+                        <span className="text-xs font-bold text-slate-900 block">
+                          {selectedBriefModal.usageFormat}
+                        </span>
+                      </div>
+                    )}
+
                     <div className="p-3.5 bg-[#ededed] rounded-xl border-0 sm:col-span-2">
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                         Key Goals &amp; Objectives
@@ -3297,6 +3320,30 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         </span>
                         <span className="text-xs font-bold text-slate-900 block">
                           {selectedBriefModal.scopePages}
+                        </span>
+                      </div>
+                    )}
+
+                    {selectedBriefModal.domainHosting && (
+                      <div className="p-3.5 bg-[#ededed] rounded-xl border-0">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
+                          Domain &amp; Hosting
+                        </span>
+                        <span className="text-xs font-bold text-slate-900 block">
+                          {selectedBriefModal.domainHosting}
+                        </span>
+                      </div>
+                    )}
+
+                    {selectedBriefModal.contentReadiness && (
+                      <div className="p-3.5 bg-[#ededed] rounded-xl border-0 sm:col-span-2">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
+                          Content &amp; Assets Readiness
+                        </span>
+                        <span className="text-xs font-medium text-slate-800 block">
+                          {Array.isArray(selectedBriefModal.contentReadiness)
+                            ? selectedBriefModal.contentReadiness.join(', ')
+                            : selectedBriefModal.contentReadiness}
                         </span>
                       </div>
                     )}
