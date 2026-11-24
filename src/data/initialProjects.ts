@@ -1471,9 +1471,9 @@ export const initialProjects: Project[] = [
     description: '',
     descriptors: '',
     featured: true,
-    imageUrl: 'https://res.cloudinary.com/dwo7oemds/image/upload/v1794003286/vdvc-portfolio/no-limits/w6cqaisonzpn5c1yydfv.jpg',
+    imageUrl: 'https://res.cloudinary.com/dwo7oemds/image/upload/v1794343109/vdvc-portfolio/no-limits/mdeyxlaeugbojp2zgoze.jpg',
     images: [
-          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003286/vdvc-portfolio/no-limits/w6cqaisonzpn5c1yydfv.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343109/vdvc-portfolio/no-limits/mdeyxlaeugbojp2zgoze.jpg",
           "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003288/vdvc-portfolio/no-limits/qecseuz3alh165umwuqz.jpg",
           "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003292/vdvc-portfolio/no-limits/hhc0kg2yq93mgovopcez.jpg",
           "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003295/vdvc-portfolio/no-limits/t4qi2mud43nqpgrjpej4.jpg",
@@ -1501,7 +1501,7 @@ export const initialProjects: Project[] = [
           {
                     "id": "web11-g-1",
                     "caption": "No Limits Furniture — Raw Desktop Hero Viewport.",
-                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794003286/vdvc-portfolio/no-limits/w6cqaisonzpn5c1yydfv.jpg",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343109/vdvc-portfolio/no-limits/mdeyxlaeugbojp2zgoze.jpg",
                     "isAI": false
           },
           {
@@ -1768,5 +1768,257 @@ export const initialProjects: Project[] = [
     processSteps: [],
     deliverables: [],
     createdAt: 1794083567000,
+  },
+  {
+    id: 'proj-web-13',
+    title: 'FJÄLL — Mountain Resort',
+    category: 'Web Design',
+    client: 'FJÄLL',
+    websiteUrl: 'https://fjall-ten.vercel.app/',
+    isRealLife: true,
+    threeWordDesc: 'Nordic Alpine Sanctuary',
+    price: '',
+    duration: '',
+    year: '',
+    monthYear: '',
+    clientDescription: '',
+    shortDescription: '',
+    description: '',
+    descriptors: '',
+    featured: true,
+    imageUrl: 'https://res.cloudinary.com/dwo7oemds/image/upload/v1794317949/vdvc-portfolio/fjall/xwlhen7u26tkhvlf2q6y.jpg',
+    images: [
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794317949/vdvc-portfolio/fjall/xwlhen7u26tkhvlf2q6y.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794317951/vdvc-portfolio/fjall/pzmd4c8mt9hqbetknz14.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794317952/vdvc-portfolio/fjall/wdrxp0alvall0j0ofscd.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794317954/vdvc-portfolio/fjall/h3gzs9pxmem9ybggy26s.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794317957/vdvc-portfolio/fjall/y5onqq31078ywcux4b0z.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794317960/vdvc-portfolio/fjall/lnhvqnukfowstdftplx1.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794317962/vdvc-portfolio/fjall/nuxd2ujdzhsrc84rwfz3.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794317966/vdvc-portfolio/fjall/uernzttxivd6anh7lxp7.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343120/vdvc-portfolio/fjall/vpg4vquqrfqzxo3jfrdw.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343121/vdvc-portfolio/fjall/edaoyxrjbxqqbc0lt6w5.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343122/vdvc-portfolio/fjall/gwrbpkfpfokx9ujhnrqm.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343126/vdvc-portfolio/fjall/gkgkq1horehqsc8rbbvm.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343124/vdvc-portfolio/fjall/dvqjnmaciopwu1haofmj.jpg",
+          "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343125/vdvc-portfolio/fjall/hh5m16cf0dj06jyqsz0s.jpg"
+],
+    galleryPictures: [
+          {
+                    "id": "web13-g-1",
+                    "caption": "FJÄLL — Mountain Resort — Raw Desktop Hero Viewport.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794317949/vdvc-portfolio/fjall/xwlhen7u26tkhvlf2q6y.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web13-g-2",
+                    "caption": "The Resort & Alpine Architecture Philosophy.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794317951/vdvc-portfolio/fjall/pzmd4c8mt9hqbetknz14.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web13-g-3",
+                    "caption": "Architectural Mountain Residences, Cabins & Pavilions.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794317952/vdvc-portfolio/fjall/wdrxp0alvall0j0ofscd.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web13-g-4",
+                    "caption": "Thermal Sanctuary — Cedar Sauna & Glacier Plunge.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794317954/vdvc-portfolio/fjall/h3gzs9pxmem9ybggy26s.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web13-g-5",
+                    "caption": "Highland Table — Nordic Seasonal Four-Course Dining.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794317957/vdvc-portfolio/fjall/y5onqq31078ywcux4b0z.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web13-g-6",
+                    "caption": "Interactive 14-Day Suite Availability Matrix & Booking.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794317960/vdvc-portfolio/fjall/lnhvqnukfowstdftplx1.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web13-g-7",
+                    "caption": "Crafted from the Ridge — Untreated Cedar & Highland Granite.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794317962/vdvc-portfolio/fjall/nuxd2ujdzhsrc84rwfz3.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web13-g-8",
+                    "caption": "Highland Mountain Coordinates & Resort Experience Information.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794317966/vdvc-portfolio/fjall/uernzttxivd6anh7lxp7.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web13-g-9",
+                    "caption": "Responsive Tablet Viewport (iPad Pro).",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343120/vdvc-portfolio/fjall/vpg4vquqrfqzxo3jfrdw.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web13-g-10",
+                    "caption": "Responsive Mobile Viewport (iPhone).",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343121/vdvc-portfolio/fjall/edaoyxrjbxqqbc0lt6w5.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web13-g-11",
+                    "caption": "Mobile Suite & Cabin Collection Viewport.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343122/vdvc-portfolio/fjall/gwrbpkfpfokx9ujhnrqm.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web13-g-12",
+                    "caption": "Multi-Device Responsive Ecosystem Showcase (Desktop, Tablet, Mobile).",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343126/vdvc-portfolio/fjall/gkgkq1horehqsc8rbbvm.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web13-g-13",
+                    "caption": "Studio Desktop Device Mockup.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343124/vdvc-portfolio/fjall/dvqjnmaciopwu1haofmj.jpg",
+                    "isAI": false
+          },
+          {
+                    "id": "web13-g-14",
+                    "caption": "Dual Mobile Device Studio Mockup.",
+                    "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343125/vdvc-portfolio/fjall/hh5m16cf0dj06jyqsz0s.jpg",
+                    "isAI": false
+          }
+],
+    industries: ['Spas & Skin Clinics', 'Architecture & Interior Design'],
+    industry: ['Spas & Skin Clinics', 'Architecture & Interior Design'],
+    processSteps: [],
+    deliverables: [],
+    createdAt: 1794300000000,
+  },
+  {
+    id: 'proj-web-14',
+    title: 'Silk Suites Jos — Editorial Luxury Hospitality',
+    category: 'Web Design',
+    client: 'Silk Suites',
+    websiteUrl: 'https://silk-suites.onrender.com/',
+    isRealLife: true,
+    threeWordDesc: 'Editorial Luxury Haven',
+    price: '',
+    duration: '',
+    year: '',
+    monthYear: '',
+    clientDescription: '',
+    shortDescription: '',
+    description: '',
+    descriptors: '',
+    featured: true,
+    imageUrl: 'https://res.cloudinary.com/dwo7oemds/image/upload/v1794343127/vdvc-portfolio/silk-suites/v7esbadims0lmlosdp17.jpg',
+    images: [
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343127/vdvc-portfolio/silk-suites/v7esbadims0lmlosdp17.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343128/vdvc-portfolio/silk-suites/mgxltczlvfngjfqprmic.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343129/vdvc-portfolio/silk-suites/odtuefxladzedulk9lcu.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343130/vdvc-portfolio/silk-suites/nkgh7qfzj7phxljhrjwt.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343131/vdvc-portfolio/silk-suites/yoxmchs8doccho8clhvb.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343133/vdvc-portfolio/silk-suites/rai67hnrhokyubo9tcbn.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343134/vdvc-portfolio/silk-suites/g9uvcmgsk73w3vtpwhpb.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343136/vdvc-portfolio/silk-suites/ffqgzsdapetqplpvlx8f.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343138/vdvc-portfolio/silk-suites/dvyjnl03itu3kdvfmnbd.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343140/vdvc-portfolio/silk-suites/g5szrx16bbyt87vtje4f.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343140/vdvc-portfolio/silk-suites/dx8ekodbmhebwyspo13w.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343142/vdvc-portfolio/silk-suites/ev2ufl6u8lpamiewgbwt.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343143/vdvc-portfolio/silk-suites/dgwikzgvnkagvtq4yrgg.jpg",
+      "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343144/vdvc-portfolio/silk-suites/mweofqwzzl3ypxldzh0b.jpg"
+],
+    galleryPictures: [
+      {
+            "id": "web14-g-1",
+            "caption": "Silk Suites Jos — Raw Desktop Hero Viewport.",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343127/vdvc-portfolio/silk-suites/v7esbadims0lmlosdp17.jpg",
+            "isAI": false
+      },
+      {
+            "id": "web14-g-2",
+            "caption": "Silk Suites — Tranquil Luxury in Rayfield Philosophy.",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343128/vdvc-portfolio/silk-suites/mgxltczlvfngjfqprmic.jpg",
+            "isAI": false
+      },
+      {
+            "id": "web14-g-3",
+            "caption": "Silk Suites — Diplomatic Suites & Accommodations Showcase.",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343129/vdvc-portfolio/silk-suites/odtuefxladzedulk9lcu.jpg",
+            "isAI": false
+      },
+      {
+            "id": "web14-g-4",
+            "caption": "Silk Suites — Nnamdi Okonkwo & Benita Conference & Banquet Halls.",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343130/vdvc-portfolio/silk-suites/nkgh7qfzj7phxljhrjwt.jpg",
+            "isAI": false
+      },
+      {
+            "id": "web14-g-5",
+            "caption": "Silk Suites — The Silk Bar & Morning Kitchen Dining.",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343131/vdvc-portfolio/silk-suites/yoxmchs8doccho8clhvb.jpg",
+            "isAI": false
+      },
+      {
+            "id": "web14-g-6",
+            "caption": "Silk Suites — Serene Outdoor Pool & Wellness Grounds.",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343133/vdvc-portfolio/silk-suites/rai67hnrhokyubo9tcbn.jpg",
+            "isAI": false
+      },
+      {
+            "id": "web14-g-7",
+            "caption": "Silk Suites — Rayfield Location & Reservations Desk.",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343134/vdvc-portfolio/silk-suites/g9uvcmgsk73w3vtpwhpb.jpg",
+            "isAI": false
+      },
+      {
+            "id": "web14-g-8",
+            "caption": "Silk Suites — Editorial Footer & Hotel Policies.",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343136/vdvc-portfolio/silk-suites/ffqgzsdapetqplpvlx8f.jpg",
+            "isAI": false
+      },
+      {
+            "id": "web14-g-9",
+            "caption": "Silk Suites — Responsive Tablet Viewport (iPad).",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343138/vdvc-portfolio/silk-suites/dvyjnl03itu3kdvfmnbd.jpg",
+            "isAI": false
+      },
+      {
+            "id": "web14-g-10",
+            "caption": "Silk Suites — Responsive Mobile Viewport (iPhone).",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343140/vdvc-portfolio/silk-suites/g5szrx16bbyt87vtje4f.jpg",
+            "isAI": false
+      },
+      {
+            "id": "web14-g-11",
+            "caption": "Silk Suites — Mobile Suites & Tariff Viewport.",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343140/vdvc-portfolio/silk-suites/dx8ekodbmhebwyspo13w.jpg",
+            "isAI": false
+      },
+      {
+            "id": "web14-g-12",
+            "caption": "Silk Suites — Multi-Device Responsive Ecosystem Showcase.",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343142/vdvc-portfolio/silk-suites/ev2ufl6u8lpamiewgbwt.jpg",
+            "isAI": false
+      },
+      {
+            "id": "web14-g-13",
+            "caption": "Silk Suites — Studio Desktop Device Mockup.",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343143/vdvc-portfolio/silk-suites/dgwikzgvnkagvtq4yrgg.jpg",
+            "isAI": false
+      },
+      {
+            "id": "web14-g-14",
+            "caption": "Silk Suites — Dual Mobile Device Studio Mockup.",
+            "url": "https://res.cloudinary.com/dwo7oemds/image/upload/v1794343144/vdvc-portfolio/silk-suites/mweofqwzzl3ypxldzh0b.jpg",
+            "isAI": false
+      }
+],
+    industries: ['Event Venues', 'Event Planning'],
+    industry: ['Event Venues', 'Event Planning'],
+    processSteps: [],
+    deliverables: [],
+    createdAt: 1794400000000,
   },
 ];

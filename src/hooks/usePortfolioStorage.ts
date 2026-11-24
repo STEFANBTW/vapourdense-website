@@ -13,8 +13,8 @@ import { Project } from '../types/portfolio';
 import { initialProjects } from '../data/initialProjects';
 import { AboutData, defaultAboutData, SocialLinkItem } from '../components/AboutSection';
 
-const STORAGE_KEY = 'vdvc_portfolio_projects_v17';
-const SEEDED_WEB_KEY = 'vdvc_seeded_projects_v9';
+const STORAGE_KEY = 'vdvc_portfolio_projects_v19';
+const SEEDED_WEB_KEY = 'vdvc_seeded_projects_v11';
 const ABOUT_STORAGE_KEY = 'vdvc_portfolio_about_v2';
 const AUTH_KEY = 'dive_portfolio_admin_auth';
 export const ADMIN_PASSWORD = 'memeh 23';
