@@ -54,6 +54,12 @@ interface ExpandedImageState {
   stepIndex?: number;
 }
 
+// Soft eased scrim so bottom captions stay legible over bright imagery without a harsh dark band
+const SUBTLE_CAPTION_SCRIM_STYLE: React.CSSProperties = {
+  background:
+    'linear-gradient(to top, rgba(10, 8, 24, 0.58) 0%, rgba(10, 8, 24, 0.38) 32%, rgba(10, 8, 24, 0.14) 64%, rgba(10, 8, 24, 0.03) 86%, rgba(10, 8, 24, 0) 100%)',
+};
+
 export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
   project: initialProject,
   onClose,
@@ -1292,13 +1298,16 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
 
                           {/* Hover Overlay for viewing */}
                           {!isEditable && (
-                            <div className="absolute inset-x-0 bottom-0 pt-10 pb-2 px-3 bg-gradient-to-t from-black/95 via-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none flex flex-col justify-end">
+                            <div
+                              style={SUBTLE_CAPTION_SCRIM_STYLE}
+                              className="absolute inset-x-0 bottom-0 pt-16 pb-2.5 px-3.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none flex flex-col justify-end"
+                            >
                               {pic.caption && pic.caption.trim() ? (
-                                <p className="text-xs sm:text-sm text-white/95 font-unisans-regular leading-snug line-clamp-2">
+                                <p className="text-xs sm:text-sm text-white font-unisans-regular leading-snug line-clamp-2 [text-shadow:0_1px_4px_rgba(0,0,0,0.85),0_1px_2px_rgba(0,0,0,0.55)]">
                                   {pic.caption}
                                 </p>
                               ) : null}
-                              <span className="text-[10px] font-unisans-regular text-white/80 mt-1 inline-flex items-center gap-1">
+                              <span className="text-[10px] font-unisans-regular text-white/90 mt-1 inline-flex items-center gap-1 [text-shadow:0_1px_3px_rgba(0,0,0,0.85)]">
                                 <Maximize2 className="w-2.5 h-2.5" /> Enlarge
                               </span>
                             </div>
@@ -1549,13 +1558,14 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                                   </button>
                                 )}
 
-                                {!isEditable && (
-                                  <div className="absolute inset-x-0 bottom-0 pt-10 pb-2 px-3 bg-gradient-to-t from-black/95 via-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none flex flex-col justify-end">
-                                    {pic.caption && pic.caption.trim() ? (
-                                      <p className="text-xs sm:text-sm text-white/95 font-unisans-regular leading-snug line-clamp-2">
-                                        {pic.caption}
-                                      </p>
-                                    ) : null}
+                                {!isEditable && pic.caption && pic.caption.trim() && (
+                                  <div
+                                    style={SUBTLE_CAPTION_SCRIM_STYLE}
+                                    className="absolute inset-x-0 bottom-0 pt-16 pb-2.5 px-3.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none flex flex-col justify-end"
+                                  >
+                                    <p className="text-xs sm:text-sm text-white font-unisans-regular leading-snug line-clamp-2 [text-shadow:0_1px_4px_rgba(0,0,0,0.85),0_1px_2px_rgba(0,0,0,0.55)]">
+                                      {pic.caption}
+                                    </p>
                                   </div>
                                 )}
                               </div>
