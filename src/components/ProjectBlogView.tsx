@@ -726,22 +726,26 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
   // ---------------------------------------------------------------------------
   // Add Process Step Form Handlers
   // ---------------------------------------------------------------------------
-  const handleNewProcessFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNewProcessFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onload = () => {
-        const resultUrl = reader.result as string;
+      try {
+        setIsUploadingMedia(true);
+        const resultUrl = await uploadToCloudinary(file);
         const newPic: ProcessPicture = {
-          id: `np-pic-${Date.now()}`,
+          id: `np-pic-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
           url: resultUrl,
-          caption: 'Process step artifact.',
+          caption: '',
           type: 'Final',
         };
         setNewProcessPictures(prev => [...prev, newPic]);
-      };
-      reader.readAsDataURL(file);
-      e.target.value = '';
+      } catch (err) {
+        console.error('New process image upload failed:', err);
+        alert('Failed to upload process image: ' + (err instanceof Error ? err.message : String(err)));
+      } finally {
+        setIsUploadingMedia(false);
+        e.target.value = '';
+      }
     }
   };
 
@@ -1727,11 +1731,12 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                               </button>
                               <button
                                 type="button"
+                                disabled={isUploadingMedia}
                                 onClick={() => newProcessFileInputRef.current?.click()}
-                                className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-unisans-regular flex items-center gap-1.5"
+                                className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-wait text-white text-xs font-unisans-regular flex items-center gap-1.5"
                               >
                                 <Plus className="w-3.5 h-3.5" />
-                                <span>Upload</span>
+                                <span>{isUploadingMedia ? 'Uploading...' : 'Upload'}</span>
                               </button>
                             </div>
                           </div>
@@ -1773,8 +1778,9 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           </button>
                           <button
                             type="button"
+                            disabled={isUploadingMedia}
                             onClick={handleConfirmAddProcess}
-                            className="px-5 py-2.5 text-xs sm:text-sm font-unisans-regular text-white bg-white/15 hover:bg-white/25 rounded-xl shadow-lg cursor-pointer border border-white/25"
+                            className="px-5 py-2.5 text-xs sm:text-sm font-unisans-regular text-white bg-white/15 hover:bg-white/25 disabled:opacity-50 disabled:cursor-wait rounded-xl shadow-lg cursor-pointer border border-white/25"
                           >
                             Add Process Phase
                           </button>
