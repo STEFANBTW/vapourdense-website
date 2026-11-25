@@ -73,7 +73,7 @@ interface DashboardViewProps {
   onEdit: (project: Project) => void;
   onDelete: (id: string) => void;
   onPreview: (project: Project) => void;
-  onDropImage: (file: File) => void;
+  onDropImage: (files: File | File[]) => Promise<void> | void;
   onResetDefaults: () => void;
   onUpdateProject?: (id: string, updated: Partial<Project>) => Promise<void> | void;
 }
@@ -115,6 +115,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const realLifeDropdownRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isDragOver, setIsDragOver] = useState(false);
+  const [isBatchUploading, setIsBatchUploading] = useState(false);
+  const dropzoneFileInputRef = useRef<HTMLInputElement>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   // Close real life dropdown on outside click
@@ -663,14 +665,23 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     setIsDragOver(false);
   };
 
+  const triggerBatchImageUpload = async (fileList: FileList | File[]) => {
+    const imageFiles = Array.from(fileList).filter(f => f.type.startsWith('image/'));
+    if (imageFiles.length === 0) return;
+    try {
+      setIsBatchUploading(true);
+      await onDropImage(imageFiles);
+    } finally {
+      setIsBatchUploading(false);
+    }
+  };
+
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragOver(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const file = e.dataTransfer.files[0];
-      if (file.type.startsWith('image/')) {
-        onDropImage(file);
-      }
+      triggerBatchImageUpload(e.dataTransfer.files);
     }
   };
 
@@ -2697,12 +2708,30 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
             {/* Scrollable Container on Desktop: Drag & Drop + Projects Table scroll together inside */}
             <div className="space-y-6 sm:overflow-y-auto sm:flex-1 sm:min-h-0 sm:pt-6 sm:pr-2">
-              {/* Drag & Drop Visual Hint Section (Non-sticky, scrolls away with projects) */}
+              {/* Drag & Drop / Multi-Image Picker Section (Non-sticky, scrolls away with projects) */}
+              <input
+                type="file"
+                ref={dropzoneFileInputRef}
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={e => {
+                  if (e.target.files && e.target.files.length > 0) {
+                    triggerBatchImageUpload(e.target.files);
+                    e.target.value = '';
+                  }
+                }}
+              />
               <div
+                onClick={() => {
+                  if (!isBatchUploading) dropzoneFileInputRef.current?.click();
+                }}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                className={`p-5 sm:p-6 border-2 border-dashed rounded-2xl text-center transition-all cursor-pointer ${
+                className={`p-5 sm:p-6 border-2 border-dashed rounded-2xl text-center transition-all ${
+                  isBatchUploading ? 'cursor-wait opacity-70' : 'cursor-pointer'
+                } ${
                   isDragOver
                     ? 'border-slate-800 bg-slate-200/80 shadow-inner'
                     : 'border-0 bg-[#f0f0f0] hover:bg-[#ededed]'
@@ -2710,7 +2739,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               >
                 <div className="flex items-center justify-center gap-3 text-slate-600 text-xs">
                   <UploadCloud className="w-5 h-5 text-slate-800" />
-                  <span>Drag &amp; drop an image here anytime to create a new project in Firestore</span>
+                  <span>
+                    {isBatchUploading
+                      ? 'Uploading images to Cloudinary & creating project...'
+                      : 'Drag & drop or click to upload one or multiple images to create a new project'}
+                  </span>
                 </div>
               </div>
 

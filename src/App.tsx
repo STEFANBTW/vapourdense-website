@@ -13,7 +13,7 @@ import { LoginPage } from './components/LoginPage';
 import { ProjectBlogView } from './components/ProjectBlogView';
 import { DashboardView } from './components/DashboardView';
 import { Project } from './types/portfolio';
-import { uploadToCloudinary } from './utils/cloudinary';
+import { uploadMultipleToCloudinary } from './utils/cloudinary';
 
 export default function App() {
   const {
@@ -67,15 +67,17 @@ export default function App() {
   // Window-level drag and drop listener
   useEffect(() => {
     const handleDragOver = (e: DragEvent) => {
+      if (selectedCaseStudy) return;
       e.preventDefault();
     };
 
     const handleDrop = (e: DragEvent) => {
+      if (e.defaultPrevented || selectedCaseStudy) return;
       e.preventDefault();
       if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) {
-        const file = e.dataTransfer.files[0];
-        if (file.type.startsWith('image/')) {
-          handleInitiateImageUpload(file);
+        const imageFiles = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+        if (imageFiles.length > 0) {
+          handleInitiateImageUpload(imageFiles);
         }
       }
     };
@@ -86,23 +88,32 @@ export default function App() {
       window.removeEventListener('dragover', handleDragOver);
       window.removeEventListener('drop', handleDrop);
     };
-  }, [isAdmin, projects]);
+  }, [isAdmin, projects, selectedCaseStudy, currentView]);
 
   const safeAddProject = swallow(addProject);
   const safeDeleteProject = swallow(deleteProject);
   const safeResetToDefaults = swallow(resetToDefaults);
   const safeUpdateProject = swallow(updateProject);
 
-  const handleInitiateImageUpload = async (file: File) => {
+  const handleInitiateImageUpload = async (input: File | File[]) => {
     if (!isAdmin) {
       setCurrentView('login');
       return;
     }
 
+    const files = (Array.isArray(input) ? input : [input]).filter(f => f.type.startsWith('image/'));
+    if (files.length === 0) return;
+
     try {
-      const cdnUrl = await uploadToCloudinary(file);
+      const { urls, failed } = await uploadMultipleToCloudinary(files);
+      if (failed.length > 0) {
+        alert(`Some images failed to upload:\n${failed.map(f => `${f.fileName} (${f.error})`).join('\n')}`);
+      }
+      if (urls.length === 0) return;
+
+      const baseTs = Date.now();
       const created = await safeAddProject({
-        title: file.name.replace(/\.[^/.]+$/, ''),
+        title: files[0].name.replace(/\.[^/.]+$/, ''),
         category: 'Graphic Design',
         client: 'Bespoke Client',
         year: String(new Date().getFullYear()),
@@ -110,16 +121,14 @@ export default function App() {
         description: 'New creative project portfolio entry.',
         shortDescription: 'New creative project portfolio entry.',
         fullDescription: 'Comprehensive design process and artifact showcase.',
-        imageUrl: cdnUrl,
-        images: [cdnUrl],
-        galleryPictures: [
-          {
-            id: `gal-${Date.now()}`,
-            url: cdnUrl,
-            caption: '',
-            isAI: false,
-          },
-        ],
+        imageUrl: urls[0],
+        images: urls,
+        galleryPictures: urls.map((url, idx) => ({
+          id: `gal-${baseTs}-${idx}`,
+          url,
+          caption: '',
+          isAI: false,
+        })),
         processSteps: [],
         tags: ['Design', 'Direction'],
         deliverables: [],
@@ -128,9 +137,14 @@ export default function App() {
         duration: '4 Weeks',
         isRealLife: false,
       });
-      if (created) setSelectedCaseStudy(created);
+      if (created) {
+        setSelectedCaseStudy(created);
+        if (currentView === 'dashboard') {
+          setIsEditingCaseStudy(true);
+        }
+      }
     } catch (err) {
-      console.error('Failed to upload image to Cloudinary:', err);
+      console.error('Failed to upload image(s) to Cloudinary:', err);
       alert('Image upload failed: ' + (err instanceof Error ? err.message : String(err)));
     }
   };
@@ -160,7 +174,10 @@ export default function App() {
       duration: '6 Weeks',
       isRealLife: false,
     });
-    if (newProj) setSelectedCaseStudy(newProj);
+    if (newProj) {
+      setSelectedCaseStudy(newProj);
+      setIsEditingCaseStudy(true);
+    }
   };
 
   const visibleProjects = projects.filter(p => !p.isHidden);

@@ -24,7 +24,9 @@ import {
   Minus,
 } from 'lucide-react';
 import { Project, ProcessPicture, GalleryPicture, ClientRemarkType, ProcessStep } from '../types/portfolio';
-import { uploadToCloudinary } from '../utils/cloudinary';
+import { uploadToCloudinary, uploadMultipleToCloudinary } from '../utils/cloudinary';
+import { RichTextEditor } from './RichTextEditor';
+import { sanitizeRichTextHtml, stripRichTextHtml, hasRichTextContent } from '../utils/richText';
 import {
   getUploadedProjectMedia,
   getProjectThumbnail,
@@ -74,6 +76,8 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
   const [isSavedNotice, setIsSavedNotice] = useState<boolean>(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [isUploadingMedia, setIsUploadingMedia] = useState<boolean>(false);
+  const [uploadProgress, setUploadProgress] = useState<{ completed: number; total: number } | null>(null);
+  const [dragTarget, setDragTarget] = useState<'gallery' | 'newProcess' | number | null>(null);
 
   // Image size slider state (initialized from project's saved scale)
   const [imageScalePercent, setImageScalePercent] = useState<number>(() => initialProject?.imageScalePercent || 100);
@@ -186,7 +190,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
           caption: nextPic.caption || '',
           type: nextPic.type,
           isAI: nextPic.type === 'AI',
-          title: `${step.name} — Asset ${nextIdx + 1}`,
+          title: `${stripRichTextHtml(step.name)} — Asset ${nextIdx + 1}`,
           source: 'process',
           index: nextIdx,
           stepIndex: stepIdx,
@@ -326,9 +330,12 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
         return;
       }
 
-      // If user is typing in an input/textarea in editable mode, don't trigger Esc or arrows
+      // If user is typing in an input/textarea/contentEditable in editable mode, don't trigger Esc or arrows
       const activeEl = document.activeElement;
-      const isInput = activeEl?.tagName === 'INPUT' || activeEl?.tagName === 'TEXTAREA';
+      const isInput =
+        activeEl?.tagName === 'INPUT' ||
+        activeEl?.tagName === 'TEXTAREA' ||
+        (activeEl instanceof HTMLElement && activeEl.isContentEditable);
       if (isInput) return;
 
       if (e.key === 'Escape') {
@@ -557,27 +564,49 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
     updateProjectLocal({ galleryPictures: updated });
   };
 
-  const handleGalleryFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      try {
-        setIsUploadingMedia(true);
-        const resultUrl = await uploadToCloudinary(file);
-        const newPic: GalleryPicture = {
-          id: `gal-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-          url: resultUrl,
-          caption: '',
-          isAI: false,
-        };
-        const updated = [...effectiveGallery, newPic];
-        updateProjectLocal({ galleryPictures: updated });
-      } catch (err) {
-        console.error('Gallery image upload failed:', err);
-        alert('Failed to upload gallery image: ' + (err instanceof Error ? err.message : String(err)));
-      } finally {
-        setIsUploadingMedia(false);
-        e.target.value = '';
+  const uploadBatchImageFiles = async (fileList: FileList | File[]): Promise<string[]> => {
+    const files = Array.from(fileList).filter(f => f.type.startsWith('image/'));
+    if (files.length === 0) return [];
+
+    try {
+      setIsUploadingMedia(true);
+      setUploadProgress({ completed: 0, total: files.length });
+      const { urls, failed } = await uploadMultipleToCloudinary(files, {
+        onFileComplete: (completed, total) => setUploadProgress({ completed, total }),
+      });
+
+      if (failed.length > 0) {
+        const failedNames = failed.map(f => `${f.fileName} (${f.error})`).join('\n');
+        alert(`Some images failed to upload:\n${failedNames}`);
       }
+      return urls;
+    } catch (err) {
+      console.error('Batch image upload failed:', err);
+      alert('Failed to upload images: ' + (err instanceof Error ? err.message : String(err)));
+      return [];
+    } finally {
+      setIsUploadingMedia(false);
+      setUploadProgress(null);
+    }
+  };
+
+  const uploadGalleryFiles = async (fileList: FileList | File[]) => {
+    const urls = await uploadBatchImageFiles(fileList);
+    if (urls.length === 0) return;
+    const baseTs = Date.now();
+    const newPics: GalleryPicture[] = urls.map((url, idx) => ({
+      id: `gal-${baseTs}-${idx}-${Math.random().toString(36).substring(2, 6)}`,
+      url,
+      caption: '',
+      isAI: false,
+    }));
+    updateProjectLocal({ galleryPictures: [...effectiveGallery, ...newPics] });
+  };
+
+  const handleGalleryFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      await uploadGalleryFiles(e.target.files);
+      e.target.value = '';
     }
   };
 
@@ -612,34 +641,26 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
     updateProjectLocal({ processSteps: updatedSteps });
   };
 
+  const uploadProcessFiles = async (stepIdx: number, fileList: FileList | File[]) => {
+    const urls = await uploadBatchImageFiles(fileList);
+    if (urls.length === 0) return;
+    const baseTs = Date.now();
+    const newPics: ProcessPicture[] = urls.map((url, idx) => ({
+      id: `proc-pic-${baseTs}-${idx}-${Math.random().toString(36).substring(2, 6)}`,
+      url,
+      caption: '',
+      type: 'Final',
+    }));
+    const updatedSteps = effectiveProcessSteps.map((step, sIdx) =>
+      sIdx === stepIdx ? { ...step, pictures: [...step.pictures, ...newPics] } : step
+    );
+    updateProjectLocal({ processSteps: updatedSteps });
+  };
+
   const handleProcessFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const stepIdx = activeProcessStepIndexRef.current;
-      try {
-        setIsUploadingMedia(true);
-        const resultUrl = await uploadToCloudinary(file);
-        const newPic: ProcessPicture = {
-          id: `proc-pic-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-          url: resultUrl,
-          caption: '',
-          type: 'Final',
-        };
-        const updatedSteps = effectiveProcessSteps.map((step, sIdx) => {
-          if (sIdx !== stepIdx) return step;
-          return {
-            ...step,
-            pictures: [...step.pictures, newPic],
-          };
-        });
-        updateProjectLocal({ processSteps: updatedSteps });
-      } catch (err) {
-        console.error('Process image upload failed:', err);
-        alert('Failed to upload process image: ' + (err instanceof Error ? err.message : String(err)));
-      } finally {
-        setIsUploadingMedia(false);
-        e.target.value = '';
-      }
+    if (e.target.files && e.target.files.length > 0) {
+      await uploadProcessFiles(activeProcessStepIndexRef.current, e.target.files);
+      e.target.value = '';
     }
   };
 
@@ -732,34 +753,31 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
   // ---------------------------------------------------------------------------
   // Add Process Step Form Handlers
   // ---------------------------------------------------------------------------
+  const uploadNewProcessFiles = async (fileList: FileList | File[]) => {
+    const urls = await uploadBatchImageFiles(fileList);
+    if (urls.length === 0) return;
+    const baseTs = Date.now();
+    const newPics: ProcessPicture[] = urls.map((url, idx) => ({
+      id: `np-pic-${baseTs}-${idx}-${Math.random().toString(36).substring(2, 6)}`,
+      url,
+      caption: '',
+      type: 'Final',
+    }));
+    setNewProcessPictures(prev => [...prev, ...newPics]);
+  };
+
   const handleNewProcessFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      try {
-        setIsUploadingMedia(true);
-        const resultUrl = await uploadToCloudinary(file);
-        const newPic: ProcessPicture = {
-          id: `np-pic-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-          url: resultUrl,
-          caption: '',
-          type: 'Final',
-        };
-        setNewProcessPictures(prev => [...prev, newPic]);
-      } catch (err) {
-        console.error('New process image upload failed:', err);
-        alert('Failed to upload process image: ' + (err instanceof Error ? err.message : String(err)));
-      } finally {
-        setIsUploadingMedia(false);
-        e.target.value = '';
-      }
+    if (e.target.files && e.target.files.length > 0) {
+      await uploadNewProcessFiles(e.target.files);
+      e.target.value = '';
     }
   };
 
   const handleConfirmAddProcess = () => {
     const newStep: ProcessStep = {
       id: `step-${Date.now()}`,
-      name: newProcessName.trim() || 'Untitled Phase',
-      description: newProcessDescription.trim(),
+      name: hasRichTextContent(newProcessName) ? sanitizeRichTextHtml(newProcessName) : 'Untitled Phase',
+      description: hasRichTextContent(newProcessDescription) ? sanitizeRichTextHtml(newProcessDescription) : '',
       pictures: newProcessPictures,
     };
 
@@ -855,6 +873,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
         ref={galleryFileInputRef}
         onChange={handleGalleryFileUpload}
         accept="image/*"
+        multiple
         className="hidden"
       />
       <input
@@ -862,6 +881,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
         ref={processFileInputRef}
         onChange={handleProcessFileUpload}
         accept="image/*"
+        multiple
         className="hidden"
       />
       <input
@@ -869,6 +889,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
         ref={newProcessFileInputRef}
         onChange={handleNewProcessFileUpload}
         accept="image/*"
+        multiple
         className="hidden"
       />
       <input
@@ -982,6 +1003,11 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   </span>
                 ))}
               </span>
+              {uploadProgress && uploadProgress.total > 1 && (
+                <span className="font-mono-numbers text-[11px] text-white/85 pl-0.5">
+                  {uploadProgress.completed}/{uploadProgress.total}
+                </span>
+              )}
             </div>
           )}
           <span className="text-white font-normal">{String(currentIndex + 1).padStart(2, '0')}</span>
@@ -1105,7 +1131,33 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
             
             {/* SECTION 1: GALLERY (hidden in view mode if completely empty) */}
             {(isEditable || effectiveGallery.length > 0) && (
-            <section aria-labelledby="gallery-title" className="min-w-0">
+            <section
+              aria-labelledby="gallery-title"
+              onDragOver={e => {
+                if (!isEditable) return;
+                e.preventDefault();
+                e.stopPropagation();
+                setDragTarget('gallery');
+              }}
+              onDragLeave={e => {
+                if (!isEditable) return;
+                e.preventDefault();
+                e.stopPropagation();
+                if (dragTarget === 'gallery') setDragTarget(null);
+              }}
+              onDrop={e => {
+                if (!isEditable) return;
+                e.preventDefault();
+                e.stopPropagation();
+                setDragTarget(null);
+                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                  uploadGalleryFiles(e.dataTransfer.files);
+                }
+              }}
+              className={`min-w-0 rounded-2xl transition-colors ${
+                dragTarget === 'gallery' ? 'ring-2 ring-white/40 bg-white/[0.04] p-2 -m-2' : ''
+              }`}
+            >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-5">
                 <h2
                   id="gallery-title"
@@ -1187,7 +1239,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                       className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-unisans-regular flex items-center gap-1.5 border border-white/20 cursor-pointer"
                     >
                       <Plus className="w-3.5 h-3.5" />
-                      <span>Upload Image</span>
+                      <span>Upload Images</span>
                     </button>
                   </div>
                 </div>
@@ -1357,7 +1409,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                       type="button"
                       onClick={() => galleryFileInputRef.current?.click()}
                       className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all cursor-pointer shadow-md group border border-white/20"
-                      title="Upload image from device"
+                      title="Upload images from device (select one or multiple)"
                     >
                       <Plus className="w-5 h-5 group-hover:scale-110 transition-transform" />
                     </button>
@@ -1449,9 +1501,35 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                 {effectiveProcessSteps.map((step, stepIdx) => (
                   <div key={step.id || stepIdx} className="space-y-4 min-w-0 pb-4 border-b border-white/5 last:border-0">
                     {/* 1. Pictures Section */}
-                    <div className="flex flex-row items-start gap-4 overflow-x-auto pb-2 pt-1 no-scrollbar min-w-0">
+                    <div
+                      onDragOver={e => {
+                        if (!isEditable) return;
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setDragTarget(stepIdx);
+                      }}
+                      onDragLeave={e => {
+                        if (!isEditable) return;
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (dragTarget === stepIdx) setDragTarget(null);
+                      }}
+                      onDrop={e => {
+                        if (!isEditable) return;
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setDragTarget(null);
+                        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                          uploadProcessFiles(stepIdx, e.dataTransfer.files);
+                        }
+                      }}
+                      className={`flex flex-row items-start gap-4 overflow-x-auto pb-2 pt-1 no-scrollbar min-w-0 rounded-2xl transition-colors ${
+                        dragTarget === stepIdx ? 'ring-2 ring-white/40 bg-white/[0.04] px-2 -mx-2' : ''
+                      }`}
+                    >
                       {step.pictures.map((pic: ProcessPicture, picIdx: number) => {
                         const isAI = pic.type === 'AI';
+                        const plainStepName = stripRichTextHtml(step.name);
 
                         return (
                           <div
@@ -1468,7 +1546,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                                       caption: pic.caption,
                                       type: pic.type,
                                       isAI: isAI,
-                                      title: `${step.name} — Asset ${picIdx + 1}`,
+                                      title: `${plainStepName} — Asset ${picIdx + 1}`,
                                       source: 'process',
                                       index: picIdx,
                                       stepIndex: stepIdx,
@@ -1481,7 +1559,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                               >
                                 <img
                                   src={pic.url}
-                                  alt={pic.caption || `${step.name} pic ${picIdx + 1}`}
+                                  alt={pic.caption || `${plainStepName} pic ${picIdx + 1}`}
                                   referrerPolicy="no-referrer"
                                   className="w-full h-full object-cover"
                                 />
@@ -1622,7 +1700,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                               processFileInputRef.current?.click();
                             }}
                             className="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all cursor-pointer shadow-md group border border-white/20"
-                            title="Upload image from device"
+                            title="Upload images from device (select one or multiple)"
                           >
                             <Plus className="w-4 h-4 group-hover:scale-110 transition-transform" />
                           </button>
@@ -1631,37 +1709,39 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                     </div>
 
                     {/* 2. Name Section */}
-                    {(isEditable || Boolean(step.name && step.name.trim())) && (
+                    {(isEditable || hasRichTextContent(step.name)) && (
                     <div>
                       {isEditable ? (
-                        <input
-                          type="text"
+                        <RichTextEditor
                           value={step.name || ''}
-                          onChange={e => handleUpdateStepName(stepIdx, e.target.value)}
-                          className="w-full bg-white/5 px-3 py-2 text-white font-phenomena-bold text-xl sm:text-2xl tracking-wide focus:outline-none focus:ring-2 focus:ring-white/40 rounded-xl border border-white/10"
+                          onChange={val => handleUpdateStepName(stepIdx, val)}
+                          singleLine
+                          toolbarVisibility="onFocus"
                           placeholder="Process Phase Name (can be left empty)"
-                          title="Click to edit phase name"
+                          editorClassName="px-3 py-2 text-white font-phenomena-bold text-xl sm:text-2xl tracking-wide"
+                          ariaLabel="Process phase name"
                         />
                       ) : (
-                        <h3 className="font-phenomena-bold text-xl sm:text-2xl md:text-[26px] text-white tracking-wide">
-                          {step.name}
-                        </h3>
+                        <h3
+                          className="rich-text-content font-phenomena-bold text-xl sm:text-2xl md:text-[26px] text-white tracking-wide"
+                          dangerouslySetInnerHTML={{ __html: sanitizeRichTextHtml(step.name) }}
+                        />
                       )}
                     </div>
                     )}
 
                     {/* 3. Description Section */}
-                    {(isEditable || Boolean(step.description && step.description.trim())) && (
+                    {(isEditable || hasRichTextContent(step.description)) && (
                     <div>
                       {isEditable ? (
                         <div className="space-y-2">
-                          <textarea
-                            rows={2}
+                          <RichTextEditor
                             value={step.description || ''}
-                            onChange={e => handleUpdateStepDesc(stepIdx, e.target.value)}
-                            className="w-full bg-white/5 p-3 text-white/90 font-unisans-regular text-sm sm:text-base font-normal leading-relaxed focus:outline-none focus:ring-2 focus:ring-white/40 rounded-xl resize-y border border-white/10"
+                            onChange={val => handleUpdateStepDesc(stepIdx, val)}
+                            toolbarVisibility="always"
                             placeholder="Detailed narrative of this process phase (can be left empty)..."
-                            title="Click to edit phase description"
+                            editorClassName="p-3 min-h-[76px] text-white/90 font-unisans-regular text-sm sm:text-base font-normal leading-relaxed"
+                            ariaLabel="Process phase description"
                           />
                           <div className="flex justify-end">
                             <button
@@ -1675,9 +1755,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           </div>
                         </div>
                       ) : (
-                        <p className="font-unisans-regular text-sm sm:text-base lg:text-[16px] text-white/85 font-normal leading-relaxed max-w-3xl">
-                          {step.description}
-                        </p>
+                        <div
+                          className="rich-text-content font-unisans-regular text-sm sm:text-base lg:text-[16px] text-white/85 font-normal leading-relaxed max-w-3xl break-words"
+                          dangerouslySetInnerHTML={{ __html: sanitizeRichTextHtml(step.description) }}
+                        />
                       )}
                     </div>
                     )}
@@ -1712,7 +1793,29 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                         </div>
 
                         {/* Pictures list */}
-                        <div className="space-y-2">
+                        <div
+                          onDragOver={e => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setDragTarget('newProcess');
+                          }}
+                          onDragLeave={e => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (dragTarget === 'newProcess') setDragTarget(null);
+                          }}
+                          onDrop={e => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setDragTarget(null);
+                            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                              uploadNewProcessFiles(e.dataTransfer.files);
+                            }
+                          }}
+                          className={`space-y-2 rounded-2xl transition-colors ${
+                            dragTarget === 'newProcess' ? 'ring-2 ring-white/40 bg-white/[0.04] p-2 -m-2' : ''
+                          }`}
+                        >
                           <label className="font-unisans-thin-caps text-xs uppercase tracking-wider text-white/60 block">
                             Pictures ({newProcessPictures.length})
                           </label>
@@ -1734,7 +1837,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                               <button
                                 type="button"
                                 onClick={() => setLinkModalTarget('newProcess')}
-                                className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-unisans-regular flex items-center gap-1.5"
+                                className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-unisans-regular flex items-center gap-1.5 cursor-pointer"
                               >
                                 <Link2 className="w-3.5 h-3.5" />
                                 <span>Link</span>
@@ -1743,10 +1846,17 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                                 type="button"
                                 disabled={isUploadingMedia}
                                 onClick={() => newProcessFileInputRef.current?.click()}
-                                className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-wait text-white text-xs font-unisans-regular flex items-center gap-1.5"
+                                className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-wait text-white text-xs font-unisans-regular flex items-center gap-1.5 cursor-pointer"
+                                title="Upload one or multiple images"
                               >
                                 <Plus className="w-3.5 h-3.5" />
-                                <span>{isUploadingMedia ? 'Uploading...' : 'Upload'}</span>
+                                <span>
+                                  {isUploadingMedia
+                                    ? uploadProgress && uploadProgress.total > 1
+                                      ? `Uploading ${uploadProgress.completed}/${uploadProgress.total}...`
+                                      : 'Uploading...'
+                                    : 'Upload Images'}
+                                </span>
                               </button>
                             </div>
                           </div>
@@ -1756,12 +1866,14 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           <label className="font-unisans-thin-caps text-xs uppercase tracking-wider text-white/60 block mb-1">
                             Phase Name
                           </label>
-                          <input
-                            type="text"
+                          <RichTextEditor
                             value={newProcessName}
-                            onChange={e => setNewProcessName(e.target.value)}
+                            onChange={setNewProcessName}
+                            singleLine
+                            toolbarVisibility="onFocus"
                             placeholder="e.g. Phase 02: Typography Matrix & Production Blueprint"
-                            className="w-full px-3.5 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm font-unisans-regular focus:outline-none focus:border-white/40"
+                            editorClassName="px-3.5 py-2.5 text-white text-sm font-unisans-regular"
+                            ariaLabel="New process phase name"
                           />
                         </div>
 
@@ -1769,12 +1881,13 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           <label className="font-unisans-thin-caps text-xs uppercase tracking-wider text-white/60 block mb-1">
                             Phase Description
                           </label>
-                          <textarea
-                            rows={3}
+                          <RichTextEditor
                             value={newProcessDescription}
-                            onChange={e => setNewProcessDescription(e.target.value)}
+                            onChange={setNewProcessDescription}
+                            toolbarVisibility="always"
                             placeholder="Describe what occurred in this process phase..."
-                            className="w-full px-3.5 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-xs sm:text-sm font-unisans-regular focus:outline-none focus:border-white/40 resize-y"
+                            editorClassName="px-3.5 py-2.5 min-h-[88px] text-white text-xs sm:text-sm font-unisans-regular leading-relaxed"
+                            ariaLabel="New process phase description"
                           />
                         </div>
 

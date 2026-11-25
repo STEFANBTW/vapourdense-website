@@ -82,3 +82,60 @@ export async function uploadToCloudinary(
   const data = await res.json();
   return data.secure_url;
 }
+
+export interface BatchUploadResult {
+  urls: string[];
+  failed: { fileName: string; error: string }[];
+}
+
+/**
+ * Uploads multiple files to Cloudinary with bounded concurrency while
+ * preserving the input file order for successful uploads.
+ */
+export async function uploadMultipleToCloudinary(
+  files: File[],
+  options?: {
+    resourceType?: UploadOptions['resourceType'];
+    folder?: string;
+    concurrency?: number;
+    onFileComplete?: (completedCount: number, totalCount: number) => void;
+  }
+): Promise<BatchUploadResult> {
+  if (files.length === 0) {
+    return { urls: [], failed: [] };
+  }
+
+  const results: (string | null)[] = new Array(files.length).fill(null);
+  const failed: { fileName: string; error: string }[] = [];
+  const concurrency = Math.max(1, Math.min(options?.concurrency ?? 4, files.length));
+  let nextIndex = 0;
+  let completedCount = 0;
+
+  const worker = async () => {
+    while (nextIndex < files.length) {
+      const idx = nextIndex++;
+      const file = files[idx];
+      try {
+        results[idx] = await uploadToCloudinary(file, {
+          resourceType: options?.resourceType,
+          folder: options?.folder,
+        });
+      } catch (err) {
+        failed.push({
+          fileName: file.name,
+          error: err instanceof Error ? err.message : String(err),
+        });
+      } finally {
+        completedCount += 1;
+        options?.onFileComplete?.(completedCount, files.length);
+      }
+    }
+  };
+
+  await Promise.all(Array.from({ length: concurrency }, () => worker()));
+
+  return {
+    urls: results.filter((u): u is string => Boolean(u)),
+    failed,
+  };
+}

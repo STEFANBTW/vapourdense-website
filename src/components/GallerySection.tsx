@@ -7,7 +7,7 @@ import { getProjectThumbnail } from '../utils/projectMeta';
 interface GallerySectionProps {
   projects: Project[];
   onSelectProject: (project: Project) => void;
-  onDropImage: (file: File) => void;
+  onDropImage: (files: File | File[]) => void;
   isMobileNavVisible?: boolean;
 }
 
@@ -205,9 +205,9 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
     e.stopPropagation();
     setIsDragOver(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const file = e.dataTransfer.files[0];
-      if (file.type.startsWith('image/')) {
-        onDropImage(file);
+      const imageFiles = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+      if (imageFiles.length > 0) {
+        onDropImage(imageFiles);
       }
     }
   };
