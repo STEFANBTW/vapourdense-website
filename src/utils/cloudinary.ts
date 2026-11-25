@@ -17,6 +17,50 @@ export interface UploadOptions {
   onProgress?: (percent: number) => void;
 }
 
+export interface ImageTransformOptions {
+  width?: number;
+  quality?: 'auto' | 'auto:good' | 'auto:best' | 'auto:eco';
+}
+
+/**
+ * Rewrites a Cloudinary image delivery URL to serve an auto-formatted (WebP/AVIF),
+ * auto-quality, width-capped variant so browsers don't decode 26–50 MP originals
+ * for thumbnails and scrollable cards. Non-Cloudinary URLs and URLs that already
+ * contain delivery transforms are returned unchanged.
+ */
+export function getOptimizedImageUrl(
+  url: string | undefined | null,
+  options?: ImageTransformOptions
+): string {
+  if (!url) return '';
+  const marker = '/image/upload/';
+  if (!url.includes('res.cloudinary.com') || !url.includes(marker)) {
+    return url;
+  }
+
+  const idx = url.indexOf(marker);
+  if (idx === -1) return url;
+
+  const prefix = url.slice(0, idx + marker.length);
+  const rest = url.slice(idx + marker.length);
+
+  const firstSegment = rest.split('/')[0] || '';
+  if (
+    firstSegment &&
+    !/^v\d+$/.test(firstSegment) &&
+    /(?:^|,)(?:w_|h_|c_|f_|q_|dpr_|ar_)/.test(firstSegment)
+  ) {
+    return url;
+  }
+
+  const parts = ['f_auto', `q_${options?.quality || 'auto'}`];
+  if (options?.width && options.width > 0) {
+    parts.push(`c_limit,w_${Math.round(options.width)}`);
+  }
+
+  return `${prefix}${parts.join(',')}/${rest}`;
+}
+
 /**
  * Uploads any image, audio memo, or document directly to Cloudinary.
  * Returns the secure HTTPS CDN URL.

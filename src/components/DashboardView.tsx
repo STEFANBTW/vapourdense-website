@@ -62,7 +62,7 @@ import {
   defaultSocialLinks,
 } from './AboutSection';
 import { compressImage } from '../utils/imageCompressor';
-import { uploadToCloudinary } from '../utils/cloudinary';
+import { uploadToCloudinary, getOptimizedImageUrl } from '../utils/cloudinary';
 import { getProjectThumbnail, formatProjectValuation } from '../utils/projectMeta';
 
 interface DashboardViewProps {
@@ -2771,8 +2771,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                           <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0">
                             {heroImg ? (
                               <img
-                                src={heroImg}
+                                src={getOptimizedImageUrl(heroImg, { width: 200 })}
                                 alt=""
+                                loading="lazy"
+                                decoding="async"
                                 className="w-full h-full object-cover"
                               />
                             ) : (
@@ -2888,8 +2890,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                               <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0">
                                 {heroImg ? (
                                   <img
-                                    src={heroImg}
+                                    src={getOptimizedImageUrl(heroImg, { width: 200 })}
                                     alt=""
+                                    loading="lazy"
+                                    decoding="async"
                                     className="w-full h-full object-cover"
                                   />
                                 ) : (

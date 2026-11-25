@@ -24,7 +24,7 @@ import {
   Minus,
 } from 'lucide-react';
 import { Project, ProcessPicture, GalleryPicture, ClientRemarkType, ProcessStep } from '../types/portfolio';
-import { uploadToCloudinary, uploadMultipleToCloudinary } from '../utils/cloudinary';
+import { uploadToCloudinary, uploadMultipleToCloudinary, getOptimizedImageUrl } from '../utils/cloudinary';
 import { RichTextEditor } from './RichTextEditor';
 import { sanitizeRichTextHtml, stripRichTextHtml, hasRichTextContent } from '../utils/richText';
 import {
@@ -1124,6 +1124,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
         <div className="flex-1 flex flex-col lg:flex-row min-w-0 min-h-0 h-full overflow-hidden w-full lg:w-[80vw] lg:max-w-[2000px] lg:mx-auto lg:rounded-none lg:border-0 bg-transparent lg:bg-transparent">
           {/* LEFT PANEL: GALLERY & PROCESS */}
           <div
+            style={{ contain: 'layout paint' }}
             className={`w-full lg:w-[70%] lg:border-r border-white/10 p-5 sm:p-7 md:p-8 flex-col space-y-8 sm:space-y-10 min-w-0 min-h-0 h-full overflow-y-auto no-scrollbar ${
               mobileActivePane === 'gallery_process' ? 'flex' : 'hidden lg:flex'
             }`}
@@ -1252,10 +1253,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                     <div
                       key={pic.id || idx}
                       style={{ width: `${galleryCardPixelWidth}px` }}
-                      className="shrink-0 group relative transition-all duration-200"
+                      className="shrink-0 group relative transition-[width] duration-200"
                     >
                       {/* Image Container preserving natural 16:10 aspect ratio */}
-                      <div className="relative rounded-2xl overflow-hidden transition-transform duration-300">
+                      <div className="relative rounded-2xl overflow-hidden">
                         <div
                           onClick={() => {
                             if (!isEditable) {
@@ -1274,8 +1275,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           }`}
                         >
                           <img
-                            src={pic.url}
+                            src={getOptimizedImageUrl(pic.url, { width: 1200 })}
                             alt={pic.caption || `Gallery asset ${idx + 1}`}
+                            loading="lazy"
+                            decoding="async"
                             referrerPolicy="no-referrer"
                             className="w-full h-full object-cover"
                           />
@@ -1325,7 +1328,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                               </>
                             ) : (
                               isAIGenerated && (
-                                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-unisans-regular tracking-wide bg-black/80 text-white border border-white/30 backdrop-blur-md shadow-sm">
+                                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-unisans-regular tracking-wide bg-black/85 text-white border border-white/30 shadow-sm">
                                   <Sparkles className="w-2.5 h-2.5 text-white" />
                                   <span>AI Generated</span>
                                 </span>
@@ -1535,9 +1538,9 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           <div
                             key={pic.id || picIdx}
                             style={{ width: `${processCardPixelWidth}px` }}
-                            className="shrink-0 group relative transition-all duration-200"
+                            className="shrink-0 group relative transition-[width] duration-200"
                           >
-                            <div className="relative rounded-2xl overflow-hidden transition-transform duration-300">
+                            <div className="relative rounded-2xl overflow-hidden">
                               <div
                                 onClick={() => {
                                   if (!isEditable) {
@@ -1558,8 +1561,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                                 }`}
                               >
                                 <img
-                                  src={pic.url}
+                                  src={getOptimizedImageUrl(pic.url, { width: 1000 })}
                                   alt={pic.caption || `${plainStepName} pic ${picIdx + 1}`}
+                                  loading="lazy"
+                                  decoding="async"
                                   referrerPolicy="no-referrer"
                                   className="w-full h-full object-cover"
                                 />
@@ -1611,12 +1616,12 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                                     </>
                                   ) : (
                                     isAI ? (
-                                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-unisans-regular tracking-wider uppercase bg-black/80 text-white border border-white/30 backdrop-blur-md shadow-md">
+                                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-unisans-regular tracking-wider uppercase bg-black/85 text-white border border-white/30 shadow-md">
                                         <Sparkles className="w-2 h-2 text-white" />
                                         AI
                                       </span>
                                     ) : (
-                                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-unisans-regular tracking-wider uppercase bg-black/80 text-white border border-white/30 backdrop-blur-md shadow-md">
+                                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-unisans-regular tracking-wider uppercase bg-black/85 text-white border border-white/30 shadow-md">
                                         <CheckCircle2 className="w-2 h-2 text-white" />
                                         Final
                                       </span>
@@ -1822,7 +1827,13 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           <div className="flex flex-row items-center gap-3 overflow-x-auto pb-2">
                             {newProcessPictures.map((pic, pIdx) => (
                               <div key={pIdx} className="w-24 aspect-[4/3] rounded-xl overflow-hidden relative group shrink-0 bg-black/40 border border-white/10">
-                                <img src={pic.url} alt="" className="w-full h-full object-cover" />
+                                <img
+                                  src={getOptimizedImageUrl(pic.url, { width: 240 })}
+                                  alt=""
+                                  loading="lazy"
+                                  decoding="async"
+                                  className="w-full h-full object-cover"
+                                />
                                 <button
                                   type="button"
                                   onClick={() => setNewProcessPictures(prev => prev.filter((_, i) => i !== pIdx))}
@@ -1919,6 +1930,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
 
           {/* RIGHT PANEL (30%): PROJECT DETAILS & METADATA ("Other Details") */}
           <div
+            style={{ contain: 'layout paint' }}
             className={`w-full lg:w-[30%] p-5 sm:p-7 md:p-8 flex-col space-y-7 sm:space-y-8 min-w-0 min-h-0 h-full overflow-y-auto no-scrollbar ${
               mobileActivePane === 'other_details' ? 'flex' : 'hidden lg:flex'
             }`}
@@ -1980,8 +1992,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           title={`Set as thumbnail (${item.label})`}
                         >
                           <img
-                            src={item.url}
+                            src={getOptimizedImageUrl(item.url, { width: 200 })}
                             alt={item.label}
+                            loading="lazy"
+                            decoding="async"
                             referrerPolicy="no-referrer"
                             className="w-full h-full object-cover"
                           />
@@ -2249,8 +2263,10 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                   <div className="space-y-2.5 p-4 rounded-2xl bg-white/5 border border-white/10">
                     <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-black/40">
                       <img
-                        src={remark.pictureUrl || currentProject.images[0]}
+                        src={getOptimizedImageUrl(remark.pictureUrl || currentProject.images[0], { width: 800 })}
                         alt="Client endorsement document"
+                        loading="lazy"
+                        decoding="async"
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-cover"
                       />
@@ -2916,8 +2932,9 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.18, ease: 'easeOut' }}
-                    src={expandedImage.url}
+                    src={getOptimizedImageUrl(expandedImage.url, { width: 2200, quality: 'auto:good' })}
                     alt={expandedImage.caption || expandedImage.title || 'Enlarged view'}
+                    decoding="async"
                     referrerPolicy="no-referrer"
                     className="max-h-[calc(100dvh-130px)] sm:max-h-[calc(100dvh-120px)] md:max-h-[calc(100dvh-110px)] max-w-[calc(100vw-1.5rem)] sm:max-w-[calc(100vw-7rem)] md:max-w-[calc(100vw-9rem)] w-auto h-auto object-contain rounded-xl sm:rounded-2xl shadow-2xl border border-white/10"
                   />

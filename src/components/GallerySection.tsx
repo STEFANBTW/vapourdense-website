@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Search, UploadCloud, ChevronDown, Check, Palette, Globe, Briefcase } from 'lucide-react';
 import { Project } from '../types/portfolio';
 import { getProjectThumbnail } from '../utils/projectMeta';
+import { getOptimizedImageUrl } from '../utils/cloudinary';
 
 interface GallerySectionProps {
   projects: Project[];
@@ -486,8 +487,10 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
                     <div className={`w-[92%] sm:w-[90%] mx-auto aspect-square rounded-full overflow-hidden bg-white ${idx === 0 ? 'border-0' : 'border border-slate-200'} shadow-sm transition-shadow duration-300 ease-out hover:shadow-[0_20px_45px_-10px_rgba(0,0,0,0.18)]`}>
                       {heroImage ? (
                         <img
-                          src={heroImage}
+                          src={getOptimizedImageUrl(heroImage, { width: 800 })}
                           alt={project.title}
+                          loading="lazy"
+                          decoding="async"
                           referrerPolicy="no-referrer"
                           className="w-full h-full object-cover"
                         />
