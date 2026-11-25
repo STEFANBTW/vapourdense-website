@@ -1504,6 +1504,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                 {effectiveProcessSteps.map((step, stepIdx) => (
                   <div key={step.id || stepIdx} className="space-y-4 min-w-0 pb-4 border-b border-white/5 last:border-0">
                     {/* 1. Pictures Section */}
+                    {(isEditable || step.pictures.length > 0) && (
                     <div
                       onDragOver={e => {
                         if (!isEditable) return;
@@ -1712,6 +1713,7 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                         </div>
                       )}
                     </div>
+                    )}
 
                     {/* 2. Name Section */}
                     {(isEditable || hasRichTextContent(step.name)) && (

@@ -5,16 +5,12 @@ import {
   onSnapshot,
   setDoc,
   deleteDoc,
-  getDocs,
-  writeBatch,
 } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { Project } from '../types/portfolio';
-import { initialProjects } from '../data/initialProjects';
 import { AboutData, defaultAboutData, SocialLinkItem } from '../components/AboutSection';
 
-const STORAGE_KEY = 'vdvc_portfolio_projects_v19';
-const SEEDED_WEB_KEY = 'vdvc_seeded_projects_v11';
+const STORAGE_KEY = 'vdvc_portfolio_projects_v21';
 const ABOUT_STORAGE_KEY = 'vdvc_portfolio_about_v2';
 const AUTH_KEY = 'dive_portfolio_admin_auth';
 export const ADMIN_PASSWORD = 'memeh 23';
@@ -29,7 +25,6 @@ const DELETED_PROJECT_IDS = new Set([
   'proj-7',
 ]);
 const LEGACY_SOCIAL_IDS = new Set(['soc-1', 'soc-2', 'soc-3']);
-const initialMap = new Map(initialProjects.map(p => [p.id, p]));
 
 /**
  * Deduplicate projects by ID and by normalized (category + title) so duplicate
@@ -53,40 +48,17 @@ function dedupeProjects(list: Project[]): Project[] {
   return result;
 }
 
-/**
- * Layers a stored project over the built-in defaults.
- * A field the user has explicitly saved (even as an empty string) always wins, so
- * clearing a field really clears it. Defaults only fill fields that were never stored.
- */
-function mergeWithDefaults(data: Project): Project {
-  const fallback = initialMap.get(data.id);
-  const merged: Project = {
-    ...fallback,
+function normalizeProject(data: Project): Project {
+  const industries = (Array.isArray(data.industries) && data.industries.length > 0)
+    ? data.industries
+    : (Array.isArray(data.industry) ? data.industry : []);
+  return {
     ...data,
-    deliverables: Array.isArray(data.deliverables) ? data.deliverables : (fallback?.deliverables ?? []),
-    industries: (Array.isArray(data.industries) && data.industries.length > 0)
-      ? data.industries
-      : ((Array.isArray(data.industry) && data.industry.length > 0)
-        ? data.industry
-        : (fallback?.industries ?? fallback?.industry ?? [])),
-    industry: (Array.isArray(data.industry) && data.industry.length > 0)
-      ? data.industry
-      : ((Array.isArray(data.industries) && data.industries.length > 0)
-        ? data.industries
-        : (fallback?.industry ?? fallback?.industries ?? [])),
-    imageScalePercent: data.imageScalePercent ?? fallback?.imageScalePercent ?? 100,
+    deliverables: Array.isArray(data.deliverables) ? data.deliverables : [],
+    industries,
+    industry: industries,
+    imageScalePercent: data.imageScalePercent ?? 100,
   };
-  if (
-    fallback &&
-    data.id?.startsWith('proj-web-') &&
-    (!data.images?.length || data.images[0]?.startsWith('data:image/svg+xml'))
-  ) {
-    merged.imageUrl = fallback.imageUrl;
-    merged.images = fallback.images;
-    merged.galleryPictures = fallback.galleryPictures;
-    merged.websiteUrl = fallback.websiteUrl;
-  }
-  return merged;
 }
 
 /** Firestore rejects documents above 1 MiB; keep a safety margin. */
@@ -111,7 +83,6 @@ function sanitizeSocialLinks(links?: SocialLinkItem[]): SocialLinkItem[] {
   if (!Array.isArray(links)) return [];
   return links.filter(item => {
     if (!item) return false;
-    // Remove the old hardcoded placeholder links (soc-1, soc-2, soc-3)
     if (LEGACY_SOCIAL_IDS.has(item.id)) return false;
     return true;
   });
@@ -127,16 +98,14 @@ export function usePortfolioStorage() {
           return dedupeProjects(
             parsed
               .filter((p: Project) => !DELETED_PROJECT_IDS.has(p.id))
-              .map((p: Project) => mergeWithDefaults(p))
+              .map((p: Project) => normalizeProject(p))
           ).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
         }
       }
     } catch {
-      // fallback
+      // ignore
     }
-    return dedupeProjects([...initialProjects]).sort(
-      (a, b) => (b.createdAt || 0) - (a.createdAt || 0)
-    );
+    return [];
   });
 
   const [aboutData, setAboutData] = useState<AboutData>(() => {
@@ -145,35 +114,12 @@ export function usePortfolioStorage() {
       if (stored) {
         const parsed = JSON.parse(stored);
         if (parsed && parsed.studioName) {
-          if (
-            !parsed.founderImage ||
-            parsed.founderImage.includes('Linnea') ||
-            parsed.founderImage.startsWith('data:image/svg+xml') ||
-            parsed.founderImage === '/VDVC 4 - Logo.png' ||
-            parsed.founderImage === '/vdvc-4-logo.png'
-          ) {
-            parsed.founderImage = '/VDVC 4 - Logo - NO-TEXT-TRANSPARENT-BG.png';
-          }
-          if (
-            !parsed.logoUrl ||
-            parsed.logoUrl.includes('vdvc-logo.png') ||
-            parsed.logoUrl === '/VDVC 4 - Logo - NO-TEXT.png' ||
-            parsed.logoUrl === '/VDVC 4 - Logo.png'
-          ) {
-            parsed.logoUrl = '/VDVC 4 - Logo - NO-TEXT-TRANSPARENT-BG.png';
-          }
-          if (!parsed.footerTagline || parsed.footerTagline.includes('Creative Direction')) {
-            parsed.footerTagline = 'a flexible system for your paper workloads';
-          }
-          if (!parsed.bio || parsed.bio.includes('Creative Direction')) {
-            parsed.bio = 'a flexible system for your paper workloads';
-          }
           parsed.socialLinks = sanitizeSocialLinks(parsed.socialLinks);
           return parsed;
         }
       }
     } catch {
-      // fallback
+      // ignore
     }
     return defaultAboutData;
   });
@@ -191,7 +137,6 @@ export function usePortfolioStorage() {
   const lastProjectsJsonRef = useRef<string>('');
   const lastAboutJsonRef = useRef<string>('');
 
-  // Latest state mirrors, used to roll back optimistic updates when a write fails
   const projectsRef = useRef<Project[]>(projects);
   const aboutRef = useRef<AboutData>(aboutData);
   useEffect(() => {
@@ -201,50 +146,32 @@ export function usePortfolioStorage() {
     aboutRef.current = aboutData;
   }, [aboutData]);
 
-  // 1. Synchronize Projects with Firestore in Real-Time
+  // 1. Synchronize Projects with Firestore in Real-Time (no automatic seeding)
   useEffect(() => {
     const projectsCol = collection(db, 'projects');
     const unsubscribe = onSnapshot(
       projectsCol,
-      async snapshot => {
-        if (snapshot.empty) {
-          try {
-            const batch = writeBatch(db);
-            dedupeProjects(initialProjects).forEach(proj => {
-              const docRef = doc(db, 'projects', proj.id);
-              batch.set(docRef, proj);
-            });
-            await batch.commit();
-            try {
-              localStorage.setItem(SEEDED_WEB_KEY, 'true');
-            } catch {
-              // ignore
-            }
-          } catch (err) {
-            console.error('Failed to seed initial projects to Firestore:', err);
+      snapshot => {
+        const rawProjects: Project[] = [];
+        snapshot.forEach(docSnap => {
+          const data = docSnap.data() as Project;
+          const docId = data.id || docSnap.id;
+          if (!DELETED_PROJECT_IDS.has(docSnap.id) && !DELETED_PROJECT_IDS.has(docId)) {
+            rawProjects.push(normalizeProject({ ...data, id: docId }));
           }
-        } else {
-          const rawProjects: Project[] = [];
-          snapshot.forEach(docSnap => {
-            const data = docSnap.data() as Project;
-            const docId = data.id || docSnap.id;
-            if (!DELETED_PROJECT_IDS.has(docSnap.id) && !DELETED_PROJECT_IDS.has(docId)) {
-              rawProjects.push(mergeWithDefaults({ ...data, id: docId }));
-            }
-          });
+        });
 
-          const loadedProjects = dedupeProjects(rawProjects).sort(
-            (a, b) => (b.createdAt || 0) - (a.createdAt || 0)
-          );
-          const serialized = JSON.stringify(loadedProjects);
-          if (serialized !== lastProjectsJsonRef.current) {
-            lastProjectsJsonRef.current = serialized;
-            setProjects(loadedProjects);
-            try {
-              localStorage.setItem(STORAGE_KEY, serialized);
-            } catch {
-              // ignore
-            }
+        const loadedProjects = dedupeProjects(rawProjects).sort(
+          (a, b) => (b.createdAt || 0) - (a.createdAt || 0)
+        );
+        const serialized = JSON.stringify(loadedProjects);
+        if (serialized !== lastProjectsJsonRef.current) {
+          lastProjectsJsonRef.current = serialized;
+          setProjects(loadedProjects);
+          try {
+            localStorage.setItem(STORAGE_KEY, serialized);
+          } catch {
+            // ignore
           }
         }
         setDbError(null);
@@ -265,72 +192,24 @@ export function usePortfolioStorage() {
     const aboutDocRef = doc(db, 'settings', 'about');
     const unsubscribe = onSnapshot(
       aboutDocRef,
-      async docSnap => {
-        if (!docSnap.exists()) {
+      docSnap => {
+        if (!docSnap.exists()) return;
+        const data = docSnap.data() as AboutData;
+        const sanitizedSocials = sanitizeSocialLinks(data.socialLinks);
+        const upgraded: AboutData = {
+          ...defaultAboutData,
+          ...data,
+          socialLinks: sanitizedSocials,
+        };
+
+        const serialized = JSON.stringify(upgraded);
+        if (serialized !== lastAboutJsonRef.current) {
+          lastAboutJsonRef.current = serialized;
+          setAboutData(upgraded);
           try {
-            await setDoc(aboutDocRef, defaultAboutData);
+            localStorage.setItem(ABOUT_STORAGE_KEY, serialized);
           } catch {
-            // offline fallback
-          }
-        } else {
-          const data = docSnap.data() as AboutData;
-          let founderImage = data.founderImage;
-          if (
-            !founderImage ||
-            founderImage.includes('Linnea') ||
-            founderImage.startsWith('data:image/svg+xml') ||
-            founderImage === '/VDVC 4 - Logo.png' ||
-            founderImage === '/vdvc-4-logo.png'
-          ) {
-            founderImage = '/VDVC 4 - Logo - NO-TEXT-TRANSPARENT-BG.png';
-          }
-          let logoUrl = data.logoUrl;
-          if (
-            !logoUrl ||
-            logoUrl.includes('vdvc-logo.png') ||
-            logoUrl === '/VDVC 4 - Logo - NO-TEXT.png' ||
-            logoUrl === '/VDVC 4 - Logo.png'
-          ) {
-            logoUrl = '/VDVC 4 - Logo - NO-TEXT-TRANSPARENT-BG.png';
-          }
-          let footerTagline = data.footerTagline;
-          if (!footerTagline || footerTagline.includes('Creative Direction')) {
-            footerTagline = 'a flexible system for your paper workloads';
-          }
-          let bio = data.bio;
-          if (!bio || bio.includes('Creative Direction')) {
-            bio = 'a flexible system for your paper workloads';
-          }
-          const sanitizedSocials = sanitizeSocialLinks(data.socialLinks);
-          const hadLegacySocials =
-            Array.isArray(data.socialLinks) &&
-            data.socialLinks.length !== sanitizedSocials.length;
-
-          const upgraded: AboutData = {
-            ...defaultAboutData,
-            ...data,
-            founderImage,
-            logoUrl,
-            footerTagline,
-            bio,
-            socialLinks: sanitizedSocials,
-            studioName: data.studioName || defaultAboutData.studioName,
-            websiteName: data.websiteName || defaultAboutData.websiteName,
-          };
-
-          if (hadLegacySocials) {
-            setDoc(aboutDocRef, upgraded).catch(() => {});
-          }
-
-          const serialized = JSON.stringify(upgraded);
-          if (serialized !== lastAboutJsonRef.current) {
-            lastAboutJsonRef.current = serialized;
-            setAboutData(upgraded);
-            try {
-              localStorage.setItem(ABOUT_STORAGE_KEY, serialized);
-            } catch {
-              // ignore
-            }
+            // ignore
           }
         }
       },
@@ -365,7 +244,6 @@ export function usePortfolioStorage() {
     }
   }, []);
 
-  // Add Project (writes to Firestore)
   const addProject = useCallback(async (projectData: Omit<Project, 'id' | 'createdAt'>) => {
     const newId = `proj-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
     const newProj: Project = {
@@ -388,7 +266,6 @@ export function usePortfolioStorage() {
     return newProj;
   }, []);
 
-  // Update Project (writes to Firestore). Throws if the database rejects the write.
   const updateProject = useCallback(async (id: string, updated: Partial<Project>) => {
     const before = projectsRef.current;
     const existing = before.find(p => p.id === id);
@@ -407,7 +284,6 @@ export function usePortfolioStorage() {
     }
   }, []);
 
-  // Delete Project (writes to Firestore)
   const deleteProject = useCallback(async (id: string) => {
     const before = projectsRef.current;
     setProjects(prev => prev.filter(p => p.id !== id));
@@ -422,38 +298,6 @@ export function usePortfolioStorage() {
     }
   }, []);
 
-  // Reset to the default projects in Firestore
-  const resetToDefaults = useCallback(async () => {
-    const before = projectsRef.current;
-    const targetProjects = dedupeProjects([...initialProjects]).sort(
-      (a, b) => (b.createdAt || 0) - (a.createdAt || 0)
-    );
-    setProjects(targetProjects);
-    try {
-      const existingSnap = await getDocs(collection(db, 'projects'));
-      const batch = writeBatch(db);
-      existingSnap.forEach(d => {
-        batch.delete(d.ref);
-      });
-      targetProjects.forEach(p => {
-        batch.set(doc(db, 'projects', p.id), p);
-      });
-      await batch.commit();
-      try {
-        localStorage.setItem(SEEDED_WEB_KEY, 'true');
-      } catch {
-        // ignore
-      }
-      setDbError(null);
-    } catch (err) {
-      console.error('Error resetting projects in Firestore:', err);
-      setProjects(before);
-      setDbError(`Reset was not saved: ${describeError(err)}`);
-      throw err;
-    }
-  }, []);
-
-  // Update About Data (writes to Firestore). Throws if the database rejects the write.
   const updateAboutData = useCallback(async (newAbout: AboutData) => {
     const before = aboutRef.current;
     setAboutData(newAbout);
@@ -484,7 +328,6 @@ export function usePortfolioStorage() {
     addProject,
     updateProject,
     deleteProject,
-    resetToDefaults,
     updateAboutData,
   };
 }

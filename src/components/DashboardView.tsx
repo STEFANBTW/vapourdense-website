@@ -32,7 +32,6 @@ import {
   Briefcase,
   ArrowUp,
   ArrowDown,
-  RotateCcw,
   User,
   Users,
   Upload,
@@ -74,7 +73,6 @@ interface DashboardViewProps {
   onDelete: (id: string) => void;
   onPreview: (project: Project) => void;
   onDropImage: (files: File | File[]) => Promise<void> | void;
-  onResetDefaults: () => void;
   onUpdateProject?: (id: string, updated: Partial<Project>) => Promise<void> | void;
 }
 
@@ -102,7 +100,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   onDelete,
   onPreview,
   onDropImage,
-  onResetDefaults,
   onUpdateProject,
 }) => {
   // Three filters as requested:
@@ -782,21 +779,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </span>
             </button>
           </div>
-
-          {activeTab === 'projects' && (
-            <button
-              onClick={() => {
-                if (window.confirm('Reset portfolio back to default projects in Firestore?')) {
-                  onResetDefaults();
-                }
-              }}
-              className="p-2 sm:px-3 sm:py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-[#f7f7f7] hover:bg-[#ededed] border-0 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
-              title="Restore default projects"
-            >
-              <RotateCcw className="w-3.5 h-3.5 shrink-0" />
-              <span className="hidden sm:inline">Reset</span>
-            </button>
-          )}
       </div>
 
       {/* =====================================================================

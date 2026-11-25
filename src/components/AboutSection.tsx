@@ -131,136 +131,33 @@ export interface AboutData {
   founderImageScale?: number;
 }
 
-export const defaultFounderPortraitSvg = '/VDVC 4 - Logo - NO-TEXT-TRANSPARENT-BG.png';
+export const defaultFounderPortraitSvg = '';
 
 export const defaultSocialLinks: SocialLinkItem[] = [];
 
-export const defaultAboutSections: AboutCustomSection[] = [
-  {
-    id: 'sec-welcome',
-    category: 'WELCOME',
-    tagline: "SUP, I'M _TURBOFAN",
-    type: 'text',
-    content: "I'M A FULL TIME STUDENT AND PART-TIME DESIGNER. I'LL BE YOUR GUIDE. VDVC IS A GRAPHIC DESIGN AND DTP SERVICE. HERE IS HOW WE CAN HELP YOU!",
-    layoutTheme: 'spaced',
-  },
-  {
-    id: 'sec-services',
-    category: 'SERVICES',
-    tagline: 'WHAT WE CAN DO FOR YOU',
-    type: 'list',
-    items: [
-      'CREATE, EDIT, DIGITISE AND CONVERT DOCUMENTS',
-      'DESIGN GRAPHICS AND WEBSITES',
-      'PRINT',
-      'DELIVERY & PICKUP',
-    ],
-  },
-  {
-    id: 'sec-deliverables',
-    category: 'DELIVERABLES',
-    tagline: 'WHAT WE MEAN BY "DOCUMENTS"',
-    type: 'grid',
-    items: [
-      'TEXTS (.docx)',
-      'SLIDES (.pptx)',
-      'SHEETS (.xlsx)',
-      'PDFS (.pdf)',
-      'IMAGES (.jpg, .png)',
-      'FIGMA FILES',
-      'ADOBE FILES',
-      'PRINTED DOCUMENTS',
-      'WEB FILES (.html, .css, .js, .ts, .jsx, .tsx, etc)',
-    ],
-  },
-  {
-    id: 'sec-tat',
-    category: 'TURN AROUND TIME',
-    tagline: "HOW LONG'S THE WAIT",
-    type: 'table',
-    tableRows: [
-      {
-        id: 'r1',
-        bracket: 'FLEXIBLE',
-        timeframe: '2-3 WKS',
-        multiplier: '-5% TO -20%',
-        meaning: 'I SLOT YOU IN WHENEVER I HAVE TIME. NO PRESSURE ON MY SIDE OR YOURS.',
-      },
-      {
-        id: 'r2',
-        bracket: 'STANDARD',
-        timeframe: '1 WK',
-        multiplier: 'BASELINE (0%)',
-        meaning: 'MY NORMAL WORKING PACE - THE DEFAULT PRICE.',
-      },
-      {
-        id: 'r3',
-        bracket: 'PRIORITY',
-        timeframe: '48-72 HRS',
-        multiplier: '+25%',
-        meaning: 'I REORDER MY QUEUE TO FIT YOU IN SOONER.',
-      },
-      {
-        id: 'r4',
-        bracket: 'URGENT',
-        timeframe: '24 HRS',
-        multiplier: '+50%',
-        meaning: 'SAME-DAY OR NEXT-DAY - YOU ARE GIVEN TOP PRIORITY.',
-      },
-    ],
-  },
-  {
-    id: 'sec-delivery',
-    category: 'DELIVERY & PICKUP',
-    tagline: "VIRTUAL WON'T ALWAYS WORK",
-    type: 'list',
-    items: [
-      'WITHIN UNIJOS: FREE DELIVERY & PICKUP',
-      'WITHIN JOSCITY: 2,000 NAIRA DELIVERY FEE',
-    ],
-  },
-  {
-    id: 'sec-tools',
-    category: 'SOME OF OUR TOOLS',
-    tagline: 'SOFTWARE, CREATIVE SUITES & WORKFLOW ENGINES',
-    type: 'software',
-    tools: [
-      { id: 't1', name: 'Microsoft Word', code: 'Word', color: 'bg-slate-800 text-white', desc: 'Texts (.docx)' },
-      { id: 't2', name: 'Microsoft PowerPoint', code: 'PPT', color: 'bg-slate-800 text-white', desc: 'Slides (.pptx)' },
-      { id: 't3', name: 'Microsoft Excel', code: 'Excel', color: 'bg-slate-800 text-white', desc: 'Sheets (.xlsx)' },
-      { id: 't4', name: 'Adobe Illustrator', code: 'Ai', color: 'bg-slate-800 text-white font-bold', desc: 'Vector & Logos' },
-      { id: 't5', name: 'Adobe Photoshop', code: 'Ps', color: 'bg-slate-800 text-white font-bold', desc: 'Image Editing' },
-      { id: 't6', name: 'Adobe InDesign', code: 'Id', color: 'bg-slate-800 text-white font-bold', desc: 'DTP & Editorial' },
-      { id: 't7', name: 'Adobe Dimension', code: 'Dn', color: 'bg-slate-800 text-white font-bold', desc: '3D Mockups' },
-      { id: 't8', name: 'Canva', code: 'Canva', color: 'bg-slate-800 text-white', desc: 'Fast Collateral' },
-      { id: 't9', name: 'Google Gemini / AI', code: 'Gemini', color: 'bg-slate-800 text-white', desc: 'Generative AI' },
-      { id: 't10', name: 'ArtStation', code: 'AS', color: 'bg-slate-800 text-white', desc: 'Digital Concept' },
-      { id: 't11', name: 'Visual Studio Code', code: 'VSCode', color: 'bg-slate-800 text-white', desc: 'Web & Scripts' },
-    ],
-  },
-];
+export const defaultAboutSections: AboutCustomSection[] = [];
 
 export const defaultAboutData: AboutData = {
-  studioName: 'VAPOURDENSE',
-  founderName: 'VIRTUAL CAFE',
-  bio: 'a flexible system for your paper workloads',
+  studioName: '',
+  founderName: '',
+  bio: '',
   badge: '',
-  founderImage: '/VDVC 4 - Logo - NO-TEXT-TRANSPARENT-BG.png',
-  logoUrl: '/VDVC 4 - Logo - NO-TEXT-TRANSPARENT-BG.png',
+  founderImage: '',
+  logoUrl: '',
   disciplines: [],
-  sections: defaultAboutSections,
-  phone: '0701 841 6894',
-  phones: ['0701 841 6894'],
-  email: 'vapourdense@gmail.com',
-  emails: ['vapourdense@gmail.com'],
+  sections: [],
+  phone: '',
+  phones: [],
+  email: '',
+  emails: [],
   socialLinks: [],
   socials: {},
-  websiteName: 'VAPOURDENSE VIRTUAL CAFE',
-  footerTagline: 'a flexible system for your paper workloads',
-  footerLocation: 'Jos, Plateau State // UNIJOS',
-  footerRights: 'All rights reserved',
-  ceoName: '_TURBOFAN',
-  ceoTitle: 'CEO',
+  websiteName: '',
+  footerTagline: '',
+  footerLocation: '',
+  footerRights: '',
+  ceoName: '',
+  ceoTitle: '',
   teamMembers: [],
   founderImageScale: 100,
 };
@@ -270,7 +167,7 @@ interface AboutSectionProps {
 }
 
 export const AboutSection: React.FC<AboutSectionProps> = ({ data = defaultAboutData }) => {
-  const allSections = data.sections && data.sections.length > 0 ? data.sections : defaultAboutSections;
+  const allSections = Array.isArray(data.sections) ? data.sections : [];
   
   // Filter out contact section from accordions as requested
   const accordionSections = allSections.filter(

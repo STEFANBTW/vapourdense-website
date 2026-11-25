@@ -25,7 +25,6 @@ export default function App() {
     addProject,
     updateProject,
     deleteProject,
-    resetToDefaults,
     updateAboutData,
     dbError,
     clearDbError,
@@ -92,7 +91,6 @@ export default function App() {
 
   const safeAddProject = swallow(addProject);
   const safeDeleteProject = swallow(deleteProject);
-  const safeResetToDefaults = swallow(resetToDefaults);
   const safeUpdateProject = swallow(updateProject);
 
   const handleInitiateImageUpload = async (input: File | File[]) => {
@@ -115,12 +113,12 @@ export default function App() {
       const created = await safeAddProject({
         title: files[0].name.replace(/\.[^/.]+$/, ''),
         category: 'Graphic Design',
-        client: 'Bespoke Client',
-        year: String(new Date().getFullYear()),
-        monthYear: 'October 2026',
-        description: 'New creative project portfolio entry.',
-        shortDescription: 'New creative project portfolio entry.',
-        fullDescription: 'Comprehensive design process and artifact showcase.',
+        client: '',
+        year: '',
+        monthYear: '',
+        description: '',
+        shortDescription: '',
+        fullDescription: '',
         imageUrl: urls[0],
         images: urls,
         galleryPictures: urls.map((url, idx) => ({
@@ -130,11 +128,11 @@ export default function App() {
           isAI: false,
         })),
         processSteps: [],
-        tags: ['Design', 'Direction'],
+        tags: [],
         deliverables: [],
         industries: [],
-        price: '$18,500 USD',
-        duration: '4 Weeks',
+        price: '',
+        duration: '',
         isRealLife: false,
       });
       if (created) {
@@ -155,23 +153,23 @@ export default function App() {
 
   const handleAddNewProject = async () => {
     const newProj = await safeAddProject({
-      title: 'New Untitled Project',
+      title: 'Untitled Project',
       category: 'Graphic Design',
-      client: 'Bespoke Client',
-      year: String(new Date().getFullYear()),
-      monthYear: 'October 2026',
-      description: 'Comprehensive design direction, identity, and spatial craft.',
-      shortDescription: 'Comprehensive design direction, identity, and spatial craft.',
-      fullDescription: 'Comprehensive process artifacts, typography systems, and delivery.',
+      client: '',
+      year: '',
+      monthYear: '',
+      description: '',
+      shortDescription: '',
+      fullDescription: '',
       imageUrl: '',
       images: [],
       galleryPictures: [],
       processSteps: [],
-      tags: ['Identity', 'Concept'],
+      tags: [],
       deliverables: [],
       industries: [],
-      price: '$24,500 USD',
-      duration: '6 Weeks',
+      price: '',
+      duration: '',
       isRealLife: false,
     });
     if (newProj) {
@@ -254,7 +252,6 @@ export default function App() {
               setIsEditingCaseStudy(false);
             }}
             onDropImage={handleInitiateImageUpload}
-            onResetDefaults={safeResetToDefaults}
             onUpdateProject={safeUpdateProject}
           />
         )}
