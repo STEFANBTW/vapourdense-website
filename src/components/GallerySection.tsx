@@ -489,7 +489,6 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
                         <img
                           src={getOptimizedImageUrl(heroImage, { width: 800 })}
                           alt={project.title}
-                          loading="lazy"
                           decoding="async"
                           referrerPolicy="no-referrer"
                           className="w-full h-full object-cover"

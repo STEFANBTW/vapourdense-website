@@ -1277,7 +1277,6 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           <img
                             src={getOptimizedImageUrl(pic.url, { width: 1200 })}
                             alt={pic.caption || `Gallery asset ${idx + 1}`}
-                            loading="lazy"
                             decoding="async"
                             referrerPolicy="no-referrer"
                             className="w-full h-full object-cover"
@@ -1564,7 +1563,6 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                                 <img
                                   src={getOptimizedImageUrl(pic.url, { width: 1000 })}
                                   alt={pic.caption || `${plainStepName} pic ${picIdx + 1}`}
-                                  loading="lazy"
                                   decoding="async"
                                   referrerPolicy="no-referrer"
                                   className="w-full h-full object-cover"
@@ -1832,7 +1830,6 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                                 <img
                                   src={getOptimizedImageUrl(pic.url, { width: 240 })}
                                   alt=""
-                                  loading="lazy"
                                   decoding="async"
                                   className="w-full h-full object-cover"
                                 />
@@ -1996,7 +1993,6 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                           <img
                             src={getOptimizedImageUrl(item.url, { width: 200 })}
                             alt={item.label}
-                            loading="lazy"
                             decoding="async"
                             referrerPolicy="no-referrer"
                             className="w-full h-full object-cover"
@@ -2267,7 +2263,6 @@ export const ProjectBlogView: React.FC<ProjectBlogViewProps> = ({
                       <img
                         src={getOptimizedImageUrl(remark.pictureUrl || currentProject.images[0], { width: 800 })}
                         alt="Client endorsement document"
-                        loading="lazy"
                         decoding="async"
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-cover"

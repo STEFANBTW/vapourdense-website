@@ -2755,7 +2755,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                               <img
                                 src={getOptimizedImageUrl(heroImg, { width: 200 })}
                                 alt=""
-                                loading="lazy"
                                 decoding="async"
                                 className="w-full h-full object-cover"
                               />
@@ -2874,7 +2873,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                                   <img
                                     src={getOptimizedImageUrl(heroImg, { width: 200 })}
                                     alt=""
-                                    loading="lazy"
                                     decoding="async"
                                     className="w-full h-full object-cover"
                                   />
