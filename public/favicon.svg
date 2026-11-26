@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-80 -1209 4273 4273">
+  <style>
+    .vd-mark {
+      fill: #090132;
+    }
+    @media (prefers-color-scheme: dark) {
+      .vd-mark {
+        fill: #ffffff;
+      }
+    }
+  </style>
+  <g class="vd-mark">
+    <path d="M 0 0 H 1873 V 1855 H 769 Z" />
+    <path d="M 2253 0 H 3185.5 A 927.5 927.5 0 0 1 3185.5 1855 H 2253 Z" />
+  </g>
+</svg>
